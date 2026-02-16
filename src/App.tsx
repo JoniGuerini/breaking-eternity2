@@ -202,7 +202,7 @@ function App() {
     totalGain: Decimal
     seconds: number
   } | null>(null)
-  const ultimoTick = useRef(performance.now())
+  const ultimoTick = useRef(0)
   const acumuladoRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const geradoresRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const totalRef = useRef<Decimal>(new Decimal(0))
@@ -212,7 +212,7 @@ function App() {
   const progressoRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const autoUnlockNextGeradorRef = useRef(false)
   const framesRef = useRef(0)
-  const fpsIntervalRef = useRef(performance.now())
+  const fpsIntervalRef = useRef(0)
 
   useEffect(() => {
     geradoresRef.current = geradores
@@ -259,6 +259,7 @@ function App() {
       .times(Decimal.pow(1.5, geradores[nextIndex]))
       .floor()
     if (total.lt(cost)) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intencional: aplicar desbloqueio ao estado
     setTotal((t) => Decimal.sub(t, cost))
     setGeradores((prev) => {
       const next = [...prev]
@@ -284,6 +285,7 @@ function App() {
           ? saved.speedUpgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
           : Array(NUM_GERADORES).fill(0)
       const result = simulateOffline(totalAntes, saved.geradores, offlineSeconds, savedUpgrades, savedSpeedUpgrades)
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intencional: aplicar save carregado
       setTotal(result.total)
       setGeradores(result.geradores)
       geradoresRef.current = result.geradores
@@ -311,6 +313,10 @@ function App() {
   useEffect(() => {
     let id: number
     const tick = (now: number) => {
+      if (ultimoTick.current === 0) {
+        ultimoTick.current = now
+        fpsIntervalRef.current = now
+      }
       const dt = (now - ultimoTick.current) / 1000
       ultimoTick.current = now
       framesRef.current += 1
@@ -579,7 +585,7 @@ function App() {
           <Route
             path="/"
             element={
-              <ProgressoProvider progressoRef={progressoRef}>
+              <ProgressoProvider progressoRef={progressoRef} numGeradores={NUM_GERADORES}>
                 <GeneratorsPage />
               </ProgressoProvider>
             }

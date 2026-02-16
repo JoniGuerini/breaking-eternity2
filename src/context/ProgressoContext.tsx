@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 
 const ProgressoContext = createContext<number[] | null>(null)
 
@@ -8,12 +8,14 @@ const ProgressoContext = createContext<number[] | null>(null)
  */
 export function ProgressoProvider({
   progressoRef,
+  numGeradores,
   children,
 }: {
   progressoRef: React.MutableRefObject<number[]>
+  numGeradores: number
   children: React.ReactNode
 }) {
-  const [progresso, setProgresso] = useState<number[]>(() => progressoRef.current.slice())
+  const [progresso, setProgresso] = useState<number[]>(() => Array(numGeradores).fill(0))
 
   useEffect(() => {
     let rafId: number
@@ -32,6 +34,7 @@ export function ProgressoProvider({
   )
 }
 
+/* eslint-disable react-refresh/only-export-components -- hook precisa ser exportado junto do provider */
 export function useProgresso(): number[] | null {
   return useContext(ProgressoContext)
 }
