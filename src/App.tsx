@@ -1,17 +1,21 @@
 import { useEffect, useRef, useState } from "react"
+import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom"
 import Decimal from "break_eternity.js"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
+import { GameContext, type GameContextValue } from "@/context/GameContext"
+import { GeneratorsPage } from "@/pages/GeneratorsPage"
+import { ImprovementsPage } from "@/pages/ImprovementsPage"
+import { SettingsPage } from "@/pages/SettingsPage"
 
 const NUM_GERADORES = 100
 const SAVE_KEY = "breaking-eternity-save"
 const SAVE_INTERVAL_MS = 5000
 const MAX_OFFLINE_SECONDS = 7 * 24 * 3600 // 7 dias (simulação em passos de 1s)
 
-// Intervalo em segundos: gerador i leva (3 + i) segundos por ciclo
+// Intervalo em segundos: gerador 1 = 3s, gerador 2 = 6s, gerador 3 = 9s, etc. (sempre +3s por gerador)
 function intervaloGerador(i: number): number {
-  return 3 + i
+  return 3 * (i + 1)
 }
 
 interface SavedState {
@@ -19,18 +23,22 @@ interface SavedState {
   geradores: number[]
   jaColetouManual: boolean
   lastSaveTime: number
+  upgrades?: number[]
+  autoUnlockNextGerador?: boolean
 }
 
 /** Simula produção offline por `seconds` segundos; retorna novo total, novos geradores e ganho no recurso principal */
 function simulateOffline(
   total: Decimal,
   geradores: number[],
-  seconds: number
+  seconds: number,
+  upgrades: number[] = []
 ): { total: Decimal; geradores: number[]; totalGain: Decimal } {
   const capped = Math.min(seconds, MAX_OFFLINE_SECONDS)
   let curTotal = new Decimal(total)
   const curGen = [...geradores]
   const acumulado = Array(NUM_GERADORES).fill(0)
+  const mult = (i: number) => Math.pow(2, upgrades[i] ?? 0)
   for (let t = 0; t < capped; t++) {
     for (let i = 0; i < NUM_GERADORES; i++) {
       const count = curGen[i]
@@ -39,10 +47,11 @@ function simulateOffline(
         acumulado[i] += 1
         while (acumulado[i] >= interval) {
           acumulado[i] -= interval
+          const qty = count * mult(i)
           if (i === 0) {
-            curTotal = Decimal.add(curTotal, count)
+            curTotal = Decimal.add(curTotal, qty)
           } else {
-            curGen[i - 1] += count
+            curGen[i - 1] += qty
           }
         }
       }
@@ -164,6 +173,16 @@ function App() {
     const saved = loadSavedState()
     return saved?.jaColetouManual ?? false
   })
+  const [upgrades, setUpgrades] = useState<number[]>(() => {
+    const saved = loadSavedState()
+    if (saved?.upgrades && Array.isArray(saved.upgrades) && saved.upgrades.length === NUM_GERADORES)
+      return saved.upgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
+    return Array(NUM_GERADORES).fill(0)
+  })
+  const [autoUnlockNextGerador, setAutoUnlockNextGerador] = useState(() => {
+    const saved = loadSavedState()
+    return saved?.autoUnlockNextGerador ?? false
+  })
   const [fps, setFps] = useState(0)
   const [offlineCard, setOfflineCard] = useState<{
     totalGain: Decimal
@@ -174,6 +193,8 @@ function App() {
   const geradoresRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const totalRef = useRef<Decimal>(new Decimal(0))
   const jaColetouManualRef = useRef(false)
+  const upgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
+  const autoUnlockNextGeradorRef = useRef(false)
   const framesRef = useRef(0)
   const fpsIntervalRef = useRef(performance.now())
 
@@ -186,6 +207,12 @@ function App() {
   useEffect(() => {
     jaColetouManualRef.current = jaColetouManual
   }, [jaColetouManual])
+  useEffect(() => {
+    upgradesRef.current = upgrades
+  }, [upgrades])
+  useEffect(() => {
+    autoUnlockNextGeradorRef.current = autoUnlockNextGerador
+  }, [autoUnlockNextGerador])
 
   function persistSave() {
     const payload: SavedState = {
@@ -193,6 +220,8 @@ function App() {
       geradores: geradoresRef.current,
       jaColetouManual: jaColetouManualRef.current,
       lastSaveTime: Date.now(),
+      upgrades: upgradesRef.current,
+      autoUnlockNextGerador: autoUnlockNextGeradorRef.current,
     }
     try {
       localStorage.setItem(SAVE_KEY, JSON.stringify(payload))
@@ -200,6 +229,23 @@ function App() {
       // storage cheio ou indisponível
     }
   }
+
+  // Auto-desbloquear o próximo gerador (0 → 1) quando há recurso suficiente (independente do tick)
+  useEffect(() => {
+    if (!autoUnlockNextGerador) return
+    const nextIndex = geradores.findIndex((g) => g === 0)
+    if (nextIndex === -1) return
+    const cost = custoBase(nextIndex)
+      .times(Decimal.pow(1.5, geradores[nextIndex]))
+      .floor()
+    if (total.lt(cost)) return
+    setTotal((t) => Decimal.sub(t, cost))
+    setGeradores((prev) => {
+      const next = [...prev]
+      next[nextIndex] = 1
+      return next
+    })
+  }, [total, geradores, autoUnlockNextGerador])
 
   // Carregar save e aplicar ganho offline ao abrir o jogo
   useEffect(() => {
@@ -209,7 +255,11 @@ function App() {
     if (offlineSeconds < 5) return
     try {
       const totalAntes = Decimal.fromString(saved.total)
-      const result = simulateOffline(totalAntes, saved.geradores, offlineSeconds)
+      const savedUpgrades =
+        saved.upgrades && saved.upgrades.length === NUM_GERADORES
+          ? saved.upgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
+          : Array(NUM_GERADORES).fill(0)
+      const result = simulateOffline(totalAntes, saved.geradores, offlineSeconds, savedUpgrades)
       setTotal(result.total)
       setGeradores(result.geradores)
       geradoresRef.current = result.geradores
@@ -256,6 +306,7 @@ function App() {
       const deltaGen = Array(NUM_GERADORES).fill(0)
       const newProgresso = [...progresso]
 
+      const mult = (idx: number) => Math.pow(2, upgradesRef.current[idx] ?? 0)
       for (let i = 0; i < NUM_GERADORES; i++) {
         const count = current[i]
         const interval = intervaloGerador(i)
@@ -263,10 +314,11 @@ function App() {
           acumulado[i] += dt
           while (acumulado[i] >= interval) {
             acumulado[i] -= interval
+            const qty = count * mult(i)
             if (i === 0) {
-              deltaTotal = deltaTotal.add(count)
+              deltaTotal = deltaTotal.add(qty)
             } else {
-              deltaGen[i - 1] += count
+              deltaGen[i - 1] += qty
             }
           }
           newProgresso[i] = Math.min(
@@ -279,16 +331,33 @@ function App() {
         }
       }
 
-      setProgresso(newProgresso)
-      if (deltaTotal.gt(0)) {
-        setTotal((t) => Decimal.add(t, deltaTotal))
+      const nextGeradores = current.map((g, i) => g + deltaGen[i])
+      const totalAfterProd = totalRef.current.add(deltaTotal)
+      let finalTotal = totalAfterProd
+      let finalGeradores = nextGeradores
+      let autoUnlockHappened = false
+      if (autoUnlockNextGeradorRef.current) {
+        const nextIndex = nextGeradores.findIndex((g) => g === 0)
+        if (nextIndex !== -1) {
+          const cost = custoBase(nextIndex)
+            .times(Decimal.pow(1.5, nextGeradores[nextIndex]))
+            .floor()
+          if (totalAfterProd.gte(cost)) {
+            finalTotal = totalAfterProd.sub(cost)
+            finalGeradores = [...nextGeradores]
+            finalGeradores[nextIndex] = 1
+            autoUnlockHappened = true
+          }
+        }
       }
-      if (deltaGen.some((d) => d > 0)) {
-        setGeradores((prev) => {
-          const next = prev.map((g, i) => g + deltaGen[i])
-          geradoresRef.current = next
-          return next
-        })
+      setProgresso(newProgresso)
+      if (deltaTotal.gt(0) || autoUnlockHappened) {
+        totalRef.current = finalTotal
+        setTotal(finalTotal)
+      }
+      if (deltaGen.some((d) => d > 0) || autoUnlockHappened) {
+        geradoresRef.current = finalGeradores
+        setGeradores(finalGeradores)
       }
 
       id = requestAnimationFrame(tick)
@@ -313,6 +382,38 @@ function App() {
     })
   }
 
+  const custoProximoNivel = (i: number): Decimal =>
+    Decimal.pow(10, 4 + i).times(Decimal.pow(10, upgrades[i]))
+  const podeComprarMelhoria = (i: number) => total.gte(custoProximoNivel(i))
+  const comprarMelhoria = (i: number) => {
+    const custo = custoProximoNivel(i)
+    if (!total.gte(custo)) return
+    setTotal((t) => Decimal.sub(t, custo))
+    setUpgrades((prev) => {
+      const next = [...prev]
+      next[i] += 1
+      return next
+    })
+  }
+
+  function resetProgress() {
+    try {
+      localStorage.removeItem(SAVE_KEY)
+    } catch {
+      // ignore
+    }
+    setTotal(new Decimal(0))
+    setGeradores(Array(NUM_GERADORES).fill(0))
+    setUpgrades(Array(NUM_GERADORES).fill(0))
+    setJaColetouManual(false)
+    setOfflineCard(null)
+    geradoresRef.current = Array(NUM_GERADORES).fill(0)
+    totalRef.current = new Decimal(0)
+    upgradesRef.current = Array(NUM_GERADORES).fill(0)
+    jaColetouManualRef.current = false
+    acumuladoRef.current = Array(NUM_GERADORES).fill(0)
+  }
+
   function formatOfflineTime(seconds: number): string {
     if (seconds < 60) return `${Math.round(seconds)}s`
     if (seconds < 3600) return `${Math.round(seconds / 60)} min`
@@ -320,7 +421,29 @@ function App() {
     return `${(seconds / 86400).toFixed(1)} dias`
   }
 
+  const gameContextValue: GameContextValue = {
+    total,
+    setTotal,
+    geradores,
+    progresso,
+    upgrades,
+    formatDecimal,
+    comprarGerador,
+    podeComprar,
+    custoGerador,
+    comprarMelhoria,
+    podeComprarMelhoria,
+    custoProximoNivel,
+    intervaloGerador,
+    NUM_GERADORES,
+    resetProgress,
+    autoUnlockNextGerador,
+    setAutoUnlockNextGerador,
+  }
+
   return (
+    <BrowserRouter>
+      <GameContext.Provider value={gameContextValue}>
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       {offlineCard && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog">
@@ -343,9 +466,40 @@ function App() {
       )}
       <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 flex items-center justify-between gap-4">
         <div className="flex flex-col min-w-0 flex-1">
-          <h1 className="text-lg font-semibold tracking-tight truncate">
-            Breaking Eternity
-          </h1>
+          <div className="flex items-center gap-4 flex-wrap">
+            <h1 className="text-lg font-semibold tracking-tight truncate">
+              Breaking Eternity
+            </h1>
+            <nav className="flex gap-2">
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  "text-sm px-2 py-1 rounded-md " +
+                  (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+                }
+              >
+                Geradores
+              </NavLink>
+              <NavLink
+                to="/melhorias"
+                className={({ isActive }) =>
+                  "text-sm px-2 py-1 rounded-md " +
+                  (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+                }
+              >
+                Melhorias
+              </NavLink>
+              <NavLink
+                to="/configuracoes"
+                className={({ isActive }) =>
+                  "text-sm px-2 py-1 rounded-md " +
+                  (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+                }
+              >
+                Configurações
+              </NavLink>
+            </nav>
+          </div>
           <div className="flex items-center gap-2 flex-wrap">
             <p className="text-2xl font-mono tabular-nums break-all">
               {formatDecimal(total)}
@@ -374,96 +528,15 @@ function App() {
       </header>
 
       <main className="flex-1 overflow-auto px-4 py-4 md:px-6">
-        <section className="w-full space-y-3">
-          {(() => {
-            const ultimoComUnidade = geradores.reduce((max, g, idx) => (g >= 1 ? idx : max), -1)
-            const ateIndice = Math.min(ultimoComUnidade + 1, NUM_GERADORES - 1)
-            return Array.from({ length: ateIndice + 1 }, (_, i) => i)
-          })().map((i) => {
-            const estaBloqueado = geradores[i] === 0
-            if (estaBloqueado) {
-              return (
-                <Card
-                  key={i}
-                  role="button"
-                  tabIndex={podeComprar(i) ? 0 : -1}
-                  className={`py-4 px-6 cursor-pointer transition-colors ${podeComprar(i) ? "hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background" : "cursor-not-allowed opacity-70"}`}
-                  onClick={() => podeComprar(i) && comprarGerador(i)}
-                  onKeyDown={(e) => podeComprar(i) && (e.key === "Enter" || e.key === " ") && (e.preventDefault(), comprarGerador(i))}
-                >
-                  <div className="flex items-center justify-center gap-6 flex-wrap">
-                    <div className="flex flex-col gap-0.5 text-center">
-                      <span className="font-semibold text-lg">Gerador {i + 1}</span>
-                      <span className="text-muted-foreground text-sm">Desbloqueie para começar a produzir</span>
-                    </div>
-                    <div className="h-10 w-px bg-border shrink-0" aria-hidden />
-                    <div className="flex flex-col gap-0.5 text-center">
-                      <span className="text-muted-foreground text-xs uppercase tracking-wider">Custo para desbloquear</span>
-                      <span className={`font-mono text-sm tabular-nums font-semibold ${podeComprar(i) ? "text-green-600 dark:text-green-500" : "text-destructive"}`}>
-                        {formatDecimal(custoGerador(i))}
-                      </span>
-                    </div>
-                  </div>
-                </Card>
-              )
-            }
-            const interval = intervaloGerador(i)
-            const produz = i === 0 ? "recurso" : `Gerador ${i}`
-            const produzidoPeloProximo = i < NUM_GERADORES - 1 && geradores[i + 1] >= 1
-            const mostraBotaoComprar = !produzidoPeloProximo
-            return (
-              <Card key={i} className="py-3 px-4">
-                <div className="grid grid-cols-[6rem_7rem_10rem_1fr_3rem_7rem] items-center gap-4 min-w-0">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-semibold leading-tight">Gerador {i + 1}</span>
-                    <span className="text-muted-foreground text-xs">Gerador</span>
-                  </div>
-                  <div className="flex flex-col gap-0.5 min-w-0">
-                    <span className="font-mono text-sm tabular-nums leading-tight break-all">
-                      {formatDecimal(new Decimal(geradores[i]))}
-                    </span>
-                    <span className="text-muted-foreground text-xs">Quantidade</span>
-                  </div>
-                  <div className="flex flex-col gap-0.5 min-w-0">
-                    <span className="font-mono text-sm tabular-nums leading-tight break-all">
-                      +{formatDecimal(new Decimal(geradores[i]))}
-                    </span>
-                    <span className="text-muted-foreground text-xs">{produz}</span>
-                  </div>
-                  <div className="flex flex-col gap-0.5 min-w-0">
-                    <Progress value={progresso[i]} className="h-2 w-full" />
-                    <span className="text-muted-foreground text-xs">Ciclo</span>
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-mono text-sm tabular-nums leading-tight text-right">{interval}s</span>
-                    <span className="text-muted-foreground text-xs">Tempo</span>
-                  </div>
-                  <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
-                    {mostraBotaoComprar ? (
-                      <Button
-                        size="sm"
-                        className="w-full h-auto flex flex-col gap-0.5 py-2 bg-white text-black hover:bg-gray-200 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-                        onClick={() => comprarGerador(i)}
-                        disabled={!podeComprar(i)}
-                      >
-                        <span>Comprar</span>
-                        <span className="font-mono text-xs tabular-nums">
-                          {formatDecimal(custoGerador(i))}
-                        </span>
-                      </Button>
-                    ) : (
-                      <span className="w-full inline-flex items-center justify-center rounded-md border border-border bg-muted px-2 py-2 min-h-[3.5rem] text-xs font-medium text-muted-foreground">
-                        Automático
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </Card>
-            )
-          })}
-        </section>
+        <Routes>
+          <Route path="/" element={<GeneratorsPage />} />
+          <Route path="/melhorias" element={<ImprovementsPage />} />
+          <Route path="/configuracoes" element={<SettingsPage />} />
+        </Routes>
       </main>
     </div>
+      </GameContext.Provider>
+    </BrowserRouter>
   )
 }
 
