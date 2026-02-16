@@ -18,7 +18,6 @@ export function ImprovementsPage() {
     podeComprarMelhoriaVelocidade,
     custoProximoNivelVelocidade,
     intervaloEfetivo,
-    NUM_GERADORES,
   } = ctx
 
   const indicesDesbloqueados = (() => {
