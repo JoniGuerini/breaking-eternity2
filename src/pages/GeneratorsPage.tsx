@@ -2,8 +2,10 @@ import { useContext } from "react"
 import Decimal from "break_eternity.js"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { FlowBar } from "@/components/FlowBar"
 import { Progress } from "@/components/ui/progress"
 import { GameContext } from "@/context/GameContext"
+import { useProgresso } from "@/context/ProgressoContext"
 
 function formatInterval(seconds: number): string {
   if (seconds < 60) return `${seconds}s`
@@ -14,16 +16,16 @@ function formatInterval(seconds: number): string {
 
 export function GeneratorsPage() {
   const ctx = useContext(GameContext)
+  const progresso = useProgresso()
   if (!ctx) return null
   const {
     geradores,
-    progresso,
     upgrades,
     formatDecimal,
     comprarGerador,
     podeComprar,
     custoGerador,
-    intervaloGerador,
+    intervaloEfetivo,
     NUM_GERADORES,
   } = ctx
 
@@ -61,7 +63,8 @@ export function GeneratorsPage() {
             </Card>
           )
         }
-        const interval = intervaloGerador(i)
+        const interval = intervaloEfetivo(i)
+        const cicloRapido = interval < 1
         const produz = i === 0 ? "recurso" : `Gerador ${i}`
         const produzidoPeloProximo = i < NUM_GERADORES - 1 && geradores[i + 1] >= 1
         const mostraBotaoComprar = !produzidoPeloProximo
@@ -87,12 +90,16 @@ export function GeneratorsPage() {
                 <span className="text-muted-foreground text-xs">{produz}</span>
               </div>
               <div className="flex flex-col gap-0.5 min-w-0">
-                <Progress value={progresso[i]} className="h-2 w-full" />
+                {cicloRapido ? (
+                  <FlowBar />
+                ) : (
+                  <Progress value={(progresso ?? [])[i] ?? 0} className="h-2 w-full" />
+                )}
                 <span className="text-muted-foreground text-xs">Ciclo</span>
               </div>
-              <div className="flex flex-col gap-0.5 min-w-0">
+              <div className="flex flex-col gap-0.5 min-w-0 items-end">
                 <span className="font-mono text-sm tabular-nums leading-tight text-right whitespace-nowrap">{formatInterval(interval)}</span>
-                <span className="text-muted-foreground text-xs">Tempo</span>
+                <span className="text-muted-foreground text-xs text-right">Tempo</span>
               </div>
               <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
                 {mostraBotaoComprar ? (

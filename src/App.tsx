@@ -4,6 +4,7 @@ import Decimal from "break_eternity.js"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { GameContext, type GameContextValue } from "@/context/GameContext"
+import { ProgressoProvider } from "@/context/ProgressoContext"
 import { GeneratorsPage } from "@/pages/GeneratorsPage"
 import { ImprovementsPage } from "@/pages/ImprovementsPage"
 import { SettingsPage } from "@/pages/SettingsPage"
@@ -13,9 +14,16 @@ const SAVE_KEY = "breaking-eternity-save"
 const SAVE_INTERVAL_MS = 5000
 const MAX_OFFLINE_SECONDS = 7 * 24 * 3600 // 7 dias (simulação em passos de 1s)
 
-// Intervalo em segundos: gerador 1 = 3s, gerador 2 = 6s, gerador 3 = 9s, etc. (sempre +3s por gerador)
+// Intervalo base em segundos: gerador 1 = 3s, gerador 2 = 6s, gerador 3 = 9s, etc.
 function intervaloGerador(i: number): number {
   return 3 * (i + 1)
+}
+
+const MIN_INTERVALO = 0.1 // ciclo mínimo (melhoria de velocidade)
+
+/** Intervalo efetivo após melhoria de velocidade: cada nível remove 1s, mínimo 0,1s */
+function intervaloEfetivo(i: number, speedLevel: number): number {
+  return Math.max(MIN_INTERVALO, intervaloGerador(i) - speedLevel)
 }
 
 interface SavedState {
@@ -24,6 +32,7 @@ interface SavedState {
   jaColetouManual: boolean
   lastSaveTime: number
   upgrades?: number[]
+  speedUpgrades?: number[]
   autoUnlockNextGerador?: boolean
 }
 
@@ -32,21 +41,23 @@ function simulateOffline(
   total: Decimal,
   geradores: number[],
   seconds: number,
-  upgrades: number[] = []
+  upgrades: number[] = [],
+  speedUpgrades: number[] = []
 ): { total: Decimal; geradores: number[]; totalGain: Decimal } {
   const capped = Math.min(seconds, MAX_OFFLINE_SECONDS)
   let curTotal = new Decimal(total)
   const curGen = [...geradores]
   const acumulado = Array(NUM_GERADORES).fill(0)
   const mult = (i: number) => Math.pow(2, upgrades[i] ?? 0)
+  const interval = (i: number) => intervaloEfetivo(i, speedUpgrades[i] ?? 0)
   for (let t = 0; t < capped; t++) {
     for (let i = 0; i < NUM_GERADORES; i++) {
       const count = curGen[i]
-      const interval = intervaloGerador(i)
+      const iv = interval(i)
       if (count > 0) {
         acumulado[i] += 1
-        while (acumulado[i] >= interval) {
-          acumulado[i] -= interval
+        while (acumulado[i] >= iv) {
+          acumulado[i] -= iv
           const qty = count * mult(i)
           if (i === 0) {
             curTotal = Decimal.add(curTotal, qty)
@@ -166,9 +177,6 @@ function App() {
     if (!saved) return Array(NUM_GERADORES).fill(0)
     return saved.geradores
   })
-  const [progresso, setProgresso] = useState<number[]>(() =>
-    Array(NUM_GERADORES).fill(0)
-  )
   const [jaColetouManual, setJaColetouManual] = useState(() => {
     const saved = loadSavedState()
     return saved?.jaColetouManual ?? false
@@ -177,6 +185,12 @@ function App() {
     const saved = loadSavedState()
     if (saved?.upgrades && Array.isArray(saved.upgrades) && saved.upgrades.length === NUM_GERADORES)
       return saved.upgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
+    return Array(NUM_GERADORES).fill(0)
+  })
+  const [speedUpgrades, setSpeedUpgrades] = useState<number[]>(() => {
+    const saved = loadSavedState()
+    if (saved?.speedUpgrades && Array.isArray(saved.speedUpgrades) && saved.speedUpgrades.length === NUM_GERADORES)
+      return saved.speedUpgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
     return Array(NUM_GERADORES).fill(0)
   })
   const [autoUnlockNextGerador, setAutoUnlockNextGerador] = useState(() => {
@@ -194,6 +208,8 @@ function App() {
   const totalRef = useRef<Decimal>(new Decimal(0))
   const jaColetouManualRef = useRef(false)
   const upgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
+  const speedUpgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
+  const progressoRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const autoUnlockNextGeradorRef = useRef(false)
   const framesRef = useRef(0)
   const fpsIntervalRef = useRef(performance.now())
@@ -211,6 +227,9 @@ function App() {
     upgradesRef.current = upgrades
   }, [upgrades])
   useEffect(() => {
+    speedUpgradesRef.current = speedUpgrades
+  }, [speedUpgrades])
+  useEffect(() => {
     autoUnlockNextGeradorRef.current = autoUnlockNextGerador
   }, [autoUnlockNextGerador])
 
@@ -221,6 +240,7 @@ function App() {
       jaColetouManual: jaColetouManualRef.current,
       lastSaveTime: Date.now(),
       upgrades: upgradesRef.current,
+      speedUpgrades: speedUpgradesRef.current,
       autoUnlockNextGerador: autoUnlockNextGeradorRef.current,
     }
     try {
@@ -259,7 +279,11 @@ function App() {
         saved.upgrades && saved.upgrades.length === NUM_GERADORES
           ? saved.upgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
           : Array(NUM_GERADORES).fill(0)
-      const result = simulateOffline(totalAntes, saved.geradores, offlineSeconds, savedUpgrades)
+      const savedSpeedUpgrades =
+        saved.speedUpgrades && saved.speedUpgrades.length === NUM_GERADORES
+          ? saved.speedUpgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
+          : Array(NUM_GERADORES).fill(0)
+      const result = simulateOffline(totalAntes, saved.geradores, offlineSeconds, savedUpgrades, savedSpeedUpgrades)
       setTotal(result.total)
       setGeradores(result.geradores)
       geradoresRef.current = result.geradores
@@ -304,16 +328,17 @@ function App() {
       const acumulado = acumuladoRef.current
       let deltaTotal = new Decimal(0)
       const deltaGen = Array(NUM_GERADORES).fill(0)
-      const newProgresso = [...progresso]
+      const newProgresso = [...progressoRef.current]
 
       const mult = (idx: number) => Math.pow(2, upgradesRef.current[idx] ?? 0)
+      const interval = (idx: number) => intervaloEfetivo(idx, speedUpgradesRef.current[idx] ?? 0)
       for (let i = 0; i < NUM_GERADORES; i++) {
         const count = current[i]
-        const interval = intervaloGerador(i)
+        const iv = interval(i)
         if (count > 0) {
           acumulado[i] += dt
-          while (acumulado[i] >= interval) {
-            acumulado[i] -= interval
+          while (acumulado[i] >= iv) {
+            acumulado[i] -= iv
             const qty = count * mult(i)
             if (i === 0) {
               deltaTotal = deltaTotal.add(qty)
@@ -321,10 +346,7 @@ function App() {
               deltaGen[i - 1] += qty
             }
           }
-          newProgresso[i] = Math.min(
-            100,
-            (acumulado[i] / interval) * 100
-          )
+          newProgresso[i] = iv >= 1 ? Math.min(100, (acumulado[i] / iv) * 100) : 0
         } else {
           acumulado[i] = 0
           newProgresso[i] = 0
@@ -350,7 +372,7 @@ function App() {
           }
         }
       }
-      setProgresso(newProgresso)
+      progressoRef.current = newProgresso
       if (deltaTotal.gt(0) || autoUnlockHappened) {
         totalRef.current = finalTotal
         setTotal(finalTotal)
@@ -396,6 +418,23 @@ function App() {
     })
   }
 
+  const custoProximoNivelVelocidade = (i: number): Decimal =>
+    Decimal.pow(10, 6 + i).times(Decimal.pow(10, speedUpgrades[i]))
+  const podeComprarMelhoriaVelocidade = (i: number) =>
+    total.gte(custoProximoNivelVelocidade(i)) &&
+    intervaloEfetivo(i, speedUpgrades[i] + 1) >= MIN_INTERVALO
+  const comprarMelhoriaVelocidade = (i: number) => {
+    const custo = custoProximoNivelVelocidade(i)
+    if (!total.gte(custo)) return
+    if (intervaloEfetivo(i, speedUpgrades[i] + 1) < MIN_INTERVALO) return
+    setTotal((t) => Decimal.sub(t, custo))
+    setSpeedUpgrades((prev) => {
+      const next = [...prev]
+      next[i] += 1
+      return next
+    })
+  }
+
   function resetProgress() {
     try {
       localStorage.removeItem(SAVE_KEY)
@@ -405,13 +444,16 @@ function App() {
     setTotal(new Decimal(0))
     setGeradores(Array(NUM_GERADORES).fill(0))
     setUpgrades(Array(NUM_GERADORES).fill(0))
+    setSpeedUpgrades(Array(NUM_GERADORES).fill(0))
     setJaColetouManual(false)
     setOfflineCard(null)
     geradoresRef.current = Array(NUM_GERADORES).fill(0)
     totalRef.current = new Decimal(0)
     upgradesRef.current = Array(NUM_GERADORES).fill(0)
+    speedUpgradesRef.current = Array(NUM_GERADORES).fill(0)
     jaColetouManualRef.current = false
     acumuladoRef.current = Array(NUM_GERADORES).fill(0)
+    progressoRef.current = Array(NUM_GERADORES).fill(0)
   }
 
   function formatOfflineTime(seconds: number): string {
@@ -425,7 +467,7 @@ function App() {
     total,
     setTotal,
     geradores,
-    progresso,
+    progressoRef,
     upgrades,
     formatDecimal,
     comprarGerador,
@@ -435,16 +477,21 @@ function App() {
     podeComprarMelhoria,
     custoProximoNivel,
     intervaloGerador,
+    intervaloEfetivo: (i: number) => intervaloEfetivo(i, speedUpgrades[i]),
     NUM_GERADORES,
     resetProgress,
     autoUnlockNextGerador,
     setAutoUnlockNextGerador,
+    speedUpgrades,
+    comprarMelhoriaVelocidade,
+    podeComprarMelhoriaVelocidade,
+    custoProximoNivelVelocidade,
   }
 
   return (
     <BrowserRouter>
       <GameContext.Provider value={gameContextValue}>
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col select-none">
       {offlineCard && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog">
           <Card className="max-w-sm w-full p-6 space-y-4">
@@ -529,7 +576,14 @@ function App() {
 
       <main className="flex-1 overflow-auto px-4 py-4 md:px-6">
         <Routes>
-          <Route path="/" element={<GeneratorsPage />} />
+          <Route
+            path="/"
+            element={
+              <ProgressoProvider progressoRef={progressoRef}>
+                <GeneratorsPage />
+              </ProgressoProvider>
+            }
+          />
           <Route path="/melhorias" element={<ImprovementsPage />} />
           <Route path="/configuracoes" element={<SettingsPage />} />
         </Routes>
