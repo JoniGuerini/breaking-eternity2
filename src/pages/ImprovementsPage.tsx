@@ -7,6 +7,7 @@ export function ImprovementsPage() {
   const ctx = useContext(GameContext)
   if (!ctx) return null
   const {
+    geradores,
     upgrades,
     speedUpgrades,
     formatDecimal,
@@ -20,6 +21,12 @@ export function ImprovementsPage() {
     NUM_GERADORES,
   } = ctx
 
+  const indicesDesbloqueados = (() => {
+    const ultimo = geradores.reduce((max, g, idx) => (g >= 1 ? idx : max), -1)
+    if (ultimo < 0) return []
+    return Array.from({ length: ultimo + 1 }, (_, i) => i)
+  })()
+
   function formatInterval(seconds: number): string {
     if (seconds < 60) return `${seconds}s`
     const m = Math.floor(seconds / 60)
@@ -30,7 +37,7 @@ export function ImprovementsPage() {
   return (
     <section className="w-full space-y-3">
       <div className="space-y-3">
-        {Array.from({ length: NUM_GERADORES }, (_, i) => {
+        {indicesDesbloqueados.map((i) => {
           const nivel = upgrades[i] ?? 0
           const mult = Math.pow(2, nivel)
           const custo = custoProximoNivel(i)
@@ -108,6 +115,11 @@ export function ImprovementsPage() {
           )
         })}
       </div>
+      {indicesDesbloqueados.length === 0 && (
+        <p className="text-muted-foreground text-sm text-center py-8">
+          Desbloqueie geradores na página Geradores para ver as melhorias aqui.
+        </p>
+      )}
     </section>
   )
 }
