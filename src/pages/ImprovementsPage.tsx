@@ -2,6 +2,7 @@ import { useContext } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { GameContext } from "@/context/GameContext"
+import { playClickSound } from "@/lib/clickSound"
 
 export function ImprovementsPage() {
   const ctx = useContext(GameContext)
@@ -68,8 +69,11 @@ export function ImprovementsPage() {
                 <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
                   <Button
                     size="sm"
-                    className="w-full h-auto flex flex-col gap-0.5 py-2 bg-white text-black hover:bg-gray-200 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-                    onClick={() => comprarMelhoria(i)}
+                    className="w-full h-auto flex flex-col gap-0.5 py-2 bg-primary text-primary-foreground hover:bg-primary/90"
+                    onClick={() => {
+                    playClickSound()
+                    comprarMelhoria(i)
+                  }}
                     disabled={!podeComprar}
                   >
                     <span>Comprar</span>
@@ -99,8 +103,11 @@ export function ImprovementsPage() {
                 <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
                   <Button
                     size="sm"
-                    className="w-full h-auto flex flex-col gap-0.5 py-2 bg-white text-black hover:bg-gray-200 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-                    onClick={() => comprarMelhoriaVelocidade(i)}
+                    className="w-full h-auto flex flex-col gap-0.5 py-2 bg-primary text-primary-foreground hover:bg-primary/90"
+                    onClick={() => {
+                    playClickSound()
+                    comprarMelhoriaVelocidade(i)
+                  }}
                     disabled={!podeComprarVel}
                   >
                     <span>Comprar</span>

@@ -4,6 +4,7 @@ import Decimal from "break_eternity.js"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { GameContext, type GameContextValue } from "@/context/GameContext"
+import { playClickSound } from "@/lib/clickSound"
 import { ProgressoProvider } from "@/context/ProgressoContext"
 import { GeneratorsPage } from "@/pages/GeneratorsPage"
 import { ImprovementsPage } from "@/pages/ImprovementsPage"
@@ -34,6 +35,11 @@ interface SavedState {
   upgrades?: number[]
   speedUpgrades?: number[]
   autoUnlockNextGerador?: boolean
+  totalProducedLifetime?: string
+  totalPlayTimeSeconds?: number
+  firstPlayTime?: number
+  lastSessionStart?: number
+  geradoresCompradosManual?: number
 }
 
 /** Simula produção offline por `seconds` segundos; retorna novo total, novos geradores e ganho no recurso principal */
@@ -198,6 +204,23 @@ function App() {
     return saved?.autoUnlockNextGerador ?? false
   })
   const [fps, setFps] = useState(0)
+  const [totalProducedLifetime, setTotalProducedLifetime] = useState<Decimal>(() => {
+    const saved = loadSavedState()
+    if (!saved?.totalProducedLifetime) return new Decimal(0)
+    try {
+      return Decimal.fromString(saved.totalProducedLifetime)
+    } catch {
+      return new Decimal(0)
+    }
+  })
+  const [totalPlayTimeSeconds, setTotalPlayTimeSeconds] = useState(() => {
+    const saved = loadSavedState()
+    let sec = saved?.totalPlayTimeSeconds ?? 0
+    if (saved?.lastSessionStart) sec += (Date.now() - saved.lastSessionStart) / 1000
+    return Math.floor(sec)
+  })
+  const [firstPlayTime, setFirstPlayTime] = useState<number | null>(() => loadSavedState()?.firstPlayTime ?? null)
+  const [geradoresCompradosManual, setGeradoresCompradosManual] = useState(() => loadSavedState()?.geradoresCompradosManual ?? 0)
   const [offlineCard, setOfflineCard] = useState<{
     totalGain: Decimal
     seconds: number
@@ -206,6 +229,10 @@ function App() {
   const acumuladoRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const geradoresRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const totalRef = useRef<Decimal>(new Decimal(0))
+  const totalProducedLifetimeRef = useRef<Decimal>(new Decimal(0))
+  const lastSessionStartRef = useRef(Date.now())
+  const totalPlayTimeSecondsRef = useRef(0)
+  const geradoresCompradosManualRef = useRef(0)
   const jaColetouManualRef = useRef(false)
   const upgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const speedUpgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
@@ -232,16 +259,42 @@ function App() {
   useEffect(() => {
     autoUnlockNextGeradorRef.current = autoUnlockNextGerador
   }, [autoUnlockNextGerador])
+  useEffect(() => {
+    totalProducedLifetimeRef.current = totalProducedLifetime
+  }, [totalProducedLifetime])
+  useEffect(() => {
+    totalPlayTimeSecondsRef.current = totalPlayTimeSeconds
+  }, [totalPlayTimeSeconds])
+  useEffect(() => {
+    geradoresCompradosManualRef.current = geradoresCompradosManual
+  }, [geradoresCompradosManual])
+  useEffect(() => {
+    totalProducedLifetimeRef.current = totalProducedLifetime
+    geradoresCompradosManualRef.current = geradoresCompradosManual
+  }, [])
 
   function persistSave() {
+    const now = Date.now()
+    const elapsed = (now - lastSessionStartRef.current) / 1000
+    totalPlayTimeSecondsRef.current = Math.floor(totalPlayTimeSecondsRef.current + elapsed)
+    setTotalPlayTimeSeconds(totalPlayTimeSecondsRef.current)
+    lastSessionStartRef.current = now
+    const first = firstPlayTime ?? now
+    if (!firstPlayTime) setFirstPlayTime(now)
+
     const payload: SavedState = {
       total: totalRef.current.toString(),
       geradores: geradoresRef.current,
       jaColetouManual: jaColetouManualRef.current,
-      lastSaveTime: Date.now(),
+      lastSaveTime: now,
       upgrades: upgradesRef.current,
       speedUpgrades: speedUpgradesRef.current,
       autoUnlockNextGerador: autoUnlockNextGeradorRef.current,
+      totalProducedLifetime: totalProducedLifetimeRef.current.toString(),
+      totalPlayTimeSeconds: totalPlayTimeSecondsRef.current,
+      firstPlayTime: first,
+      lastSessionStart: now,
+      geradoresCompradosManual: geradoresCompradosManualRef.current,
     }
     try {
       localStorage.setItem(SAVE_KEY, JSON.stringify(payload))
@@ -289,6 +342,15 @@ function App() {
       setTotal(result.total)
       setGeradores(result.geradores)
       geradoresRef.current = result.geradores
+      if (result.totalGain.gt(0)) {
+        const saved = loadSavedState()
+        const base = saved?.totalProducedLifetime
+          ? Decimal.fromString(saved.totalProducedLifetime)
+          : new Decimal(0)
+        const newLifetime = base.add(result.totalGain)
+        totalProducedLifetimeRef.current = newLifetime
+        setTotalProducedLifetime(newLifetime)
+      }
       setOfflineCard({ totalGain: result.totalGain, seconds: offlineSeconds })
     } catch {
       // ignora erro e mantém estado carregado
@@ -382,6 +444,13 @@ function App() {
       if (deltaTotal.gt(0) || autoUnlockHappened) {
         totalRef.current = finalTotal
         setTotal(finalTotal)
+        if (deltaTotal.gt(0)) {
+          setTotalProducedLifetime((prev) => {
+            const next = prev.add(deltaTotal)
+            totalProducedLifetimeRef.current = next
+            return next
+          })
+        }
       }
       if (deltaGen.some((d) => d > 0) || autoUnlockHappened) {
         geradoresRef.current = finalGeradores
@@ -403,6 +472,7 @@ function App() {
     const custo = custoGerador(i)
     if (!total.gte(custo)) return
     setTotal((t) => Decimal.sub(t, custo))
+    setGeradoresCompradosManual((n) => n + 1)
     setGeradores((prev) => {
       const next = [...prev]
       next[i] += 1
@@ -453,8 +523,16 @@ function App() {
     setSpeedUpgrades(Array(NUM_GERADORES).fill(0))
     setJaColetouManual(false)
     setOfflineCard(null)
+    setTotalProducedLifetime(new Decimal(0))
+    setTotalPlayTimeSeconds(0)
+    setFirstPlayTime(null)
+    setGeradoresCompradosManual(0)
+    geradoresCompradosManualRef.current = 0
     geradoresRef.current = Array(NUM_GERADORES).fill(0)
     totalRef.current = new Decimal(0)
+    totalProducedLifetimeRef.current = new Decimal(0)
+    totalPlayTimeSecondsRef.current = 0
+    lastSessionStartRef.current = Date.now()
     upgradesRef.current = Array(NUM_GERADORES).fill(0)
     speedUpgradesRef.current = Array(NUM_GERADORES).fill(0)
     jaColetouManualRef.current = false
@@ -492,12 +570,46 @@ function App() {
     comprarMelhoriaVelocidade,
     podeComprarMelhoriaVelocidade,
     custoProximoNivelVelocidade,
+    totalProducedLifetime,
+    totalPlayTimeSeconds,
+    firstPlayTime,
+    geradoresCompradosManual,
   }
 
   return (
     <BrowserRouter>
       <GameContext.Provider value={gameContextValue}>
     <div className="min-h-screen bg-background text-foreground flex flex-col select-none">
+      {total.lt(1) && !jaColetouManual && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog" aria-labelledby="welcome-dialog-title">
+          <Card className="max-w-md w-full p-6 space-y-5 shadow-lg">
+            <h2 id="welcome-dialog-title" className="font-semibold text-xl">Boas-vindas ao Breaking Eternity</h2>
+            <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
+              <p>
+                Este é um jogo <strong className="text-foreground">incremental</strong> (idle): você coleta recurso, compra geradores que produzem mais recurso e desbloqueia melhorias. Os números podem ficar enormes — milhões, bilhões e além.
+              </p>
+              <p>
+                Para lidar com números tão grandes, o jogo usa a biblioteca <strong className="text-foreground">break_eternity.js</strong>, que permite operar com valores muito além do que o JavaScript nativo suporta (notação científica, sufixos como M, B, T, Q e letras).
+              </p>
+              <p>
+                O <strong className="text-foreground">objetivo</strong> é chegar ao limite dessa biblioteca — o maior número que ela consegue representar. Resgate seu primeiro recurso abaixo e comece a comprar geradores. Bom jogo!
+              </p>
+            </div>
+            <Button
+              className="w-full"
+              onClick={() => {
+                playClickSound()
+                setTotal((t) => Decimal.add(t, 1))
+                setJaColetouManual(true)
+                setTotalProducedLifetime((prev) => prev.add(1))
+                totalProducedLifetimeRef.current = totalProducedLifetimeRef.current.add(1)
+              }}
+            >
+              Resgatar primeiro recurso
+            </Button>
+          </Card>
+        </div>
+      )}
       {offlineCard && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog">
           <Card className="max-w-sm w-full p-6 space-y-4">
@@ -510,74 +622,73 @@ function App() {
             </p>
             <Button
               className="w-full"
-              onClick={() => setOfflineCard(null)}
+              onClick={() => {
+                playClickSound()
+                setOfflineCard(null)
+              }}
             >
               OK
             </Button>
           </Card>
         </div>
       )}
-      <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 flex items-center justify-between gap-4">
-        <div className="flex flex-col min-w-0 flex-1">
-          <div className="flex items-center gap-4 flex-wrap">
-            <h1 className="text-lg font-semibold tracking-tight truncate">
-              Breaking Eternity
-            </h1>
-            <nav className="flex gap-2">
-              <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  "text-sm px-2 py-1 rounded-md " +
-                  (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-                }
-              >
-                Geradores
-              </NavLink>
-              <NavLink
-                to="/melhorias"
-                className={({ isActive }) =>
-                  "text-sm px-2 py-1 rounded-md " +
-                  (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-                }
-              >
-                Melhorias
-              </NavLink>
-              <NavLink
-                to="/configuracoes"
-                className={({ isActive }) =>
-                  "text-sm px-2 py-1 rounded-md " +
-                  (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-                }
-              >
-                Configurações
-              </NavLink>
-            </nav>
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <p className="text-2xl font-mono tabular-nums break-all">
-              {formatDecimal(total)}
-            </p>
-            {total.lt(1) && !jaColetouManual && (
-              <>
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    setTotal((t) => Decimal.add(t, 1))
-                    setJaColetouManual(true)
-                  }}
-                >
-                  Clique para +1
-                </Button>
-                <span className="text-muted-foreground text-xs">
-                  Colete 1 para comprar o primeiro gerador.
-                </span>
-              </>
-            )}
-          </div>
+      <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 flex items-center gap-4">
+        {/* Esquerda: nome do jogo + menus (futuros menus podem preencher aqui) */}
+        <div className="flex items-center gap-4 flex-1 min-w-0 justify-start">
+          <h1 className="text-lg font-semibold tracking-tight truncate shrink-0">
+            Breaking Eternity
+          </h1>
+          <nav className="flex gap-2 flex-wrap">
+            <NavLink
+              to="/"
+              onClick={() => playClickSound()}
+              className={({ isActive }) =>
+                "text-sm px-2 py-1 rounded-md " +
+                (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+              }
+            >
+              Geradores
+            </NavLink>
+            <NavLink
+              to="/melhorias"
+              onClick={() => playClickSound()}
+              className={({ isActive }) =>
+                "text-sm px-2 py-1 rounded-md " +
+                (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+              }
+            >
+              Melhorias
+            </NavLink>
+            <NavLink
+              to="/configuracoes"
+              onClick={() => playClickSound()}
+              className={({ isActive }) =>
+                "text-sm px-2 py-1 rounded-md " +
+                (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+              }
+            >
+              Configurações
+            </NavLink>
+          </nav>
         </div>
-        <span className="text-muted-foreground text-sm font-mono shrink-0">
-          {fps} FPS
-        </span>
+        {/* Centro: contador do recurso principal */}
+        <div className="flex-shrink-0 px-2">
+          <p className="text-2xl font-mono tabular-nums break-all text-center">
+            {formatDecimal(total)}
+          </p>
+        </div>
+        {/* Direita: FPS e futuros menus */}
+        <div className="flex items-center gap-4 flex-1 min-w-0 justify-end">
+          <Card className="px-3 py-1.5 shrink-0 border-muted">
+            <span
+              className={`text-xs font-mono ${
+                fps >= 60 ? "text-green-500" : fps >= 30 ? "text-yellow-500" : "text-red-500"
+              }`}
+            >
+              {fps} FPS
+            </span>
+          </Card>
+        </div>
       </header>
 
       <main className="flex-1 overflow-auto px-4 py-4 md:px-6">

@@ -6,6 +6,7 @@ import { FlowBar } from "@/components/FlowBar"
 import { Progress } from "@/components/ui/progress"
 import { GameContext } from "@/context/GameContext"
 import { useProgresso } from "@/context/ProgressoContext"
+import { playClickSound } from "@/lib/clickSound"
 
 function formatInterval(seconds: number): string {
   if (seconds < 60) return `${seconds}s`
@@ -44,8 +45,19 @@ export function GeneratorsPage() {
               role="button"
               tabIndex={podeComprar(i) ? 0 : -1}
               className={`py-4 px-6 cursor-pointer transition-colors ${podeComprar(i) ? "hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background" : "cursor-not-allowed opacity-70"}`}
-              onClick={() => podeComprar(i) && comprarGerador(i)}
-              onKeyDown={(e) => podeComprar(i) && (e.key === "Enter" || e.key === " ") && (e.preventDefault(), comprarGerador(i))}
+              onClick={() => {
+                if (podeComprar(i)) {
+                  playClickSound()
+                  comprarGerador(i)
+                }
+              }}
+              onKeyDown={(e) => {
+                if (podeComprar(i) && (e.key === "Enter" || e.key === " ")) {
+                  e.preventDefault()
+                  playClickSound()
+                  comprarGerador(i)
+                }
+              }}
             >
               <div className="flex items-center justify-center gap-6 flex-wrap">
                 <div className="flex flex-col gap-0.5 text-center">
@@ -105,8 +117,11 @@ export function GeneratorsPage() {
                 {mostraBotaoComprar ? (
                   <Button
                     size="sm"
-                    className="w-full h-auto flex flex-col gap-0.5 py-2 bg-white text-black hover:bg-gray-200 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-                    onClick={() => comprarGerador(i)}
+                    className="w-full h-auto flex flex-col gap-0.5 py-2 bg-primary text-primary-foreground hover:bg-primary/90"
+                    onClick={() => {
+                      playClickSound()
+                      comprarGerador(i)
+                    }}
                     disabled={!podeComprar(i)}
                   >
                     <span>Comprar</span>

@@ -24,6 +24,10 @@ export interface GameContextValue {
   comprarMelhoriaVelocidade: (i: number) => void
   podeComprarMelhoriaVelocidade: (i: number) => boolean
   custoProximoNivelVelocidade: (i: number) => Decimal
+  totalProducedLifetime: Decimal
+  totalPlayTimeSeconds: number
+  firstPlayTime: number | null
+  geradoresCompradosManual: number
 }
 
 export const GameContext = createContext<GameContextValue | null>(null)
