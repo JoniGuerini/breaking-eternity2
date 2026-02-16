@@ -5,6 +5,13 @@ import { Card } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { GameContext } from "@/context/GameContext"
 
+function formatInterval(seconds: number): string {
+  if (seconds < 60) return `${seconds}s`
+  const m = Math.floor(seconds / 60)
+  const s = Math.floor(seconds % 60)
+  return s === 0 ? `${m}m` : `${m}m ${s}s`
+}
+
 export function GeneratorsPage() {
   const ctx = useContext(GameContext)
   if (!ctx) return null
@@ -84,7 +91,7 @@ export function GeneratorsPage() {
                 <span className="text-muted-foreground text-xs">Ciclo</span>
               </div>
               <div className="flex flex-col gap-0.5">
-                <span className="font-mono text-sm tabular-nums leading-tight text-right">{interval}s</span>
+                <span className="font-mono text-sm tabular-nums leading-tight text-right">{formatInterval(interval)}</span>
                 <span className="text-muted-foreground text-xs">Tempo</span>
               </div>
               <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
