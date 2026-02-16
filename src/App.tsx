@@ -579,7 +579,7 @@ function App() {
   return (
     <BrowserRouter>
       <GameContext.Provider value={gameContextValue}>
-    <div className="min-h-screen bg-background text-foreground flex flex-col select-none">
+    <div className="scroll-overlay min-h-screen bg-background text-foreground flex flex-col select-none">
       {total.lt(1) && !jaColetouManual && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog" aria-labelledby="welcome-dialog-title">
           <Card className="max-w-md w-full p-6 space-y-5 shadow-lg">
@@ -691,7 +691,7 @@ function App() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-auto px-4 py-4 md:px-6">
+      <main className="scroll-overlay flex-1 overflow-auto px-4 py-4 md:px-6">
         <Routes>
           <Route
             path="/"

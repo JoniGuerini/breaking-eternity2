@@ -978,6 +978,29 @@
   100% { transform: translate3d(0, 0, 0); }
 }
 
+/* Barra de rolagem invisível (html/body = onde o scroll da página acontece; .scroll-overlay = main ou wrapper) */
+html,
+body,
+.scroll-overlay {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.scroll-overlay::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+html::-webkit-scrollbar-track,
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-track,
+body::-webkit-scrollbar-thumb,
+.scroll-overlay::-webkit-scrollbar-track,
+.scroll-overlay::-webkit-scrollbar-thumb {
+  background: transparent !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
