@@ -68,7 +68,7 @@ export function GeneratorsPage() {
         const mult = Math.pow(2, upgrades[i] ?? 0)
         return (
           <Card key={i} className="py-3 px-4">
-            <div className="grid grid-cols-[6rem_7rem_10rem_1fr_3rem_7rem] items-center gap-4 min-w-0">
+            <div className="grid grid-cols-[6rem_7rem_10rem_1fr_5rem_7rem] items-center gap-4 min-w-0">
               <div className="flex flex-col gap-0.5">
                 <span className="font-semibold leading-tight">Gerador {i + 1}</span>
                 <span className="text-muted-foreground text-xs">Gerador</span>
@@ -90,8 +90,8 @@ export function GeneratorsPage() {
                 <Progress value={progresso[i]} className="h-2 w-full" />
                 <span className="text-muted-foreground text-xs">Ciclo</span>
               </div>
-              <div className="flex flex-col gap-0.5">
-                <span className="font-mono text-sm tabular-nums leading-tight text-right">{formatInterval(interval)}</span>
+              <div className="flex flex-col gap-0.5 min-w-0">
+                <span className="font-mono text-sm tabular-nums leading-tight text-right whitespace-nowrap">{formatInterval(interval)}</span>
                 <span className="text-muted-foreground text-xs">Tempo</span>
               </div>
               <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
