@@ -94,3 +94,36 @@ export function playClickSound(): void {
     // ignore (e.g. autoplay policy)
   }
 }
+
+/** Toca um som de conquista desbloqueada (dois tons curtos, tipo “ding”). Respeita som de clique ativado e volume. */
+export function playAchievementSound(): void {
+  if (!getClickSoundEnabled()) return
+  try {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
+    }
+    if (audioContext.state === "suspended") {
+      audioContext.resume()
+    }
+    const t0 = audioContext.currentTime
+    const volumeMult = volumeToGain(getClickSoundVolume())
+    const gainNode = audioContext.createGain()
+    gainNode.gain.setValueAtTime(0, t0)
+    gainNode.gain.linearRampToValueAtTime(0.22 * volumeMult, t0 + 0.02)
+    gainNode.gain.exponentialRampToValueAtTime(0.001, t0 + 0.25)
+    gainNode.connect(audioContext.destination)
+
+    const playTone = (freq: number, start: number, duration: number) => {
+      const osc = audioContext!.createOscillator()
+      osc.type = "sine"
+      osc.frequency.setValueAtTime(freq, t0 + start)
+      osc.connect(gainNode)
+      osc.start(t0 + start)
+      osc.stop(t0 + start + duration)
+    }
+    playTone(523.25, 0, 0.12)
+    playTone(659.25, 0.08, 0.14)
+  } catch {
+    // ignore (e.g. autoplay policy)
+  }
+}

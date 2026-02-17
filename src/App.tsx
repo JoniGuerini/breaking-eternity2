@@ -1,23 +1,67 @@
 import { useEffect, useRef, useState } from "react"
-import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom"
+import { BrowserRouter, NavLink, Route, Routes, useLocation } from "react-router-dom"
 import Decimal from "break_eternity.js"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { GameContext, type GameContextValue } from "@/context/GameContext"
-import { playClickSound } from "@/lib/clickSound"
+import { playAchievementSound, playClickSound } from "@/lib/clickSound"
 import { ProgressoProvider } from "@/context/ProgressoContext"
+import { ShortcutHandler } from "@/components/ShortcutHandler"
+import { ScrollToTop } from "@/components/ScrollToTop"
+import { CustomContextMenu } from "@/components/CustomContextMenu"
+import { ACHIEVEMENTS, filterValidAchievementIds, getNewlyUnlockedAchievementIds } from "@/lib/achievements"
+import { AchievementsPage } from "@/pages/AchievementsPage"
 import { GeneratorsPage } from "@/pages/GeneratorsPage"
 import { ImprovementsPage } from "@/pages/ImprovementsPage"
 import { SettingsPage } from "@/pages/SettingsPage"
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner"
+
+/** Na página de conquistas trava o layout em 100vh para o documento não rolar; só a lista rola. */
+function RootLayout({ children }: { children: React.ReactNode }) {
+  const location = useLocation()
+  const isConquistas = location.pathname === "/conquistas"
+  return (
+    <div
+      className={
+        "scroll-overlay bg-background text-foreground flex flex-col select-none " +
+        (isConquistas ? "h-screen overflow-hidden" : "min-h-screen")
+      }
+    >
+      {children}
+    </div>
+  )
+}
+
+/** Envolve o main e o conteúdo; na página de conquistas desativa rolagem aqui (só a lista interna rola). */
+function MainWithScrollBehavior({ children }: { children: React.ReactNode }) {
+  const location = useLocation()
+  const isConquistas = location.pathname === "/conquistas"
+  return (
+    <main className="scroll-overlay flex-1 min-h-0 flex flex-col overflow-hidden px-4 py-4 md:px-6">
+      <div
+        className={
+          "flex-1 flex flex-col min-h-0 " +
+          (isConquistas ? "overflow-hidden" : "overflow-auto")
+        }
+      >
+        {children}
+      </div>
+    </main>
+  )
+}
 
 const NUM_GERADORES = 100
 const SAVE_KEY = "breaking-eternity-save"
 const SAVE_INTERVAL_MS = 5000
 const MAX_OFFLINE_SECONDS = 7 * 24 * 3600 // 7 dias (simulação em passos de 1s)
 
-// Intervalo base em segundos: gerador 1 = 3s, gerador 2 = 6s, gerador 3 = 9s, etc.
+// Intervalo base em segundos: lei de potência para saltos maiores entre tiers.
+// Com expoente 1.5: gerador 1 = 3s, 2 ≈ 8s, 10 ≈ 95s, 99 ≈ 2955s, 100 ≈ 3000s.
+// O salto do 99 pro 100 passa a ser ~45s em vez de 3s.
+const INTERVALO_EXPOENTE = 1.5
 function intervaloGerador(i: number): number {
-  return 3 * (i + 1)
+  return Math.round(3 * Math.pow(i + 1, INTERVALO_EXPOENTE))
 }
 
 const MIN_INTERVALO = 0.1 // ciclo mínimo (melhoria de velocidade)
@@ -27,6 +71,15 @@ function intervaloEfetivo(i: number, speedLevel: number): number {
   return Math.max(MIN_INTERVALO, intervaloGerador(i) - speedLevel)
 }
 
+/** Chance de produzir o dobro por nível da melhoria "Sorte" (ex.: 0,02 = 2% por nível) */
+const CHANCE_CRIT_POR_NIVEL = 0.02
+
+/** Multiplicador da sorte quando dá crítico: nível 0 = 2x, 1 = 3x, 2 = 4x... */
+const LUCK_MULT_BASE = 2
+function luckCritMultiplier(level: number): number {
+  return LUCK_MULT_BASE + level
+}
+
 interface SavedState {
   total: string
   geradores: number[]
@@ -34,12 +87,23 @@ interface SavedState {
   lastSaveTime: number
   upgrades?: number[]
   speedUpgrades?: number[]
+  luckUpgrades?: number[]
+  luckMultiplierUpgrades?: number[]
+  globalProductionLevel?: number
+  globalSpeedLevel?: number
+  globalPriceReductionLevel?: number
   autoUnlockNextGerador?: boolean
   totalProducedLifetime?: string
   totalPlayTimeSeconds?: number
   firstPlayTime?: number
   lastSessionStart?: number
   geradoresCompradosManual?: number
+  achievementsUnlocked?: string[]
+}
+
+/** Chance de crítico (dobro) para gerador i com nível da melhoria Sorte */
+function chanceCrit(luckLevel: number): number {
+  return Math.min(1, luckLevel * CHANCE_CRIT_POR_NIVEL)
 }
 
 /** Simula produção offline por `seconds` segundos; retorna novo total, novos geradores e ganho no recurso principal */
@@ -48,14 +112,25 @@ function simulateOffline(
   geradores: number[],
   seconds: number,
   upgrades: number[] = [],
-  speedUpgrades: number[] = []
+  speedUpgrades: number[] = [],
+  luckUpgrades: number[] = [],
+  luckMultiplierUpgrades: number[] = [],
+  globalProductionLevel = 0,
+  globalSpeedLevel = 0
 ): { total: Decimal; geradores: number[]; totalGain: Decimal } {
   const capped = Math.min(seconds, MAX_OFFLINE_SECONDS)
   let curTotal = new Decimal(total)
   const curGen = [...geradores]
   const acumulado = Array(NUM_GERADORES).fill(0)
-  const mult = (i: number) => Math.pow(2, upgrades[i] ?? 0)
-  const interval = (i: number) => intervaloEfetivo(i, speedUpgrades[i] ?? 0)
+  const globalProdMult = Math.pow(2, globalProductionLevel)
+  const mult = (i: number) => Math.pow(2, upgrades[i] ?? 0) * globalProdMult
+  const interval = (i: number) => intervaloEfetivo(i, (speedUpgrades[i] ?? 0) + globalSpeedLevel)
+  // Esperado da sorte: 1 + p * (multCrit - 1), onde multCrit = 2 + luckMultLevel
+  const luckMult = (i: number) => {
+    const p = chanceCrit(luckUpgrades[i] ?? 0)
+    const multCrit = luckCritMultiplier(luckMultiplierUpgrades[i] ?? 0)
+    return 1 + p * (multCrit - 1)
+  }
   for (let t = 0; t < capped; t++) {
     for (let i = 0; i < NUM_GERADORES; i++) {
       const count = curGen[i]
@@ -64,7 +139,7 @@ function simulateOffline(
         acumulado[i] += 1
         while (acumulado[i] >= iv) {
           acumulado[i] -= iv
-          const qty = count * mult(i)
+          const qty = Math.floor(count * mult(i) * luckMult(i))
           if (i === 0) {
             curTotal = Decimal.add(curTotal, qty)
           } else {
@@ -78,9 +153,14 @@ function simulateOffline(
   return { total: curTotal, geradores: curGen, totalGain }
 }
 
-// Custo base do gerador i: 10^i (gerador 0 = 1, 1 = 10, 2 = 100, ...)
+// Custo base: Gerador 1 = 1; demais 10^(i+1) (Gerador 2 = 100, 3 = 1.000, ...)
 function custoBase(i: number): Decimal {
-  return Decimal.pow(10, i)
+  return i === 0 ? new Decimal(1) : Decimal.pow(10, i + 1)
+}
+
+/** Multiplicador de preço pós-desbloqueio: cada nível global reduz 5% (0.95^nível); só afeta compras quando gerador já está desbloqueado */
+function globalPriceMultiplier(level: number): number {
+  return level <= 0 ? 1 : Math.pow(0.95, level)
 }
 
 // Limites: 2 letras (AA–ZZ), depois 3 (AAA–ZZZ), 4 (AAAA–ZZZZ), 5 (AAAAA–ZZZZZ)
@@ -199,6 +279,33 @@ function App() {
       return saved.speedUpgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
     return Array(NUM_GERADORES).fill(0)
   })
+  const [luckUpgrades, setLuckUpgrades] = useState<number[]>(() => {
+    const saved = loadSavedState()
+    if (saved?.luckUpgrades && Array.isArray(saved.luckUpgrades) && saved.luckUpgrades.length === NUM_GERADORES)
+      return saved.luckUpgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
+    return Array(NUM_GERADORES).fill(0)
+  })
+  const [luckMultiplierUpgrades, setLuckMultiplierUpgrades] = useState<number[]>(() => {
+    const saved = loadSavedState()
+    if (saved?.luckMultiplierUpgrades && Array.isArray(saved.luckMultiplierUpgrades) && saved.luckMultiplierUpgrades.length === NUM_GERADORES)
+      return saved.luckMultiplierUpgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
+    return Array(NUM_GERADORES).fill(0)
+  })
+  const [globalProductionLevel, setGlobalProductionLevel] = useState(() => {
+    const saved = loadSavedState()
+    const v = saved?.globalProductionLevel
+    return typeof v === "number" && v >= 0 ? v : 0
+  })
+  const [globalSpeedLevel, setGlobalSpeedLevel] = useState(() => {
+    const saved = loadSavedState()
+    const v = saved?.globalSpeedLevel
+    return typeof v === "number" && v >= 0 ? v : 0
+  })
+  const [globalPriceReductionLevel, setGlobalPriceReductionLevel] = useState(() => {
+    const saved = loadSavedState()
+    const v = saved?.globalPriceReductionLevel
+    return typeof v === "number" && v >= 0 ? v : 0
+  })
   const [autoUnlockNextGerador, setAutoUnlockNextGerador] = useState(() => {
     const saved = loadSavedState()
     return saved?.autoUnlockNextGerador ?? false
@@ -221,6 +328,12 @@ function App() {
   })
   const [firstPlayTime, setFirstPlayTime] = useState<number | null>(() => loadSavedState()?.firstPlayTime ?? null)
   const [geradoresCompradosManual, setGeradoresCompradosManual] = useState(() => loadSavedState()?.geradoresCompradosManual ?? 0)
+  const initialAchievementsRef = useRef<string[] | null>(null)
+  if (initialAchievementsRef.current === null) {
+    initialAchievementsRef.current = filterValidAchievementIds(loadSavedState()?.achievementsUnlocked ?? [])
+  }
+  const [achievementsUnlocked, setAchievementsUnlocked] = useState<string[]>(() => initialAchievementsRef.current ?? [])
+  const achievementsUnlockedRef = useRef<string[]>(initialAchievementsRef.current ?? [])
   const [offlineCard, setOfflineCard] = useState<{
     totalGain: Decimal
     seconds: number
@@ -236,6 +349,11 @@ function App() {
   const jaColetouManualRef = useRef(false)
   const upgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const speedUpgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
+  const luckUpgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
+  const luckMultiplierUpgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
+  const globalProductionLevelRef = useRef(0)
+  const globalSpeedLevelRef = useRef(0)
+  const globalPriceReductionLevelRef = useRef(0)
   const progressoRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const autoUnlockNextGeradorRef = useRef(false)
   const framesRef = useRef(0)
@@ -257,6 +375,21 @@ function App() {
     speedUpgradesRef.current = speedUpgrades
   }, [speedUpgrades])
   useEffect(() => {
+    luckUpgradesRef.current = luckUpgrades
+  }, [luckUpgrades])
+  useEffect(() => {
+    luckMultiplierUpgradesRef.current = luckMultiplierUpgrades
+  }, [luckMultiplierUpgrades])
+  useEffect(() => {
+    globalProductionLevelRef.current = globalProductionLevel
+  }, [globalProductionLevel])
+  useEffect(() => {
+    globalSpeedLevelRef.current = globalSpeedLevel
+  }, [globalSpeedLevel])
+  useEffect(() => {
+    globalPriceReductionLevelRef.current = globalPriceReductionLevel
+  }, [globalPriceReductionLevel])
+  useEffect(() => {
     autoUnlockNextGeradorRef.current = autoUnlockNextGerador
   }, [autoUnlockNextGerador])
   useEffect(() => {
@@ -268,6 +401,9 @@ function App() {
   useEffect(() => {
     geradoresCompradosManualRef.current = geradoresCompradosManual
   }, [geradoresCompradosManual])
+  useEffect(() => {
+    achievementsUnlockedRef.current = achievementsUnlocked
+  }, [achievementsUnlocked])
   useEffect(() => {
     totalProducedLifetimeRef.current = totalProducedLifetime
     geradoresCompradosManualRef.current = geradoresCompradosManual
@@ -282,6 +418,34 @@ function App() {
     const first = firstPlayTime ?? now
     if (!firstPlayTime) setFirstPlayTime(now)
 
+    const currentUnlocked = achievementsUnlockedRef.current
+    const checkState = {
+      total: totalRef.current,
+      geradores: geradoresRef.current,
+      upgrades: upgradesRef.current,
+      speedUpgrades: speedUpgradesRef.current,
+      totalProducedLifetime: totalProducedLifetimeRef.current,
+      totalPlayTimeSeconds: totalPlayTimeSecondsRef.current,
+      geradoresCompradosManual: geradoresCompradosManualRef.current,
+      jaColetouManual: jaColetouManualRef.current,
+    }
+    const newly = getNewlyUnlockedAchievementIds(checkState, currentUnlocked)
+    if (newly.length > 0) {
+      const next = [...currentUnlocked, ...newly]
+      achievementsUnlockedRef.current = next
+      setAchievementsUnlocked(next)
+      playAchievementSound()
+      newly.forEach((id) => {
+        const achievement = ACHIEVEMENTS.find((a) => a.id === id)
+        if (achievement) {
+          toast.success(achievement.name, {
+            description: `${achievement.description}\n${achievement.points} pts`,
+            position: "top-right",
+          })
+        }
+      })
+    }
+
     const payload: SavedState = {
       total: totalRef.current.toString(),
       geradores: geradoresRef.current,
@@ -289,12 +453,18 @@ function App() {
       lastSaveTime: now,
       upgrades: upgradesRef.current,
       speedUpgrades: speedUpgradesRef.current,
+      luckUpgrades: luckUpgradesRef.current,
+      luckMultiplierUpgrades: luckMultiplierUpgradesRef.current,
+      globalProductionLevel: globalProductionLevelRef.current,
+      globalSpeedLevel: globalSpeedLevelRef.current,
+      globalPriceReductionLevel: globalPriceReductionLevelRef.current,
       autoUnlockNextGerador: autoUnlockNextGeradorRef.current,
       totalProducedLifetime: totalProducedLifetimeRef.current.toString(),
       totalPlayTimeSeconds: totalPlayTimeSecondsRef.current,
       firstPlayTime: first,
       lastSessionStart: now,
       geradoresCompradosManual: geradoresCompradosManualRef.current,
+      achievementsUnlocked: achievementsUnlockedRef.current,
     }
     try {
       localStorage.setItem(SAVE_KEY, JSON.stringify(payload))
@@ -337,7 +507,17 @@ function App() {
         saved.speedUpgrades && saved.speedUpgrades.length === NUM_GERADORES
           ? saved.speedUpgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
           : Array(NUM_GERADORES).fill(0)
-      const result = simulateOffline(totalAntes, saved.geradores, offlineSeconds, savedUpgrades, savedSpeedUpgrades)
+      const savedLuckUpgrades =
+        saved.luckUpgrades && saved.luckUpgrades.length === NUM_GERADORES
+          ? saved.luckUpgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
+          : Array(NUM_GERADORES).fill(0)
+      const savedLuckMult =
+        saved.luckMultiplierUpgrades && saved.luckMultiplierUpgrades.length === NUM_GERADORES
+          ? saved.luckMultiplierUpgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
+          : Array(NUM_GERADORES).fill(0)
+      const savedGlobalProd = typeof saved.globalProductionLevel === "number" && saved.globalProductionLevel >= 0 ? saved.globalProductionLevel : 0
+      const savedGlobalSpeed = typeof saved.globalSpeedLevel === "number" && saved.globalSpeedLevel >= 0 ? saved.globalSpeedLevel : 0
+      const result = simulateOffline(totalAntes, saved.geradores, offlineSeconds, savedUpgrades, savedSpeedUpgrades, savedLuckUpgrades, savedLuckMult, savedGlobalProd, savedGlobalSpeed)
       // eslint-disable-next-line react-hooks/set-state-in-effect -- intencional: aplicar save carregado
       setTotal(result.total)
       setGeradores(result.geradores)
@@ -398,8 +578,9 @@ function App() {
       const deltaGen = Array(NUM_GERADORES).fill(0)
       const newProgresso = [...progressoRef.current]
 
-      const mult = (idx: number) => Math.pow(2, upgradesRef.current[idx] ?? 0)
-      const interval = (idx: number) => intervaloEfetivo(idx, speedUpgradesRef.current[idx] ?? 0)
+      const globalProdMult = Math.pow(2, globalProductionLevelRef.current)
+      const mult = (idx: number) => Math.pow(2, upgradesRef.current[idx] ?? 0) * globalProdMult
+      const interval = (idx: number) => intervaloEfetivo(idx, (speedUpgradesRef.current[idx] ?? 0) + globalSpeedLevelRef.current)
       for (let i = 0; i < NUM_GERADORES; i++) {
         const count = current[i]
         const iv = interval(i)
@@ -407,7 +588,10 @@ function App() {
           acumulado[i] += dt
           while (acumulado[i] >= iv) {
             acumulado[i] -= iv
-            const qty = count * mult(i)
+            let qty = count * mult(i)
+            const luckLvl = luckUpgradesRef.current[i] ?? 0
+            const luckMultLvl = luckMultiplierUpgradesRef.current[i] ?? 0
+            if (luckLvl > 0 && Math.random() < chanceCrit(luckLvl)) qty *= luckCritMultiplier(luckMultLvl)
             if (i === 0) {
               deltaTotal = deltaTotal.add(qty)
             } else {
@@ -457,14 +641,46 @@ function App() {
         setGeradores(finalGeradores)
       }
 
+      // Verificar conquistas no tick para toast imediato (evita delay de até 5s do persistSave)
+      const checkState = {
+        total: totalRef.current,
+        geradores: geradoresRef.current,
+        upgrades: upgradesRef.current,
+        speedUpgrades: speedUpgradesRef.current,
+        totalProducedLifetime: totalProducedLifetimeRef.current,
+        totalPlayTimeSeconds: totalPlayTimeSecondsRef.current,
+        geradoresCompradosManual: geradoresCompradosManualRef.current,
+        jaColetouManual: jaColetouManualRef.current,
+      }
+      const newly = getNewlyUnlockedAchievementIds(checkState, achievementsUnlockedRef.current)
+      if (newly.length > 0) {
+        const next = [...achievementsUnlockedRef.current, ...newly]
+        achievementsUnlockedRef.current = next
+        setAchievementsUnlocked(next)
+        playAchievementSound()
+        newly.forEach((id) => {
+          const achievement = ACHIEVEMENTS.find((a) => a.id === id)
+          if (achievement) {
+            toast.success(achievement.name, {
+              description: `${achievement.description}\n${achievement.points} pts`,
+              position: "top-right",
+            })
+          }
+        })
+      }
+
       id = requestAnimationFrame(tick)
     }
     id = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(id)
   }, [])
 
-  const custoGerador = (i: number): Decimal =>
-    custoBase(i).times(Decimal.pow(1.5, geradores[i])).floor()
+  const custoGerador = (i: number): Decimal => {
+    const base = custoBase(i).times(Decimal.pow(1.5, geradores[i])).floor()
+    if (geradores[i] === 0) return base
+    const mult = globalPriceMultiplier(globalPriceReductionLevel)
+    return base.times(mult).floor()
+  }
 
   const podeComprar = (i: number) => total.gte(custoGerador(i))
 
@@ -511,6 +727,64 @@ function App() {
     })
   }
 
+  const custoProximoNivelSorte = (i: number) =>
+    Decimal.pow(10, 7 + i).times(Decimal.pow(10, luckUpgrades[i]))
+  const podeComprarMelhoriaSorte = (i: number) => total.gte(custoProximoNivelSorte(i))
+  const comprarMelhoriaSorte = (i: number) => {
+    const custo = custoProximoNivelSorte(i)
+    if (!total.gte(custo)) return
+    setTotal((t) => Decimal.sub(t, custo))
+    setLuckUpgrades((prev) => {
+      const next = [...prev]
+      next[i] += 1
+      return next
+    })
+  }
+
+  const custoProximoNivelEfeitoSorte = (i: number) =>
+    Decimal.pow(10, 8 + i).times(Decimal.pow(10, luckMultiplierUpgrades[i]))
+  const podeComprarMelhoriaEfeitoSorte = (i: number) => total.gte(custoProximoNivelEfeitoSorte(i))
+  const comprarMelhoriaEfeitoSorte = (i: number) => {
+    const custo = custoProximoNivelEfeitoSorte(i)
+    if (!total.gte(custo)) return
+    setTotal((t) => Decimal.sub(t, custo))
+    setLuckMultiplierUpgrades((prev) => {
+      const next = [...prev]
+      next[i] += 1
+      return next
+    })
+  }
+
+  const custoProximoNivelGlobalProducao = () =>
+    Decimal.pow(10, 12).times(Decimal.pow(10, globalProductionLevel))
+  const podeComprarMelhoriaGlobalProducao = () => total.gte(custoProximoNivelGlobalProducao())
+  const comprarMelhoriaGlobalProducao = () => {
+    const custo = custoProximoNivelGlobalProducao()
+    if (!total.gte(custo)) return
+    setTotal((t) => Decimal.sub(t, custo))
+    setGlobalProductionLevel((n) => n + 1)
+  }
+
+  const custoProximoNivelGlobalVelocidade = () =>
+    Decimal.pow(10, 13).times(Decimal.pow(10, globalSpeedLevel))
+  const podeComprarMelhoriaGlobalVelocidade = () => total.gte(custoProximoNivelGlobalVelocidade())
+  const comprarMelhoriaGlobalVelocidade = () => {
+    const custo = custoProximoNivelGlobalVelocidade()
+    if (!total.gte(custo)) return
+    setTotal((t) => Decimal.sub(t, custo))
+    setGlobalSpeedLevel((n) => n + 1)
+  }
+
+  const custoProximoNivelGlobalPreco = () =>
+    Decimal.pow(10, 14).times(Decimal.pow(10, globalPriceReductionLevel))
+  const podeComprarMelhoriaGlobalPreco = () => total.gte(custoProximoNivelGlobalPreco())
+  const comprarMelhoriaGlobalPreco = () => {
+    const custo = custoProximoNivelGlobalPreco()
+    if (!total.gte(custo)) return
+    setTotal((t) => Decimal.sub(t, custo))
+    setGlobalPriceReductionLevel((n) => n + 1)
+  }
+
   function resetProgress() {
     try {
       localStorage.removeItem(SAVE_KEY)
@@ -521,13 +795,20 @@ function App() {
     setGeradores(Array(NUM_GERADORES).fill(0))
     setUpgrades(Array(NUM_GERADORES).fill(0))
     setSpeedUpgrades(Array(NUM_GERADORES).fill(0))
+    setLuckUpgrades(Array(NUM_GERADORES).fill(0))
+    setLuckMultiplierUpgrades(Array(NUM_GERADORES).fill(0))
+    setGlobalProductionLevel(0)
+    setGlobalSpeedLevel(0)
+    setGlobalPriceReductionLevel(0)
     setJaColetouManual(false)
     setOfflineCard(null)
     setTotalProducedLifetime(new Decimal(0))
     setTotalPlayTimeSeconds(0)
     setFirstPlayTime(null)
     setGeradoresCompradosManual(0)
+    setAchievementsUnlocked([])
     geradoresCompradosManualRef.current = 0
+    achievementsUnlockedRef.current = []
     geradoresRef.current = Array(NUM_GERADORES).fill(0)
     totalRef.current = new Decimal(0)
     totalProducedLifetimeRef.current = new Decimal(0)
@@ -535,6 +816,11 @@ function App() {
     lastSessionStartRef.current = Date.now()
     upgradesRef.current = Array(NUM_GERADORES).fill(0)
     speedUpgradesRef.current = Array(NUM_GERADORES).fill(0)
+    luckUpgradesRef.current = Array(NUM_GERADORES).fill(0)
+    luckMultiplierUpgradesRef.current = Array(NUM_GERADORES).fill(0)
+    globalProductionLevelRef.current = 0
+    globalSpeedLevelRef.current = 0
+    globalPriceReductionLevelRef.current = 0
     jaColetouManualRef.current = false
     acumuladoRef.current = Array(NUM_GERADORES).fill(0)
     progressoRef.current = Array(NUM_GERADORES).fill(0)
@@ -561,7 +847,7 @@ function App() {
     podeComprarMelhoria,
     custoProximoNivel,
     intervaloGerador,
-    intervaloEfetivo: (i: number) => intervaloEfetivo(i, speedUpgrades[i]),
+    intervaloEfetivo: (i: number) => intervaloEfetivo(i, speedUpgrades[i] + globalSpeedLevel),
     NUM_GERADORES,
     resetProgress,
     autoUnlockNextGerador,
@@ -570,16 +856,44 @@ function App() {
     comprarMelhoriaVelocidade,
     podeComprarMelhoriaVelocidade,
     custoProximoNivelVelocidade,
+    luckUpgrades,
+    comprarMelhoriaSorte,
+    podeComprarMelhoriaSorte,
+    custoProximoNivelSorte,
+    chanceCritPorNivel: CHANCE_CRIT_POR_NIVEL,
+    luckMultiplierUpgrades,
+    comprarMelhoriaEfeitoSorte,
+    podeComprarMelhoriaEfeitoSorte,
+    custoProximoNivelEfeitoSorte,
+    luckCritMultiplier,
+    globalProductionLevel,
+    globalSpeedLevel,
+    comprarMelhoriaGlobalProducao,
+    podeComprarMelhoriaGlobalProducao,
+    custoProximoNivelGlobalProducao,
+    comprarMelhoriaGlobalVelocidade,
+    podeComprarMelhoriaGlobalVelocidade,
+    custoProximoNivelGlobalVelocidade,
+    globalPriceReductionLevel,
+    comprarMelhoriaGlobalPreco,
+    podeComprarMelhoriaGlobalPreco,
+    custoProximoNivelGlobalPreco,
+    globalPriceMultiplier,
     totalProducedLifetime,
     totalPlayTimeSeconds,
     firstPlayTime,
     geradoresCompradosManual,
+    achievementsUnlocked,
   }
 
   return (
     <BrowserRouter>
+      <Toaster position="top-right" />
       <GameContext.Provider value={gameContextValue}>
-    <div className="scroll-overlay min-h-screen bg-background text-foreground flex flex-col select-none">
+    <ShortcutHandler />
+    <ScrollToTop />
+    <CustomContextMenu>
+    <RootLayout>
       {total.lt(1) && !jaColetouManual && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog" aria-labelledby="welcome-dialog-title">
           <Card className="max-w-md w-full p-6 space-y-5 shadow-lg">
@@ -660,6 +974,16 @@ function App() {
               Melhorias
             </NavLink>
             <NavLink
+              to="/conquistas"
+              onClick={() => playClickSound()}
+              className={({ isActive }) =>
+                "text-sm px-2 py-1 rounded-md " +
+                (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+              }
+            >
+              Conquistas
+            </NavLink>
+            <NavLink
               to="/configuracoes"
               onClick={() => playClickSound()}
               className={({ isActive }) =>
@@ -691,21 +1015,30 @@ function App() {
         </div>
       </header>
 
-      <main className="scroll-overlay flex-1 overflow-auto px-4 py-4 md:px-6">
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ProgressoProvider progressoRef={progressoRef} numGeradores={NUM_GERADORES}>
-                <GeneratorsPage />
-              </ProgressoProvider>
-            }
-          />
-          <Route path="/melhorias" element={<ImprovementsPage />} />
-          <Route path="/configuracoes" element={<SettingsPage />} />
-        </Routes>
-      </main>
-    </div>
+      <MainWithScrollBehavior>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ProgressoProvider progressoRef={progressoRef} numGeradores={NUM_GERADORES}>
+                  <GeneratorsPage />
+                </ProgressoProvider>
+              }
+            />
+            <Route path="/melhorias" element={<ImprovementsPage />} />
+            <Route
+              path="/conquistas"
+              element={
+                <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+                  <AchievementsPage />
+                </div>
+              }
+            />
+            <Route path="/configuracoes" element={<SettingsPage />} />
+          </Routes>
+      </MainWithScrollBehavior>
+    </RootLayout>
+    </CustomContextMenu>
       </GameContext.Provider>
     </BrowserRouter>
   )

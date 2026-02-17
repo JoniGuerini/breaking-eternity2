@@ -1001,6 +1001,17 @@ body::-webkit-scrollbar-thumb,
   background: transparent !important;
 }
 
+/* Toast: descrição usa cor de texto do tema para legibilidade em todos os temas (Sepia, Light, etc.) */
+.toaster [data-description] {
+  white-space: pre-line;
+  color: var(--foreground) !important;
+  opacity: 1;
+}
+/* Título do toast também segue o tema */
+.toaster [data-title] {
+  color: var(--foreground) !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

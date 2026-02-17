@@ -1,7 +1,9 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import Decimal from "break_eternity.js"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 import { GameContext } from "@/context/GameContext"
 import {
   getClickSoundEnabled,
@@ -10,6 +12,16 @@ import {
   setClickSoundEnabled as persistClickSound,
   setClickSoundVolume as persistClickSoundVolume,
 } from "@/lib/clickSound"
+import {
+  getShortcut,
+  getShortcutDisplayKey,
+  keyEventToShortcutKey,
+  mouseButtonToShortcutKey,
+  resetShortcutsToDefaults,
+  setShortcut,
+  SHORTCUT_LABELS,
+  type ShortcutId,
+} from "@/lib/shortcuts"
 import { applyTheme, getTheme, setTheme, THEMES, THEME_PREVIEW_COLORS, type ThemeId } from "@/lib/theme"
 
 export function SettingsPage() {
@@ -19,7 +31,40 @@ export function SettingsPage() {
   const [clickSoundEnabled, setClickSoundEnabled] = useState(getClickSoundEnabled)
   const [clickSoundVolume, setClickSoundVolume] = useState(() => getClickSoundVolume())
   const [currentTheme, setCurrentTheme] = useState<ThemeId>(() => getTheme())
-  const [tab, setTab] = useState<"geral" | "temas" | "estatisticas">("geral")
+  const [tab, setTab] = useState<"geral" | "temas" | "estatisticas" | "atalhos">("geral")
+  const [recordingId, setRecordingId] = useState<ShortcutId | null>(null)
+  const [, forceUpdate] = useState(0)
+
+  useEffect(() => {
+    if (recordingId === null) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      const key = keyEventToShortcutKey(e)
+      setShortcut(recordingId, key)
+      setRecordingId(null)
+      playClickSound()
+      forceUpdate((n) => n + 1)
+    }
+    const onAuxClick = (e: MouseEvent) => {
+      if (e.button < 4) return
+      e.preventDefault()
+      e.stopPropagation()
+      const key = mouseButtonToShortcutKey(e.button)
+      if (key) {
+        setShortcut(recordingId, key)
+        setRecordingId(null)
+        playClickSound()
+        forceUpdate((n) => n + 1)
+      }
+    }
+    window.addEventListener("keydown", onKeyDown, { capture: true })
+    window.addEventListener("auxclick", onAuxClick, { capture: true })
+    return () => {
+      window.removeEventListener("keydown", onKeyDown, { capture: true })
+      window.removeEventListener("auxclick", onAuxClick, { capture: true })
+    }
+  }, [recordingId])
   if (!ctx) return null
   const {
     resetProgress,
@@ -83,17 +128,15 @@ export function SettingsPage() {
   }
 
   return (
-    <section className="w-full max-w-md mx-auto space-y-6">
-      <h2 className="text-lg font-semibold">Configurações</h2>
-
-      <div className="flex border-b border-border" role="tablist" aria-label="Configurações">
+    <section className="w-full space-y-6">
+      <div className="flex flex-nowrap border-b border-border gap-0" role="tablist" aria-label="Configurações">
         <button
           type="button"
           onClick={() => {
             playClickSound()
             setTab("geral")
           }}
-          className={`flex-1 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+          className={`flex-1 min-w-0 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
             tab === "geral"
               ? "text-foreground border-b-2 border-primary"
               : "text-muted-foreground hover:text-foreground"
@@ -125,7 +168,7 @@ export function SettingsPage() {
             playClickSound()
             setTab("estatisticas")
           }}
-          className={`flex-1 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+          className={`flex-1 min-w-0 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
             tab === "estatisticas"
               ? "text-foreground border-b-2 border-primary"
               : "text-muted-foreground hover:text-foreground"
@@ -135,85 +178,136 @@ export function SettingsPage() {
         >
           Estatísticas
         </button>
+        <button
+          type="button"
+          onClick={() => {
+            playClickSound()
+            setTab("atalhos")
+          }}
+          className={`flex-1 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+            tab === "atalhos"
+              ? "text-foreground border-b-2 border-primary"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+          aria-selected={tab === "atalhos"}
+          role="tab"
+        >
+          Atalhos
+        </button>
       </div>
 
       {tab === "geral" && (
-      <Card className="p-6 space-y-6">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <p className="font-medium">Som de clique</p>
-            <p className="text-muted-foreground text-sm mt-1">
-              Toca um clique ao comprar geradores/melhorias e ao trocar de menu.
-            </p>
-          </div>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={clickSoundEnabled}
-            onClick={toggleClickSound}
-            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${clickSoundEnabled ? "bg-primary" : "bg-muted"}`}
-          >
-            <span
-              className={`pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform ${clickSoundEnabled ? "translate-x-5" : "translate-x-1"}`}
-            />
-          </button>
-        </div>
-        {clickSoundEnabled && (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-sm text-muted-foreground">Volume do clique</span>
-              <span className="text-sm font-mono tabular-nums">{clickSoundVolume}%</span>
+      <Card className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-x-0 gap-y-6 md:gap-x-6 md:gap-y-0">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="font-medium">Som de clique</p>
+                <p className="text-muted-foreground text-sm mt-1">
+                  Toca um clique ao comprar geradores/melhorias e ao trocar de menu.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={clickSoundEnabled}
+                onClick={toggleClickSound}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${clickSoundEnabled ? "bg-primary" : "bg-muted"}`}
+              >
+                <span
+                  className={`pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform ${clickSoundEnabled ? "translate-x-5" : "translate-x-1"}`}
+                />
+              </button>
             </div>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              value={clickSoundVolume}
-              onChange={(e) => handleVolumeChange(Number(e.target.value))}
-              onMouseUp={() => clickSoundEnabled && playClickSound()}
-              onTouchEnd={() => clickSoundEnabled && playClickSound()}
-              className="w-full h-2 rounded-full appearance-none bg-muted accent-primary cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-0 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
-              aria-label="Volume do som de clique"
-            />
+            {clickSoundEnabled && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-sm text-muted-foreground">Volume do clique</span>
+                  <span className="text-sm font-mono tabular-nums">{clickSoundVolume}%</span>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={clickSoundVolume}
+                  onChange={(e) => handleVolumeChange(Number(e.target.value))}
+                  onMouseUp={() => clickSoundEnabled && playClickSound()}
+                  onTouchEnd={() => clickSoundEnabled && playClickSound()}
+                  className="w-full h-2 rounded-full appearance-none bg-muted accent-primary cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-0 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
+                  aria-label="Volume do som de clique"
+                />
+              </div>
+            )}
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="font-medium">Desbloquear próximo gerador automaticamente</p>
+                <p className="text-muted-foreground text-sm mt-1">
+                  Quando ativado, o próximo gerador (ainda com 0 unidades) é desbloqueado assim que você tiver recurso suficiente. Não compra unidades extras.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={autoUnlockNextGerador}
+                onClick={() => {
+                  playClickSound()
+                  setAutoUnlockNextGerador((v) => !v)
+                }}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${autoUnlockNextGerador ? "bg-primary" : "bg-muted"}`}
+              >
+                <span
+                  className={`pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform ${autoUnlockNextGerador ? "translate-x-5" : "translate-x-1"}`}
+                />
+              </button>
+            </div>
           </div>
-        )}
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <p className="font-medium">Desbloquear próximo gerador automaticamente</p>
-            <p className="text-muted-foreground text-sm mt-1">
-              Quando ativado, o próximo gerador (ainda com 0 unidades) é desbloqueado assim que você tiver recurso suficiente. Não compra unidades extras.
-            </p>
+          <div className="hidden md:flex self-stretch items-stretch">
+            <Separator orientation="vertical" className="h-full min-h-[200px]" />
           </div>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={autoUnlockNextGerador}
-            onClick={() => {
-            playClickSound()
-            setAutoUnlockNextGerador((v) => !v)
-          }}
-            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${autoUnlockNextGerador ? "bg-primary" : "bg-muted"}`}
-          >
-            <span
-              className={`pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform ${autoUnlockNextGerador ? "translate-x-5" : "translate-x-1"}`}
-            />
-          </button>
+          <div className="space-y-6">
+            <div>
+              <p className="font-medium">Restaurar configurações padrão</p>
+              <p className="text-muted-foreground text-sm mt-1">
+                Som de clique ativo (100%), desbloquear próximo gerador desativado, tema Escuro e atalhos de teclado padrão.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                playClickSound()
+                persistClickSound(true)
+                setClickSoundEnabled(true)
+                persistClickSoundVolume(100)
+                setClickSoundVolume(100)
+                setAutoUnlockNextGerador(false)
+                setTheme("dark")
+                applyTheme("dark")
+                setCurrentTheme("dark")
+                resetShortcutsToDefaults()
+                forceUpdate((n) => n + 1)
+              }}
+            >
+              Restaurar configurações padrão
+            </Button>
+            <div>
+              <p className="font-medium">Resetar progresso</p>
+              <p className="text-muted-foreground text-sm mt-1">
+                Volta o jogo ao estado inicial: contador em 0, nenhum gerador e nenhuma melhoria. O save será apagado.
+              </p>
+            </div>
+            <Button
+              variant="destructive"
+              className="w-full"
+              onClick={() => {
+                playClickSound()
+                setOpenReset(true)
+              }}
+            >
+              Resetar progresso
+            </Button>
+          </div>
         </div>
-        <div>
-          <p className="font-medium">Resetar progresso</p>
-          <p className="text-muted-foreground text-sm mt-1">
-            Volta o jogo ao estado inicial: contador em 0, nenhum gerador e nenhuma melhoria. O save será apagado.
-          </p>
-        </div>
-        <Button
-          variant="destructive"
-          onClick={() => {
-            playClickSound()
-            setOpenReset(true)
-          }}
-        >
-          Resetar progresso
-        </Button>
       </Card>
       )}
 
@@ -225,7 +319,7 @@ export function SettingsPage() {
               Escolha a aparência da interface. Todas as opções estão liberadas.
             </p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
             {THEMES.map(({ id, label }) => {
               const colors = THEME_PREVIEW_COLORS[id]
               return (
@@ -257,6 +351,38 @@ export function SettingsPage() {
         </Card>
       )}
 
+      {tab === "atalhos" && (
+        <Card className="p-6 space-y-5">
+          <div>
+            <p className="font-medium">Teclas de atalho</p>
+            <p className="text-muted-foreground text-sm mt-1">
+              Clique no botão e pressione a tecla (ou botão do mouse) que deseja usar. Atalhos funcionam em qualquer tela.
+            </p>
+          </div>
+          <div className="space-y-4">
+            {(Object.keys(SHORTCUT_LABELS) as ShortcutId[]).map((id) => (
+              <div key={id} className="flex items-center justify-between gap-4 flex-wrap">
+                <span className="text-sm font-medium">{SHORTCUT_LABELS[id]}</span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="font-mono min-w-[10rem]"
+                  onClick={() => {
+                    playClickSound()
+                    setRecordingId(id)
+                  }}
+                >
+                  {recordingId === id
+                    ? "Pressione uma tecla..."
+                    : getShortcutDisplayKey(getShortcut(id))}
+                </Button>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
       {tab === "estatisticas" && (
         <Card className="p-6 space-y-5">
           <div>
@@ -284,19 +410,19 @@ export function SettingsPage() {
             </div>
             <div className="flex justify-between items-baseline gap-2">
               <dt className="text-muted-foreground text-sm">Geradores comprados (manual)</dt>
-              <dd className="font-mono text-sm font-semibold tabular-nums">{geradoresCompradosManual}</dd>
+              <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(new Decimal(geradoresCompradosManual))}</dd>
             </div>
             <div className="flex justify-between items-baseline gap-2">
               <dt className="text-muted-foreground text-sm">Geradores produzidos (automático)</dt>
-              <dd className="font-mono text-sm font-semibold tabular-nums">{Math.max(0, geradores.reduce((a, b) => a + b, 0) - geradoresCompradosManual)}</dd>
+              <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(Decimal.max(new Decimal(0), geradores.reduce((acc, g) => acc.add(g), new Decimal(0)).sub(geradoresCompradosManual)))}</dd>
             </div>
             <div className="flex justify-between items-baseline gap-2">
               <dt className="text-muted-foreground text-sm">Melhorias de produção</dt>
-              <dd className="font-mono text-sm font-semibold tabular-nums">{upgrades.reduce((a, b) => a + b, 0)}</dd>
+              <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(new Decimal(upgrades.reduce((a, b) => a + b, 0)))}</dd>
             </div>
             <div className="flex justify-between items-baseline gap-2">
               <dt className="text-muted-foreground text-sm">Melhorias de velocidade</dt>
-              <dd className="font-mono text-sm font-semibold tabular-nums">{speedUpgrades.reduce((a, b) => a + b, 0)}</dd>
+              <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(new Decimal(speedUpgrades.reduce((a, b) => a + b, 0)))}</dd>
             </div>
           </dl>
         </Card>

@@ -1,6 +1,7 @@
 import { useContext } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { GameContext } from "@/context/GameContext"
 import { playClickSound } from "@/lib/clickSound"
 
@@ -11,6 +12,8 @@ export function ImprovementsPage() {
     geradores,
     upgrades,
     speedUpgrades,
+    luckUpgrades,
+    luckMultiplierUpgrades,
     formatDecimal,
     comprarMelhoria,
     podeComprarMelhoria,
@@ -18,7 +21,28 @@ export function ImprovementsPage() {
     comprarMelhoriaVelocidade,
     podeComprarMelhoriaVelocidade,
     custoProximoNivelVelocidade,
+    comprarMelhoriaSorte,
+    podeComprarMelhoriaSorte,
+    custoProximoNivelSorte,
+    chanceCritPorNivel,
+    comprarMelhoriaEfeitoSorte,
+    podeComprarMelhoriaEfeitoSorte,
+    custoProximoNivelEfeitoSorte,
+    luckCritMultiplier,
     intervaloEfetivo,
+    globalProductionLevel,
+    globalSpeedLevel,
+    comprarMelhoriaGlobalProducao,
+    podeComprarMelhoriaGlobalProducao,
+    custoProximoNivelGlobalProducao,
+    comprarMelhoriaGlobalVelocidade,
+    podeComprarMelhoriaGlobalVelocidade,
+    custoProximoNivelGlobalVelocidade,
+    globalPriceReductionLevel,
+    comprarMelhoriaGlobalPreco,
+    podeComprarMelhoriaGlobalPreco,
+    custoProximoNivelGlobalPreco,
+    globalPriceMultiplier,
   } = ctx
 
   const indicesDesbloqueados = (() => {
@@ -34,9 +58,28 @@ export function ImprovementsPage() {
     return s === 0 ? `${m}m` : `${m}m ${s}s`
   }
 
+  const multGlobalProducao = Math.pow(2, globalProductionLevel)
+  const multProximoGlobalProducao = Math.pow(2, globalProductionLevel + 1)
+  const reducaoPrecoAtualPct = (1 - globalPriceMultiplier(globalPriceReductionLevel)) * 100
+  const reducaoPrecoProximaPct = (1 - globalPriceMultiplier(globalPriceReductionLevel + 1)) * 100
+
   return (
-    <section className="w-full space-y-3">
-      <div className="space-y-3">
+    <section className="flex flex-col min-h-0 flex-1 w-full overflow-hidden">
+      <Tabs defaultValue="gerador" className="flex flex-col flex-1 min-h-0 w-full overflow-hidden">
+        <TabsList className="flex flex-wrap h-auto gap-1 bg-muted p-1 shrink-0 w-fit mb-4 flex-none">
+          <TabsTrigger value="gerador" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            Por gerador
+          </TabsTrigger>
+          <TabsTrigger value="globais" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            Globais
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent
+          value="gerador"
+          className="flex-1 min-h-0 overflow-y-auto mt-0 outline-none data-[state=inactive]:hidden data-[state=inactive]:overflow-hidden"
+        >
+          <div className="space-y-3 pb-4">
         {indicesDesbloqueados.map((i) => {
           const nivel = upgrades[i] ?? 0
           const mult = Math.pow(2, nivel)
@@ -47,6 +90,16 @@ export function ImprovementsPage() {
           const custoVel = custoProximoNivelVelocidade(i)
           const podeComprarVel = podeComprarMelhoriaVelocidade(i)
           const cicloProximo = Math.max(0.1, cicloAtual - 1)
+          const nivelSorte = luckUpgrades[i] ?? 0
+          const chanceAtualPct = Math.min(100, (nivelSorte * chanceCritPorNivel) * 100)
+          const chanceProximaPct = Math.min(100, ((nivelSorte + 1) * chanceCritPorNivel) * 100)
+          const custoSorte = custoProximoNivelSorte(i)
+          const podeComprarSorte = podeComprarMelhoriaSorte(i)
+          const nivelEfeitoSorte = luckMultiplierUpgrades[i] ?? 0
+          const multEfeitoAtual = luckCritMultiplier(nivelEfeitoSorte)
+          const multEfeitoProximo = luckCritMultiplier(nivelEfeitoSorte + 1)
+          const custoEfeitoSorte = custoProximoNivelEfeitoSorte(i)
+          const podeComprarEfeitoSorte = podeComprarMelhoriaEfeitoSorte(i)
           return (
             <Card key={i} className="py-3 px-4 w-full space-y-4">
               <div className="grid grid-cols-[1fr_1fr_1fr_1fr_7rem] items-center gap-4 min-w-0">
@@ -86,7 +139,7 @@ export function ImprovementsPage() {
               <div className="grid grid-cols-[1fr_1fr_1fr_1fr_7rem] items-center gap-4 min-w-0 border-t pt-4">
                 <div className="flex flex-col gap-0.5 min-w-0">
                   <span className="font-semibold leading-tight">Gerador {i + 1}</span>
-                  <span className="text-muted-foreground text-xs">Velocidade (−1s/nível)</span>
+                  <span className="text-muted-foreground text-xs">Velocidade</span>
                 </div>
                 <div className="flex flex-col gap-0.5 min-w-0">
                   <span className="font-mono text-sm tabular-nums leading-tight">{nivelVel}</span>
@@ -98,7 +151,7 @@ export function ImprovementsPage() {
                 </div>
                 <div className="flex flex-col gap-0.5 min-w-0">
                   <span className="font-mono text-sm tabular-nums leading-tight text-green-600 dark:text-green-500">{formatInterval(cicloProximo)}</span>
-                  <span className="text-muted-foreground text-xs">Próximo (mín. 0,1s)</span>
+                  <span className="text-muted-foreground text-xs">Próximo</span>
                 </div>
                 <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
                   <Button
@@ -117,15 +170,201 @@ export function ImprovementsPage() {
                   </Button>
                 </div>
               </div>
+              <div className="grid grid-cols-[1fr_1fr_1fr_1fr_7rem] items-center gap-4 min-w-0 border-t pt-4">
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-semibold leading-tight">Gerador {i + 1}</span>
+                  <span className="text-muted-foreground text-xs">Sorte</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight">{nivelSorte}</span>
+                  <span className="text-muted-foreground text-xs">Nível</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight">{chanceAtualPct.toFixed(1)}%</span>
+                  <span className="text-muted-foreground text-xs">Chance atual</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight text-green-600 dark:text-green-500">{chanceProximaPct.toFixed(1)}%</span>
+                  <span className="text-muted-foreground text-xs">Próxima chance</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
+                  <Button
+                    size="sm"
+                    className="w-full h-auto flex flex-col gap-0.5 py-2 bg-primary text-primary-foreground hover:bg-primary/90"
+                    onClick={() => {
+                      playClickSound()
+                      comprarMelhoriaSorte(i)
+                    }}
+                    disabled={!podeComprarSorte}
+                  >
+                    <span>Comprar</span>
+                    <span className="font-mono text-xs tabular-nums">
+                      {formatDecimal(custoSorte)}
+                    </span>
+                  </Button>
+                </div>
+              </div>
+              <div className="grid grid-cols-[1fr_1fr_1fr_1fr_7rem] items-center gap-4 min-w-0 border-t pt-4">
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-semibold leading-tight">Gerador {i + 1}</span>
+                  <span className="text-muted-foreground text-xs">Efeito da sorte</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight">{nivelEfeitoSorte}</span>
+                  <span className="text-muted-foreground text-xs">Nível</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight">x{multEfeitoAtual}</span>
+                  <span className="text-muted-foreground text-xs">Mult. ao acertar crítico</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight text-green-600 dark:text-green-500">x{multEfeitoProximo}</span>
+                  <span className="text-muted-foreground text-xs">Próximo</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
+                  <Button
+                    size="sm"
+                    className="w-full h-auto flex flex-col gap-0.5 py-2 bg-primary text-primary-foreground hover:bg-primary/90"
+                    onClick={() => {
+                      playClickSound()
+                      comprarMelhoriaEfeitoSorte(i)
+                    }}
+                    disabled={!podeComprarEfeitoSorte}
+                  >
+                    <span>Comprar</span>
+                    <span className="font-mono text-xs tabular-nums">
+                      {formatDecimal(custoEfeitoSorte)}
+                    </span>
+                  </Button>
+                </div>
+              </div>
             </Card>
           )
         })}
-      </div>
-      {indicesDesbloqueados.length === 0 && (
-        <p className="text-muted-foreground text-sm text-center py-8">
-          Desbloqueie geradores na página Geradores para ver as melhorias aqui.
-        </p>
-      )}
+          </div>
+          {indicesDesbloqueados.length === 0 && (
+            <p className="text-muted-foreground text-sm text-center py-8">
+              Desbloqueie geradores na página Geradores para ver as melhorias aqui.
+            </p>
+          )}
+        </TabsContent>
+
+        <TabsContent
+          value="globais"
+          className="flex-1 min-h-0 overflow-y-auto mt-0 outline-none data-[state=inactive]:hidden data-[state=inactive]:overflow-hidden"
+        >
+          <div className="grid gap-3 sm:grid-cols-2 pb-4">
+            <Card className="py-3 px-4 w-full">
+              <div className="grid grid-cols-[1fr_1fr_1fr_1fr_7rem] items-center gap-4 min-w-0">
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-semibold leading-tight">Produção global</span>
+                  <span className="text-muted-foreground text-xs">x2 em todos por nível</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight">{globalProductionLevel}</span>
+                  <span className="text-muted-foreground text-xs">Nível</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight">x{multGlobalProducao}</span>
+                  <span className="text-muted-foreground text-xs">Multiplicador</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight text-green-600 dark:text-green-500">x{multProximoGlobalProducao}</span>
+                  <span className="text-muted-foreground text-xs">Próximo</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
+                  <Button
+                    size="sm"
+                    className="w-full h-auto flex flex-col gap-0.5 py-2 bg-primary text-primary-foreground hover:bg-primary/90"
+                    onClick={() => {
+                      playClickSound()
+                      comprarMelhoriaGlobalProducao()
+                    }}
+                    disabled={!podeComprarMelhoriaGlobalProducao()}
+                  >
+                    <span>Comprar</span>
+                    <span className="font-mono text-xs tabular-nums">
+                      {formatDecimal(custoProximoNivelGlobalProducao())}
+                    </span>
+                  </Button>
+                </div>
+              </div>
+            </Card>
+            <Card className="py-3 px-4 w-full">
+              <div className="grid grid-cols-[1fr_1fr_1fr_1fr_7rem] items-center gap-4 min-w-0">
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-semibold leading-tight">Velocidade global</span>
+                  <span className="text-muted-foreground text-xs">−1s em todos por nível</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight">{globalSpeedLevel}</span>
+                  <span className="text-muted-foreground text-xs">Nível</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight">−{globalSpeedLevel}s</span>
+                  <span className="text-muted-foreground text-xs">Efeito atual</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight text-green-600 dark:text-green-500">−{globalSpeedLevel + 1}s</span>
+                  <span className="text-muted-foreground text-xs">Próximo</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
+                  <Button
+                    size="sm"
+                    className="w-full h-auto flex flex-col gap-0.5 py-2 bg-primary text-primary-foreground hover:bg-primary/90"
+                    onClick={() => {
+                      playClickSound()
+                      comprarMelhoriaGlobalVelocidade()
+                    }}
+                    disabled={!podeComprarMelhoriaGlobalVelocidade()}
+                  >
+                    <span>Comprar</span>
+                    <span className="font-mono text-xs tabular-nums">
+                      {formatDecimal(custoProximoNivelGlobalVelocidade())}
+                    </span>
+                  </Button>
+                </div>
+              </div>
+            </Card>
+            <Card className="py-3 px-4 w-full">
+              <div className="grid grid-cols-[1fr_1fr_1fr_1fr_7rem] items-center gap-4 min-w-0">
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-semibold leading-tight">Preço dos geradores</span>
+                  <span className="text-muted-foreground text-xs">−5% por nível</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight">{globalPriceReductionLevel}</span>
+                  <span className="text-muted-foreground text-xs">Nível</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight">{reducaoPrecoAtualPct.toFixed(0)}%</span>
+                  <span className="text-muted-foreground text-xs">Redução atual</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-sm tabular-nums leading-tight text-green-600 dark:text-green-500">{reducaoPrecoProximaPct.toFixed(0)}%</span>
+                  <span className="text-muted-foreground text-xs">Próxima</span>
+                </div>
+                <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
+                  <Button
+                    size="sm"
+                    className="w-full h-auto flex flex-col gap-0.5 py-2 bg-primary text-primary-foreground hover:bg-primary/90"
+                    onClick={() => {
+                      playClickSound()
+                      comprarMelhoriaGlobalPreco()
+                    }}
+                    disabled={!podeComprarMelhoriaGlobalPreco()}
+                  >
+                    <span>Comprar</span>
+                    <span className="font-mono text-xs tabular-nums">
+                      {formatDecimal(custoProximoNivelGlobalPreco())}
+                    </span>
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
     </section>
   )
 }

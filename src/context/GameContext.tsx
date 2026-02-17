@@ -24,10 +24,34 @@ export interface GameContextValue {
   comprarMelhoriaVelocidade: (i: number) => void
   podeComprarMelhoriaVelocidade: (i: number) => boolean
   custoProximoNivelVelocidade: (i: number) => Decimal
+  luckUpgrades: number[]
+  comprarMelhoriaSorte: (i: number) => void
+  podeComprarMelhoriaSorte: (i: number) => boolean
+  custoProximoNivelSorte: (i: number) => Decimal
+  chanceCritPorNivel: number
+  luckMultiplierUpgrades: number[]
+  comprarMelhoriaEfeitoSorte: (i: number) => void
+  podeComprarMelhoriaEfeitoSorte: (i: number) => boolean
+  custoProximoNivelEfeitoSorte: (i: number) => Decimal
+  luckCritMultiplier: (level: number) => number
+  globalProductionLevel: number
+  globalSpeedLevel: number
+  comprarMelhoriaGlobalProducao: () => void
+  podeComprarMelhoriaGlobalProducao: () => boolean
+  custoProximoNivelGlobalProducao: () => Decimal
+  comprarMelhoriaGlobalVelocidade: () => void
+  podeComprarMelhoriaGlobalVelocidade: () => boolean
+  custoProximoNivelGlobalVelocidade: () => Decimal
+  globalPriceReductionLevel: number
+  comprarMelhoriaGlobalPreco: () => void
+  podeComprarMelhoriaGlobalPreco: () => boolean
+  custoProximoNivelGlobalPreco: () => Decimal
+  globalPriceMultiplier: (level: number) => number
   totalProducedLifetime: Decimal
   totalPlayTimeSeconds: number
   firstPlayTime: number | null
   geradoresCompradosManual: number
+  achievementsUnlocked: string[]
 }
 
 export const GameContext = createContext<GameContextValue | null>(null)
