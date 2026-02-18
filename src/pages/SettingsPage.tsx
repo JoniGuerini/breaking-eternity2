@@ -34,6 +34,7 @@ export function SettingsPage() {
   const [tab, setTab] = useState<"geral" | "temas" | "estatisticas" | "atalhos">("geral")
   const [recordingId, setRecordingId] = useState<ShortcutId | null>(null)
   const [, forceUpdate] = useState(0)
+  const [isFullscreen, setIsFullscreen] = useState(() => !!document.fullscreenElement)
 
   useEffect(() => {
     if (recordingId === null) return
@@ -65,6 +66,26 @@ export function SettingsPage() {
       window.removeEventListener("auxclick", onAuxClick, { capture: true })
     }
   }, [recordingId])
+
+  useEffect(() => {
+    const onFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement)
+    document.addEventListener("fullscreenchange", onFullscreenChange)
+    return () => document.removeEventListener("fullscreenchange", onFullscreenChange)
+  }, [])
+
+  async function toggleFullscreen() {
+    playClickSound()
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen()
+      } else {
+        await document.documentElement.requestFullscreen()
+      }
+    } catch {
+      // usuário cancelou ou navegador não suporta
+    }
+  }
+
   if (!ctx) return null
   const {
     resetProgress,
@@ -286,11 +307,46 @@ export function SettingsPage() {
                 />
               </button>
             </div>
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="font-medium">Tela cheia</p>
+                <p className="text-muted-foreground text-sm mt-1">
+                  Coloca o jogo em tela cheia no navegador. Use Esc ou o botão para sair.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={isFullscreen}
+                onClick={toggleFullscreen}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${isFullscreen ? "bg-primary" : "bg-muted"}`}
+              >
+                <span
+                  className={`pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform ${isFullscreen ? "translate-x-5" : "translate-x-1"}`}
+                />
+              </button>
+            </div>
           </div>
           <div className="hidden md:flex self-stretch items-stretch">
             <Separator orientation="vertical" className="h-full min-h-[200px]" />
           </div>
           <div className="space-y-6">
+            <div>
+              <p className="font-medium">Baixar para Windows</p>
+              <p className="text-muted-foreground text-sm mt-1">
+                Versão para executar no computador (arquivo .exe). Abre a página de lançamentos no GitHub.
+              </p>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => {
+                  playClickSound()
+                  window.open("https://github.com/JoniGuerini/breaking-eternity2/releases", "_blank", "noopener,noreferrer")
+                }}
+              >
+                Baixar Breaking Eternity para Windows (.exe)
+              </Button>
+            </div>
             <div>
               <p className="font-medium">Restaurar configurações padrão</p>
               <p className="text-muted-foreground text-sm mt-1">
