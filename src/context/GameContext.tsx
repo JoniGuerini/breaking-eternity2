@@ -52,6 +52,10 @@ export interface GameContextValue {
   firstPlayTime: number | null
   geradoresCompradosManual: number
   achievementsUnlocked: string[]
+  showFpsCounter: boolean
+  setShowFpsCounter: React.Dispatch<React.SetStateAction<boolean>>
+  generatorUnlockTimestamps: number[]
+  generatorBonusCount: number[]
 }
 
 export const GameContext = createContext<GameContextValue | null>(null)

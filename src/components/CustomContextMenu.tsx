@@ -23,7 +23,11 @@ export function CustomContextMenu({ children }: CustomContextMenuProps) {
 
   return (
     <ContextMenu>
-      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
+      <ContextMenuTrigger asChild>
+        <div className="min-h-screen min-h-full flex flex-col flex-1 w-full outline-none">
+          {children}
+        </div>
+      </ContextMenuTrigger>
       <ContextMenuContent className="min-w-[220px]">
         <ContextMenuCheckboxItem
           checked={autoUnlock}

@@ -52,7 +52,7 @@ export function ImprovementsPage() {
   })()
 
   function formatInterval(seconds: number): string {
-    if (seconds < 60) return `${seconds}s`
+    if (seconds < 60) return `${Number(seconds.toFixed(2))}s`
     const m = Math.floor(seconds / 60)
     const s = Math.floor(seconds % 60)
     return s === 0 ? `${m}m` : `${m}m ${s}s`
@@ -89,7 +89,7 @@ export function ImprovementsPage() {
           const cicloAtual = intervaloEfetivo(i)
           const custoVel = custoProximoNivelVelocidade(i)
           const podeComprarVel = podeComprarMelhoriaVelocidade(i)
-          const cicloProximo = Math.max(0.1, cicloAtual - 1)
+          const cicloProximo = Math.max(0.1, cicloAtual * 0.9)
           const nivelSorte = luckUpgrades[i] ?? 0
           const chanceAtualPct = Math.min(100, (nivelSorte * chanceCritPorNivel) * 100)
           const chanceProximaPct = Math.min(100, ((nivelSorte + 1) * chanceCritPorNivel) * 100)
@@ -294,18 +294,18 @@ export function ImprovementsPage() {
               <div className="grid grid-cols-[1fr_1fr_1fr_1fr_7rem] items-center gap-4 min-w-0">
                 <div className="flex flex-col gap-0.5 min-w-0">
                   <span className="font-semibold leading-tight">Velocidade global</span>
-                  <span className="text-muted-foreground text-xs">−1s em todos por nível</span>
+                  <span className="text-muted-foreground text-xs">−10% por nível</span>
                 </div>
                 <div className="flex flex-col gap-0.5 min-w-0">
                   <span className="font-mono text-sm tabular-nums leading-tight">{globalSpeedLevel}</span>
                   <span className="text-muted-foreground text-xs">Nível</span>
                 </div>
                 <div className="flex flex-col gap-0.5 min-w-0">
-                  <span className="font-mono text-sm tabular-nums leading-tight">−{globalSpeedLevel}s</span>
-                  <span className="text-muted-foreground text-xs">Efeito atual</span>
+                  <span className="font-mono text-sm tabular-nums leading-tight">x{(0.9 ** globalSpeedLevel).toFixed(2)}</span>
+                  <span className="text-muted-foreground text-xs">Fator do ciclo atual</span>
                 </div>
                 <div className="flex flex-col gap-0.5 min-w-0">
-                  <span className="font-mono text-sm tabular-nums leading-tight text-green-600 dark:text-green-500">−{globalSpeedLevel + 1}s</span>
+                  <span className="font-mono text-sm tabular-nums leading-tight text-green-600 dark:text-green-500">x{(0.9 ** (globalSpeedLevel + 1)).toFixed(2)}</span>
                   <span className="text-muted-foreground text-xs">Próximo</span>
                 </div>
                 <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">

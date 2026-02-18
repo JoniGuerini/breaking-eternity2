@@ -9,7 +9,7 @@ import { useProgresso } from "@/context/ProgressoContext"
 import { playClickSound } from "@/lib/clickSound"
 
 function formatInterval(seconds: number): string {
-  if (seconds < 60) return `${seconds}s`
+  if (seconds < 60) return `${Number(seconds.toFixed(2))}s`
   const m = Math.floor(seconds / 60)
   const s = Math.floor(seconds % 60)
   return s === 0 ? `${m}m` : `${m}m ${s}s`
@@ -76,14 +76,14 @@ export function GeneratorsPage() {
           )
         }
         const interval = intervaloEfetivo(i)
-        const cicloRapido = interval < 1
-        const produz = i === 0 ? "recurso" : `Gerador ${i}`
+        const cicloRapido = interval <= 1
+        const produz = i === 0 ? "Recurso" : `Gerador ${i}`
         const produzidoPeloProximo = i < NUM_GERADORES - 1 && geradores[i + 1] >= 1
         const mostraBotaoComprar = !produzidoPeloProximo
         const mult = Math.pow(2, upgrades[i] ?? 0)
         return (
           <Card key={i} className="py-3 px-4">
-            <div className="grid grid-cols-[6rem_7rem_10rem_1fr_5rem_7rem] items-center gap-4 min-w-0">
+            <div className="grid grid-cols-[6rem_7rem_5rem_1fr_10rem_7rem] items-center gap-4 min-w-0">
               <div className="flex flex-col gap-0.5">
                 <span className="font-semibold leading-tight">Gerador {i + 1}</span>
                 <span className="text-muted-foreground text-xs">Gerador</span>
@@ -94,12 +94,9 @@ export function GeneratorsPage() {
                 </span>
                 <span className="text-muted-foreground text-xs">Quantidade</span>
               </div>
-              <div className="flex flex-col gap-0.5 min-w-0">
-                <span className="font-mono text-sm tabular-nums leading-tight break-all">
-                  +{formatDecimal(new Decimal(geradores[i] * mult))}
-                  {mult > 1 && <span className="text-green-600 dark:text-green-500 ml-0.5">(x{mult})</span>}
-                </span>
-                <span className="text-muted-foreground text-xs">{produz}</span>
+              <div className="flex flex-col gap-0.5 min-w-0 items-end">
+                <span className="font-mono text-sm tabular-nums leading-tight text-right whitespace-nowrap">{formatInterval(interval)}</span>
+                <span className="text-muted-foreground text-xs text-right">Tempo</span>
               </div>
               <div className="flex flex-col gap-0.5 min-w-0">
                 {cicloRapido ? (
@@ -109,9 +106,12 @@ export function GeneratorsPage() {
                 )}
                 <span className="text-muted-foreground text-xs">Ciclo</span>
               </div>
-              <div className="flex flex-col gap-0.5 min-w-0 items-end">
-                <span className="font-mono text-sm tabular-nums leading-tight text-right whitespace-nowrap">{formatInterval(interval)}</span>
-                <span className="text-muted-foreground text-xs text-right">Tempo</span>
+              <div className="flex flex-col gap-0.5 min-w-0">
+                <span className="font-mono text-sm tabular-nums leading-tight break-all">
+                  +{formatDecimal(new Decimal(geradores[i] * mult))}
+                  {mult > 1 && <span className="text-green-600 dark:text-green-500 ml-0.5">(x{mult})</span>}
+                </span>
+                <span className="text-muted-foreground text-xs">{produz}</span>
               </div>
               <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
                 {mostraBotaoComprar ? (

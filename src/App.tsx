@@ -55,20 +55,23 @@ const NUM_GERADORES = 100
 const SAVE_KEY = "breaking-eternity-save"
 const SAVE_INTERVAL_MS = 5000
 const MAX_OFFLINE_SECONDS = 7 * 24 * 3600 // 7 dias (simulação em passos de 1s)
+/** Se o tick demorar mais que isso em tempo real (tela bloqueada, tampa fechada, aba em segundo plano), aplicamos catch-up com simulação offline. */
+const PAUSE_THRESHOLD_SECONDS = 3
 
-// Intervalo base em segundos: lei de potência para saltos maiores entre tiers.
-// Com expoente 1.5: gerador 1 = 3s, 2 ≈ 8s, 10 ≈ 95s, 99 ≈ 2955s, 100 ≈ 3000s.
-// O salto do 99 pro 100 passa a ser ~45s em vez de 3s.
-const INTERVALO_EXPOENTE = 1.5
+// Intervalo base em segundos: gerador 1 = 3s, cada tier dobra (2 → 6s, 3 → 12s, 4 → 24s...).
 function intervaloGerador(i: number): number {
-  return Math.round(3 * Math.pow(i + 1, INTERVALO_EXPOENTE))
+  return 3 * Math.pow(2, i)
 }
 
 const MIN_INTERVALO = 0.1 // ciclo mínimo (melhoria de velocidade)
 
-/** Intervalo efetivo após melhoria de velocidade: cada nível remove 1s, mínimo 0,1s */
+/** Redução de intervalo por nível de velocidade: 10% a menos por nível (multiplicativo). */
+const VELOCIDADE_REDUCAO_POR_NIVEL = 0.9 // 0.9 = 10% a menos
+
+/** Intervalo efetivo após melhoria de velocidade: cada nível reduz 10% do tempo, mínimo 0,1s */
 function intervaloEfetivo(i: number, speedLevel: number): number {
-  return Math.max(MIN_INTERVALO, intervaloGerador(i) - speedLevel)
+  const base = intervaloGerador(i)
+  return Math.max(MIN_INTERVALO, base * Math.pow(VELOCIDADE_REDUCAO_POR_NIVEL, speedLevel))
 }
 
 /** Chance de produzir o dobro por nível da melhoria "Sorte" (ex.: 0,02 = 2% por nível) */
@@ -93,6 +96,9 @@ interface SavedState {
   globalSpeedLevel?: number
   globalPriceReductionLevel?: number
   autoUnlockNextGerador?: boolean
+  showFpsCounter?: boolean
+  generatorUnlockTimestamps?: number[]
+  generatorBonusCount?: number[]
   totalProducedLifetime?: string
   totalPlayTimeSeconds?: number
   firstPlayTime?: number
@@ -106,7 +112,7 @@ function chanceCrit(luckLevel: number): number {
   return Math.min(1, luckLevel * CHANCE_CRIT_POR_NIVEL)
 }
 
-/** Simula produção offline por `seconds` segundos; retorna novo total, novos geradores e ganho no recurso principal */
+/** Simula produção offline por `seconds` segundos; retorna novo total, novos geradores, ganho e quantas vezes cada gerador deu bônus (sorte). */
 function simulateOffline(
   total: Decimal,
   geradores: number[],
@@ -117,20 +123,15 @@ function simulateOffline(
   luckMultiplierUpgrades: number[] = [],
   globalProductionLevel = 0,
   globalSpeedLevel = 0
-): { total: Decimal; geradores: number[]; totalGain: Decimal } {
+): { total: Decimal; geradores: number[]; totalGain: Decimal; bonusCountDelta: number[] } {
   const capped = Math.min(seconds, MAX_OFFLINE_SECONDS)
   let curTotal = new Decimal(total)
   const curGen = [...geradores]
   const acumulado = Array(NUM_GERADORES).fill(0)
+  const bonusCountDelta = Array(NUM_GERADORES).fill(0)
   const globalProdMult = Math.pow(2, globalProductionLevel)
   const mult = (i: number) => Math.pow(2, upgrades[i] ?? 0) * globalProdMult
   const interval = (i: number) => intervaloEfetivo(i, (speedUpgrades[i] ?? 0) + globalSpeedLevel)
-  // Esperado da sorte: 1 + p * (multCrit - 1), onde multCrit = 2 + luckMultLevel
-  const luckMult = (i: number) => {
-    const p = chanceCrit(luckUpgrades[i] ?? 0)
-    const multCrit = luckCritMultiplier(luckMultiplierUpgrades[i] ?? 0)
-    return 1 + p * (multCrit - 1)
-  }
   for (let t = 0; t < capped; t++) {
     for (let i = 0; i < NUM_GERADORES; i++) {
       const count = curGen[i]
@@ -139,7 +140,14 @@ function simulateOffline(
         acumulado[i] += 1
         while (acumulado[i] >= iv) {
           acumulado[i] -= iv
-          const qty = Math.floor(count * mult(i) * luckMult(i))
+          let qty = count * mult(i)
+          const luckLvl = luckUpgrades[i] ?? 0
+          const luckMultLvl = luckMultiplierUpgrades[i] ?? 0
+          if (luckLvl > 0 && Math.random() < chanceCrit(luckLvl)) {
+            qty *= luckCritMultiplier(luckMultLvl)
+            bonusCountDelta[i] += 1
+          }
+          qty = Math.floor(qty)
           if (i === 0) {
             curTotal = Decimal.add(curTotal, qty)
           } else {
@@ -150,7 +158,7 @@ function simulateOffline(
     }
   }
   const totalGain = Decimal.sub(curTotal, total)
-  return { total: curTotal, geradores: curGen, totalGain }
+  return { total: curTotal, geradores: curGen, totalGain, bonusCountDelta }
 }
 
 // Custo base: Gerador 1 = 1; demais 10^(i+1) (Gerador 2 = 100, 3 = 1.000, ...)
@@ -311,6 +319,22 @@ function App() {
     return saved?.autoUnlockNextGerador ?? false
   })
   const [fps, setFps] = useState(0)
+  const [showFpsCounter, setShowFpsCounter] = useState(() => {
+    const saved = loadSavedState()
+    return saved?.showFpsCounter === true
+  })
+  const [generatorUnlockTimestamps, setGeneratorUnlockTimestamps] = useState<number[]>(() => {
+    const saved = loadSavedState()
+    const arr = saved?.generatorUnlockTimestamps
+    if (arr && Array.isArray(arr) && arr.length >= NUM_GERADORES) return arr.slice(0, NUM_GERADORES).map((v) => Number(v) || 0)
+    return Array(NUM_GERADORES).fill(0)
+  })
+  const [generatorBonusCount, setGeneratorBonusCount] = useState<number[]>(() => {
+    const saved = loadSavedState()
+    const arr = saved?.generatorBonusCount
+    if (arr && Array.isArray(arr) && arr.length >= NUM_GERADORES) return arr.slice(0, NUM_GERADORES).map((v) => Number(v) || 0)
+    return Array(NUM_GERADORES).fill(0)
+  })
   const [totalProducedLifetime, setTotalProducedLifetime] = useState<Decimal>(() => {
     const saved = loadSavedState()
     if (!saved?.totalProducedLifetime) return new Decimal(0)
@@ -339,6 +363,7 @@ function App() {
     seconds: number
   } | null>(null)
   const ultimoTick = useRef(0)
+  const lastTickWallTimeRef = useRef(Date.now())
   const acumuladoRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const geradoresRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const totalRef = useRef<Decimal>(new Decimal(0))
@@ -354,7 +379,11 @@ function App() {
   const globalProductionLevelRef = useRef(0)
   const globalSpeedLevelRef = useRef(0)
   const globalPriceReductionLevelRef = useRef(0)
+  const generatorUnlockTimestampsRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
+  const generatorBonusCountRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
+  const firstPlayTimeRef = useRef<number | null>(null)
   const progressoRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
+  const setProgressoStateRef = useRef<((v: number[]) => void) | null>(null)
   const autoUnlockNextGeradorRef = useRef(false)
   const framesRef = useRef(0)
   const fpsIntervalRef = useRef(0)
@@ -390,6 +419,15 @@ function App() {
     globalPriceReductionLevelRef.current = globalPriceReductionLevel
   }, [globalPriceReductionLevel])
   useEffect(() => {
+    generatorUnlockTimestampsRef.current = generatorUnlockTimestamps
+  }, [generatorUnlockTimestamps])
+  useEffect(() => {
+    generatorBonusCountRef.current = generatorBonusCount
+  }, [generatorBonusCount])
+  useEffect(() => {
+    firstPlayTimeRef.current = firstPlayTime
+  }, [firstPlayTime])
+  useEffect(() => {
     autoUnlockNextGeradorRef.current = autoUnlockNextGerador
   }, [autoUnlockNextGerador])
   useEffect(() => {
@@ -415,8 +453,11 @@ function App() {
     totalPlayTimeSecondsRef.current = Math.floor(totalPlayTimeSecondsRef.current + elapsed)
     setTotalPlayTimeSeconds(totalPlayTimeSecondsRef.current)
     lastSessionStartRef.current = now
-    const first = firstPlayTime ?? now
-    if (!firstPlayTime) setFirstPlayTime(now)
+    const first = firstPlayTimeRef.current ?? now
+    if (firstPlayTimeRef.current == null) {
+      firstPlayTimeRef.current = now
+      setFirstPlayTime(now)
+    }
 
     const currentUnlocked = achievementsUnlockedRef.current
     const checkState = {
@@ -459,6 +500,9 @@ function App() {
       globalSpeedLevel: globalSpeedLevelRef.current,
       globalPriceReductionLevel: globalPriceReductionLevelRef.current,
       autoUnlockNextGerador: autoUnlockNextGeradorRef.current,
+      showFpsCounter,
+      generatorUnlockTimestamps: generatorUnlockTimestampsRef.current,
+      generatorBonusCount: generatorBonusCountRef.current,
       totalProducedLifetime: totalProducedLifetimeRef.current.toString(),
       totalPlayTimeSeconds: totalPlayTimeSecondsRef.current,
       firstPlayTime: first,
@@ -482,6 +526,11 @@ function App() {
       .times(Decimal.pow(1.5, geradores[nextIndex]))
       .floor()
     if (total.lt(cost)) return
+    setGeneratorUnlockTimestamps((prev) => {
+      const next = [...prev]
+      if (next[nextIndex] === 0) next[nextIndex] = Date.now()
+      return next
+    })
     // eslint-disable-next-line react-hooks/set-state-in-effect -- intencional: aplicar desbloqueio ao estado
     setTotal((t) => Decimal.sub(t, cost))
     setGeradores((prev) => {
@@ -531,6 +580,12 @@ function App() {
         totalProducedLifetimeRef.current = newLifetime
         setTotalProducedLifetime(newLifetime)
       }
+      setGeneratorBonusCount((prev) =>
+        prev.map((c, i) => c + (result.bonusCountDelta[i] ?? 0))
+      )
+      generatorBonusCountRef.current = generatorBonusCountRef.current.map(
+        (c, i) => c + (result.bonusCountDelta[i] ?? 0)
+      )
       setOfflineCard({ totalGain: result.totalGain, seconds: offlineSeconds })
     } catch {
       // ignora erro e mantém estado carregado
@@ -555,12 +610,46 @@ function App() {
   useEffect(() => {
     let id: number
     const tick = (now: number) => {
+      const wallNow = Date.now()
+      const wallDt = (wallNow - lastTickWallTimeRef.current) / 1000
+      if (ultimoTick.current !== 0 && wallDt > PAUSE_THRESHOLD_SECONDS) {
+        const result = simulateOffline(
+          totalRef.current,
+          geradoresRef.current,
+          wallDt,
+          upgradesRef.current,
+          speedUpgradesRef.current,
+          luckUpgradesRef.current,
+          luckMultiplierUpgradesRef.current,
+          globalProductionLevelRef.current,
+          globalSpeedLevelRef.current
+        )
+        totalRef.current = result.total
+        setTotal(result.total)
+        geradoresRef.current = result.geradores
+        setGeradores(result.geradores)
+        totalProducedLifetimeRef.current = totalProducedLifetimeRef.current.add(result.totalGain)
+        setTotalProducedLifetime((prev) => prev.add(result.totalGain))
+        generatorBonusCountRef.current = generatorBonusCountRef.current.map(
+          (c, i) => c + (result.bonusCountDelta[i] ?? 0)
+        )
+        setGeneratorBonusCount((prev) =>
+          prev.map((c, i) => c + (result.bonusCountDelta[i] ?? 0))
+        )
+        totalPlayTimeSecondsRef.current += Math.floor(wallDt)
+        setTotalPlayTimeSeconds(totalPlayTimeSecondsRef.current)
+        lastTickWallTimeRef.current = wallNow
+        ultimoTick.current = now
+        id = requestAnimationFrame(tick)
+        return
+      }
       if (ultimoTick.current === 0) {
         ultimoTick.current = now
         fpsIntervalRef.current = now
       }
       const dt = (now - ultimoTick.current) / 1000
       ultimoTick.current = now
+      lastTickWallTimeRef.current = wallNow
       framesRef.current += 1
       if (now - fpsIntervalRef.current >= 500) {
         setFps(
@@ -577,6 +666,7 @@ function App() {
       let deltaTotal = new Decimal(0)
       const deltaGen = Array(NUM_GERADORES).fill(0)
       const newProgresso = [...progressoRef.current]
+      let hadBonusThisTick = false
 
       const globalProdMult = Math.pow(2, globalProductionLevelRef.current)
       const mult = (idx: number) => Math.pow(2, upgradesRef.current[idx] ?? 0) * globalProdMult
@@ -591,14 +681,18 @@ function App() {
             let qty = count * mult(i)
             const luckLvl = luckUpgradesRef.current[i] ?? 0
             const luckMultLvl = luckMultiplierUpgradesRef.current[i] ?? 0
-            if (luckLvl > 0 && Math.random() < chanceCrit(luckLvl)) qty *= luckCritMultiplier(luckMultLvl)
+            if (luckLvl > 0 && Math.random() < chanceCrit(luckLvl)) {
+              qty *= luckCritMultiplier(luckMultLvl)
+              generatorBonusCountRef.current[i] = (generatorBonusCountRef.current[i] ?? 0) + 1
+              hadBonusThisTick = true
+            }
             if (i === 0) {
               deltaTotal = deltaTotal.add(qty)
             } else {
               deltaGen[i - 1] += qty
             }
           }
-          newProgresso[i] = iv >= 1 ? Math.min(100, (acumulado[i] / iv) * 100) : 0
+          newProgresso[i] = Math.min(100, (acumulado[i] / iv) * 100)
         } else {
           acumulado[i] = 0
           newProgresso[i] = 0
@@ -610,6 +704,7 @@ function App() {
       let finalTotal = totalAfterProd
       let finalGeradores = nextGeradores
       let autoUnlockHappened = false
+      let autoUnlockIndex: number | null = null
       if (autoUnlockNextGeradorRef.current) {
         const nextIndex = nextGeradores.findIndex((g) => g === 0)
         if (nextIndex !== -1) {
@@ -621,10 +716,13 @@ function App() {
             finalGeradores = [...nextGeradores]
             finalGeradores[nextIndex] = 1
             autoUnlockHappened = true
+            autoUnlockIndex = nextIndex
           }
         }
       }
       progressoRef.current = newProgresso
+      setProgressoStateRef.current?.(newProgresso.slice())
+      if (hadBonusThisTick) setGeneratorBonusCount(generatorBonusCountRef.current.slice())
       if (deltaTotal.gt(0) || autoUnlockHappened) {
         totalRef.current = finalTotal
         setTotal(finalTotal)
@@ -637,6 +735,13 @@ function App() {
         }
       }
       if (deltaGen.some((d) => d > 0) || autoUnlockHappened) {
+        if (autoUnlockHappened && autoUnlockIndex !== null) {
+          setGeneratorUnlockTimestamps((prev) => {
+            const next = [...prev]
+            if (next[autoUnlockIndex!] === 0) next[autoUnlockIndex!] = Date.now()
+            return next
+          })
+        }
         geradoresRef.current = finalGeradores
         setGeradores(finalGeradores)
       }
@@ -687,6 +792,14 @@ function App() {
   const comprarGerador = (i: number) => {
     const custo = custoGerador(i)
     if (!total.gte(custo)) return
+    const eraPrimeiroDoGerador = geradores[i] === 0
+    if (eraPrimeiroDoGerador) {
+      setGeneratorUnlockTimestamps((prev) => {
+        const next = [...prev]
+        if (next[i] === 0) next[i] = Date.now()
+        return next
+      })
+    }
     setTotal((t) => Decimal.sub(t, custo))
     setGeradoresCompradosManual((n) => n + 1)
     setGeradores((prev) => {
@@ -800,13 +913,16 @@ function App() {
     setGlobalProductionLevel(0)
     setGlobalSpeedLevel(0)
     setGlobalPriceReductionLevel(0)
+    setGeneratorUnlockTimestamps(Array(NUM_GERADORES).fill(0))
     setJaColetouManual(false)
     setOfflineCard(null)
     setTotalProducedLifetime(new Decimal(0))
     setTotalPlayTimeSeconds(0)
     setFirstPlayTime(null)
+    firstPlayTimeRef.current = null
     setGeradoresCompradosManual(0)
     setAchievementsUnlocked([])
+    setShowFpsCounter(false)
     geradoresCompradosManualRef.current = 0
     achievementsUnlockedRef.current = []
     geradoresRef.current = Array(NUM_GERADORES).fill(0)
@@ -821,9 +937,13 @@ function App() {
     globalProductionLevelRef.current = 0
     globalSpeedLevelRef.current = 0
     globalPriceReductionLevelRef.current = 0
+    generatorUnlockTimestampsRef.current = Array(NUM_GERADORES).fill(0)
+    generatorBonusCountRef.current = Array(NUM_GERADORES).fill(0)
+    setGeneratorBonusCount(Array(NUM_GERADORES).fill(0))
     jaColetouManualRef.current = false
     acumuladoRef.current = Array(NUM_GERADORES).fill(0)
     progressoRef.current = Array(NUM_GERADORES).fill(0)
+    setProgressoStateRef.current?.(Array(NUM_GERADORES).fill(0))
   }
 
   function formatOfflineTime(seconds: number): string {
@@ -884,6 +1004,10 @@ function App() {
     firstPlayTime,
     geradoresCompradosManual,
     achievementsUnlocked,
+    showFpsCounter,
+    setShowFpsCounter,
+    generatorUnlockTimestamps,
+    generatorBonusCount,
   }
 
   return (
@@ -1001,17 +1125,19 @@ function App() {
             {formatDecimal(total)}
           </p>
         </div>
-        {/* Direita: FPS e futuros menus */}
+        {/* Direita: FPS (se ativado) e futuros menus */}
         <div className="flex items-center gap-4 flex-1 min-w-0 justify-end">
-          <Card className="px-3 py-1.5 shrink-0 border-muted">
-            <span
-              className={`text-xs font-mono ${
-                fps >= 60 ? "text-green-500" : fps >= 30 ? "text-yellow-500" : "text-red-500"
-              }`}
-            >
-              {fps} FPS
-            </span>
-          </Card>
+          {showFpsCounter && (
+            <Card className="px-3 py-1.5 shrink-0 border-muted">
+              <span
+                className={`text-xs font-mono ${
+                  fps >= 60 ? "text-green-500" : fps >= 30 ? "text-yellow-500" : "text-red-500"
+                }`}
+              >
+                {fps} FPS
+              </span>
+            </Card>
+          )}
         </div>
       </header>
 
@@ -1020,7 +1146,7 @@ function App() {
             <Route
               path="/"
               element={
-                <ProgressoProvider progressoRef={progressoRef} numGeradores={NUM_GERADORES}>
+                <ProgressoProvider progressoRef={progressoRef} setProgressoStateRef={setProgressoStateRef} numGeradores={NUM_GERADORES}>
                   <GeneratorsPage />
                 </ProgressoProvider>
               }

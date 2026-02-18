@@ -79,10 +79,14 @@ export function SettingsPage() {
     totalPlayTimeSeconds,
     firstPlayTime,
     geradoresCompradosManual,
+    showFpsCounter,
+    setShowFpsCounter,
+    generatorUnlockTimestamps,
+    generatorBonusCount,
   } = ctx
 
   function formatPlayTime(seconds: number): string {
-    if (seconds < 60) return `${seconds}s`
+    if (seconds < 60) return `${Number(seconds.toFixed(2))}s`
     if (seconds < 3600) return `${Math.floor(seconds / 60)} min`
     if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ${Math.floor((seconds % 3600) / 60)}min`
     const d = Math.floor(seconds / 86400)
@@ -240,6 +244,28 @@ export function SettingsPage() {
             )}
             <div className="flex items-center justify-between gap-4">
               <div>
+                <p className="font-medium">Mostrar contador de FPS</p>
+                <p className="text-muted-foreground text-sm mt-1">
+                  Exibe os quadros por segundo no canto superior direito do jogo.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={showFpsCounter}
+                onClick={() => {
+                  playClickSound()
+                  setShowFpsCounter((v) => !v)
+                }}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${showFpsCounter ? "bg-primary" : "bg-muted"}`}
+              >
+                <span
+                  className={`pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform ${showFpsCounter ? "translate-x-5" : "translate-x-1"}`}
+                />
+              </button>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <div>
                 <p className="font-medium">Desbloquear próximo gerador automaticamente</p>
                 <p className="text-muted-foreground text-sm mt-1">
                   Quando ativado, o próximo gerador (ainda com 0 unidades) é desbloqueado assim que você tiver recurso suficiente. Não compra unidades extras.
@@ -268,7 +294,7 @@ export function SettingsPage() {
             <div>
               <p className="font-medium">Restaurar configurações padrão</p>
               <p className="text-muted-foreground text-sm mt-1">
-                Som de clique ativo (100%), desbloquear próximo gerador desativado, tema Escuro e atalhos de teclado padrão.
+                Som de clique ativo (100%), contador de FPS desligado, desbloquear próximo gerador desativado, tema Escuro e atalhos de teclado padrão.
               </p>
             </div>
             <Button
@@ -280,6 +306,7 @@ export function SettingsPage() {
                 setClickSoundEnabled(true)
                 persistClickSoundVolume(100)
                 setClickSoundVolume(100)
+                setShowFpsCounter(false)
                 setAutoUnlockNextGerador(false)
                 setTheme("dark")
                 applyTheme("dark")
@@ -425,6 +452,54 @@ export function SettingsPage() {
               <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(new Decimal(speedUpgrades.reduce((a, b) => a + b, 0)))}</dd>
             </div>
           </dl>
+          {geradores.some((g) => g >= 1) && (
+            <>
+              <div className="pt-4 border-t">
+                <p className="font-medium">Tempos por gerador</p>
+                <p className="text-muted-foreground text-sm mt-1">
+                  Quanto tempo desde o início até desbloquear cada gerador e quanto tempo você passou em cada tier. Desbloqueios a partir de agora passam a ser registrados.
+                </p>
+              </div>
+              <dl className="space-y-3 pt-2">
+                {geradores.map((count, i) => {
+                  if (count < 1) return null
+                  const ts = generatorUnlockTimestamps[i] ?? 0
+                  const segundosDesdeInicioBruto = ts > 0 && firstPlayTime != null ? (ts - firstPlayTime) / 1000 : 0
+                  const dentroDoTempoDeJogo = segundosDesdeInicioBruto >= 0 && segundosDesdeInicioBruto <= totalPlayTimeSeconds + 120
+                  const temDado = ts > 0 && firstPlayTime != null && dentroDoTempoDeJogo
+                  const segundosDesdeInicio = temDado ? segundosDesdeInicioBruto : 0
+                  const tsAnterior = generatorUnlockTimestamps[i - 1] ?? 0
+                  const segundosNoTierAnterior =
+                    i === 0 ? 0 : tsAnterior > 0 && ts > 0 ? (ts - tsAnterior) / 1000 : 0
+                  const temDadoTierAnterior = i > 0 && tsAnterior > 0 && ts > 0 && segundosNoTierAnterior >= 0 && segundosNoTierAnterior <= totalPlayTimeSeconds + 120
+                  return (
+                    <div key={i} className="flex flex-col gap-0.5 py-2 px-3 rounded-md bg-muted/50">
+                      <div className="flex justify-between items-baseline gap-2">
+                        <dt className="text-muted-foreground text-sm">Gerador {i + 1} — tempo até desbloquear</dt>
+                        <dd className="font-mono text-sm font-semibold tabular-nums">
+                          {temDado ? formatPlayTime(segundosDesdeInicio) : "—"}
+                        </dd>
+                      </div>
+                      {i > 0 && (
+                        <div className="flex justify-between items-baseline gap-2">
+                          <dt className="text-muted-foreground text-xs">Tempo só no tier anterior (Gerador {i})</dt>
+                          <dd className="font-mono text-xs tabular-nums">
+                            {temDadoTierAnterior ? formatPlayTime(segundosNoTierAnterior) : "—"}
+                          </dd>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-baseline gap-2">
+                        <dt className="text-muted-foreground text-xs">Vezes que gerou recurso bônus (sorte)</dt>
+                        <dd className="font-mono text-xs tabular-nums">
+                          {(generatorBonusCount[i] ?? 0).toLocaleString("pt-BR")}
+                        </dd>
+                      </div>
+                    </div>
+                  )
+                })}
+              </dl>
+            </>
+          )}
         </Card>
       )}
 
