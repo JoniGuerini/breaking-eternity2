@@ -6,6 +6,7 @@ export type ShortcutId =
   | "menuGeradores"
   | "menuMelhorias"
   | "menuConquistas"
+  | "menuEstatisticas"
   | "menuConfiguracoes"
   | "scrollTop"
   | "scrollBottom"
@@ -16,7 +17,8 @@ export const SHORTCUT_DEFAULTS: Record<ShortcutId, string> = {
   menuGeradores: "Digit1",
   menuMelhorias: "Digit2",
   menuConquistas: "Digit4",
-  menuConfiguracoes: "Digit3",
+  menuEstatisticas: "Digit5",
+  menuConfiguracoes: "Escape",
   scrollTop: "Home",
   scrollBottom: "End",
 }
@@ -27,6 +29,7 @@ export const SHORTCUT_LABELS: Record<ShortcutId, string> = {
   menuGeradores: "Ir para Geradores",
   menuMelhorias: "Ir para Melhorias",
   menuConquistas: "Ir para Conquistas",
+  menuEstatisticas: "Ir para Estatísticas",
   menuConfiguracoes: "Ir para Configurações",
   scrollTop: "Rolar para cima",
   scrollBottom: "Rolar para baixo",

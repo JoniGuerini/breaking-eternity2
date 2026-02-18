@@ -1009,6 +1009,7 @@ function App() {
     setShowFpsCounter,
     generatorUnlockTimestamps,
     generatorBonusCount,
+    persistSave,
   }
 
   return (

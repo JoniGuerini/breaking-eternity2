@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { playClickSound } from "@/lib/clickSound"
 import { getShortcut } from "@/lib/shortcuts"
 
-const MENU_PATHS = ["/", "/melhorias", "/conquistas", "/configuracoes"] as const
+const MENU_PATHS = ["/", "/melhorias", "/conquistas", "/estatisticas", "/configuracoes"] as const
 
 function isInputTarget(target: EventTarget | null): boolean {
   if (!target || !(target instanceof HTMLElement)) return false
@@ -44,6 +44,10 @@ export function ShortcutHandler() {
       } else if (code === getShortcut("menuConquistas")) {
         e.preventDefault()
         navigate("/conquistas")
+        playClickSound()
+      } else if (code === getShortcut("menuEstatisticas")) {
+        e.preventDefault()
+        navigate("/estatisticas")
         playClickSound()
       } else if (code === getShortcut("menuConfiguracoes")) {
         e.preventDefault()
@@ -90,6 +94,10 @@ export function ShortcutHandler() {
         },
         [getShortcut("menuConquistas")]: () => {
           navigate("/conquistas")
+          playClickSound()
+        },
+        [getShortcut("menuEstatisticas")]: () => {
+          navigate("/estatisticas")
           playClickSound()
         },
         [getShortcut("menuConfiguracoes")]: () => {

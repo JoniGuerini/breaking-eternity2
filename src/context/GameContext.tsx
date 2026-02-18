@@ -56,6 +56,7 @@ export interface GameContextValue {
   setShowFpsCounter: React.Dispatch<React.SetStateAction<boolean>>
   generatorUnlockTimestamps: number[]
   generatorBonusCount: number[]
+  persistSave: () => void
 }
 
 export const GameContext = createContext<GameContextValue | null>(null)

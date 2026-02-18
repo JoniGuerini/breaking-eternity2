@@ -92,6 +92,7 @@ export function SettingsPage() {
     setAutoUnlockNextGerador,
     showFpsCounter,
     setShowFpsCounter,
+    persistSave,
   } = ctx
 
   function handleThemeChange(theme: ThemeId) {
@@ -118,6 +119,26 @@ export function SettingsPage() {
     resetProgress()
     setOpenReset(false)
     navigate("/")
+  }
+
+  async function handleExit() {
+    playClickSound()
+    // Salva o jogo antes de sair
+    persistSave()
+    // Aguarda um pouco para garantir que o save foi persistido
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    // Tenta fechar o app (funciona no Tauri)
+    try {
+      if (typeof window !== "undefined" && (window as any).__TAURI__) {
+        const { getCurrentWindow } = await import("@tauri-apps/api/window")
+        await getCurrentWindow().close()
+      } else {
+        // No navegador, apenas fecha a aba se possível
+        window.close()
+      }
+    } catch {
+      // Ignora erros ao fechar
+    }
   }
 
   return (
@@ -319,6 +340,19 @@ export function SettingsPage() {
                 </Button>
               </div>
             </div>
+            <div>
+              <p className="font-medium">Sair do jogo</p>
+              <p className="text-muted-foreground text-sm mt-1">
+                Salva o progresso e fecha o jogo.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={handleExit}
+            >
+              Sair
+            </Button>
             <div>
               <p className="font-medium">Restaurar configurações padrão</p>
               <p className="text-muted-foreground text-sm mt-1">
