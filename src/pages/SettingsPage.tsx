@@ -334,14 +334,18 @@ export function SettingsPage() {
             <div>
               <p className="font-medium">Baixar para Windows</p>
               <p className="text-muted-foreground text-sm mt-1">
-                Versão para executar no computador (arquivo .exe). Abre a página de lançamentos no GitHub.
+                Versão para executar no computador (arquivo .exe). Baixa diretamente o instalador do GitHub.
               </p>
               <Button
                 variant="outline"
                 className="w-full"
                 onClick={() => {
                   playClickSound()
-                  window.open("https://github.com/JoniGuerini/breaking-eternity2/releases", "_blank", "noopener,noreferrer")
+                  window.open(
+                    "https://github.com/JoniGuerini/breaking-eternity2/releases/download/desktop-app/Breaking%20Eternity_0.1.0_x64-setup.exe",
+                    "_blank",
+                    "noopener,noreferrer",
+                  )
                 }}
               >
                 Baixar Breaking Eternity para Windows (.exe)
