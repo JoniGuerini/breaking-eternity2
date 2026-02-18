@@ -342,7 +342,7 @@ export function SettingsPage() {
                 onClick={() => {
                   playClickSound()
                   window.open(
-                    "https://github.com/JoniGuerini/breaking-eternity2/releases/download/desktop-app/Breaking%20Eternity_0.1.0_x64-setup.exe",
+                    "https://github.com/JoniGuerini/breaking-eternity2/releases/download/desktop-app/Breaking.Eternity_0.1.0_x64-setup.exe",
                     "_blank",
                     "noopener,noreferrer",
                   )
