@@ -51,7 +51,7 @@ export function ShortcutHandler() {
         playClickSound()
       } else if (code === getShortcut("menuConfiguracoes")) {
         e.preventDefault()
-        navigate("/configuracoes")
+        navigate("/configuracoes", { state: { tab: "geral" } })
         playClickSound()
       } else if (code === getShortcut("scrollTop")) {
         e.preventDefault()
@@ -101,7 +101,7 @@ export function ShortcutHandler() {
           playClickSound()
         },
         [getShortcut("menuConfiguracoes")]: () => {
-          navigate("/configuracoes")
+          navigate("/configuracoes", { state: { tab: "geral" } })
           playClickSound()
         },
         [getShortcut("scrollTop")]: () => {

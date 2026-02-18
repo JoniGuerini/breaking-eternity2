@@ -162,9 +162,10 @@ function simulateOffline(
   return { total: curTotal, geradores: curGen, totalGain, bonusCountDelta }
 }
 
-// Custo base: Gerador 1 = 1; demais 10^(i+1) (Gerador 2 = 100, 3 = 1.000, ...)
+// Custo base: Gerador 1 = 1; cada tier custa 100x mais que o anterior (10^(2*i))
+// G1=1, G2=100, G3=10.000, G4=1.000.000, G5=10^8, ...
 function custoBase(i: number): Decimal {
-  return i === 0 ? new Decimal(1) : Decimal.pow(10, i + 1)
+  return Decimal.pow(10, 2 * i)
 }
 
 /** Multiplicador de preço pós-desbloqueio: cada nível global reduz 5% (0.95^nível); só afeta compras quando gerador já está desbloqueado */
@@ -1016,168 +1017,167 @@ function App() {
     <BrowserRouter>
       <Toaster position="top-right" />
       <GameContext.Provider value={gameContextValue}>
-    <ShortcutHandler />
-    <ScrollToTop />
-    <CustomContextMenu>
-    <RootLayout>
-      {total.lt(1) && !jaColetouManual && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog" aria-labelledby="welcome-dialog-title">
-          <Card className="max-w-md w-full p-6 space-y-5 shadow-lg">
-            <h2 id="welcome-dialog-title" className="font-semibold text-xl">Boas-vindas ao Breaking Eternity</h2>
-            <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
-              <p>
-                Este é um jogo <strong className="text-foreground">incremental</strong> (idle): você coleta recurso, compra geradores que produzem mais recurso e desbloqueia melhorias. Os números podem ficar enormes — milhões, bilhões e além.
-              </p>
-              <p>
-                Para lidar com números tão grandes, o jogo usa a biblioteca <strong className="text-foreground">break_eternity.js</strong>, que permite operar com valores muito além do que o JavaScript nativo suporta (notação científica, sufixos como M, B, T, Q e letras).
-              </p>
-              <p>
-                O <strong className="text-foreground">objetivo</strong> é chegar ao limite dessa biblioteca — o maior número que ela consegue representar. Resgate seu primeiro recurso abaixo e comece a comprar geradores. Bom jogo!
-              </p>
-            </div>
-            <Button
-              className="w-full"
-              onClick={() => {
-                playClickSound()
-                setTotal((t) => Decimal.add(t, 1))
-                setJaColetouManual(true)
-                setTotalProducedLifetime((prev) => prev.add(1))
-                totalProducedLifetimeRef.current = totalProducedLifetimeRef.current.add(1)
-              }}
-            >
-              Resgatar primeiro recurso
-            </Button>
-          </Card>
-        </div>
-      )}
-      {offlineCard && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog">
-          <Card className="max-w-sm w-full p-6 space-y-4">
-            <h2 className="font-semibold text-lg">Ganho offline</h2>
-            <p className="text-muted-foreground text-sm">
-              Você ganhou <span className="font-mono font-semibold text-foreground">{formatDecimal(offlineCard.totalGain)}</span> enquanto estava offline.
-            </p>
-            <p className="text-muted-foreground text-xs">
-              Tempo ausente: {formatOfflineTime(offlineCard.seconds)}
-            </p>
-            <Button
-              className="w-full"
-              onClick={() => {
-                playClickSound()
-                setOfflineCard(null)
-              }}
-            >
-              OK
-            </Button>
-          </Card>
-        </div>
-      )}
-      <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 flex items-center gap-4">
-        {/* Esquerda: nome do jogo + menus (futuros menus podem preencher aqui) */}
-        <div className="flex items-center gap-4 flex-1 min-w-0 justify-start">
-          <h1 className="text-lg font-semibold tracking-tight truncate shrink-0">
-            Breaking Eternity
-          </h1>
-          <nav className="flex gap-2 flex-wrap">
-            <NavLink
-              to="/"
-              onClick={() => playClickSound()}
-              className={({ isActive }) =>
-                "text-sm px-2 py-1 rounded-md " +
-                (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-              }
-            >
-              Geradores
-            </NavLink>
-            <NavLink
-              to="/melhorias"
-              onClick={() => playClickSound()}
-              className={({ isActive }) =>
-                "text-sm px-2 py-1 rounded-md " +
-                (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-              }
-            >
-              Melhorias
-            </NavLink>
-            <NavLink
-              to="/conquistas"
-              onClick={() => playClickSound()}
-              className={({ isActive }) =>
-                "text-sm px-2 py-1 rounded-md " +
-                (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-              }
-            >
-              Conquistas
-            </NavLink>
-            <NavLink
-              to="/estatisticas"
-              onClick={() => playClickSound()}
-              className={({ isActive }) =>
-                "text-sm px-2 py-1 rounded-md " +
-                (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-              }
-            >
-              Estatísticas
-            </NavLink>
-            <NavLink
-              to="/configuracoes"
-              onClick={() => playClickSound()}
-              className={({ isActive }) =>
-                "text-sm px-2 py-1 rounded-md " +
-                (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-              }
-            >
-              Configurações
-            </NavLink>
-          </nav>
-        </div>
-        {/* Centro: contador do recurso principal */}
-        <div className="flex-shrink-0 px-2">
-          <p className="text-2xl font-mono tabular-nums break-all text-center">
-            {formatDecimal(total)}
-          </p>
-        </div>
-        {/* Direita: FPS (se ativado) e futuros menus */}
-        <div className="flex items-center gap-4 flex-1 min-w-0 justify-end">
-          {showFpsCounter && (
-            <Card className="px-3 py-1.5 shrink-0 border-muted">
-              <span
-                className={`text-xs font-mono ${
-                  fps >= 60 ? "text-green-500" : fps >= 30 ? "text-yellow-500" : "text-red-500"
-                }`}
-              >
-                {fps} FPS
-              </span>
-            </Card>
-          )}
-        </div>
-      </header>
+        <ShortcutHandler />
+        <ScrollToTop />
+        <CustomContextMenu>
+          <RootLayout>
+            {total.lt(1) && !jaColetouManual && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog" aria-labelledby="welcome-dialog-title">
+                <Card className="max-w-md w-full p-6 space-y-5 shadow-lg">
+                  <h2 id="welcome-dialog-title" className="font-semibold text-xl">Boas-vindas ao Breaking Eternity</h2>
+                  <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
+                    <p>
+                      Este é um jogo <strong className="text-foreground">incremental</strong> (idle): você coleta recurso, compra geradores que produzem mais recurso e desbloqueia melhorias. Os números podem ficar enormes — milhões, bilhões e além.
+                    </p>
+                    <p>
+                      Para lidar com números tão grandes, o jogo usa a biblioteca <strong className="text-foreground">break_eternity.js</strong>, que permite operar com valores muito além do que o JavaScript nativo suporta (notação científica, sufixos como M, B, T, Q e letras).
+                    </p>
+                    <p>
+                      O <strong className="text-foreground">objetivo</strong> é chegar ao limite dessa biblioteca — o maior número que ela consegue representar. Resgate seu primeiro recurso abaixo e comece a comprar geradores. Bom jogo!
+                    </p>
+                  </div>
+                  <Button
+                    className="w-full"
+                    onClick={() => {
+                      playClickSound()
+                      setTotal((t) => Decimal.add(t, 1))
+                      setJaColetouManual(true)
+                      setTotalProducedLifetime((prev) => prev.add(1))
+                      totalProducedLifetimeRef.current = totalProducedLifetimeRef.current.add(1)
+                    }}
+                  >
+                    Resgatar primeiro recurso
+                  </Button>
+                </Card>
+              </div>
+            )}
+            {offlineCard && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog">
+                <Card className="max-w-sm w-full p-6 space-y-4">
+                  <h2 className="font-semibold text-lg">Ganho offline</h2>
+                  <p className="text-muted-foreground text-sm">
+                    Você ganhou <span className="font-mono font-semibold text-foreground">{formatDecimal(offlineCard.totalGain)}</span> enquanto estava offline.
+                  </p>
+                  <p className="text-muted-foreground text-xs">
+                    Tempo ausente: {formatOfflineTime(offlineCard.seconds)}
+                  </p>
+                  <Button
+                    className="w-full"
+                    onClick={() => {
+                      playClickSound()
+                      setOfflineCard(null)
+                    }}
+                  >
+                    OK
+                  </Button>
+                </Card>
+              </div>
+            )}
+            <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 flex items-center gap-4">
+              {/* Esquerda: nome do jogo + menus (futuros menus podem preencher aqui) */}
+              <div className="flex items-center gap-4 flex-1 min-w-0 justify-start">
+                <h1 className="text-lg font-semibold tracking-tight truncate shrink-0">
+                  Breaking Eternity
+                </h1>
+                <nav className="flex gap-2 flex-wrap">
+                  <NavLink
+                    to="/"
+                    onClick={() => playClickSound()}
+                    className={({ isActive }) =>
+                      "text-sm px-2 py-1 rounded-md " +
+                      (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+                    }
+                  >
+                    Geradores
+                  </NavLink>
+                  <NavLink
+                    to="/melhorias"
+                    onClick={() => playClickSound()}
+                    className={({ isActive }) =>
+                      "text-sm px-2 py-1 rounded-md " +
+                      (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+                    }
+                  >
+                    Melhorias
+                  </NavLink>
+                  <NavLink
+                    to="/conquistas"
+                    onClick={() => playClickSound()}
+                    className={({ isActive }) =>
+                      "text-sm px-2 py-1 rounded-md " +
+                      (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+                    }
+                  >
+                    Conquistas
+                  </NavLink>
+                  <NavLink
+                    to="/estatisticas"
+                    onClick={() => playClickSound()}
+                    className={({ isActive }) =>
+                      "text-sm px-2 py-1 rounded-md " +
+                      (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+                    }
+                  >
+                    Estatísticas
+                  </NavLink>
+                  <NavLink
+                    to="/configuracoes"
+                    onClick={() => playClickSound()}
+                    className={({ isActive }) =>
+                      "text-sm px-2 py-1 rounded-md " +
+                      (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+                    }
+                  >
+                    Configurações
+                  </NavLink>
+                </nav>
+              </div>
+              {/* Centro: contador do recurso principal */}
+              <div className="flex-shrink-0 px-2">
+                <p className="text-2xl font-mono tabular-nums break-all text-center">
+                  {formatDecimal(total)}
+                </p>
+              </div>
+              {/* Direita: FPS (se ativado) e futuros menus */}
+              <div className="flex items-center gap-4 flex-1 min-w-0 justify-end">
+                {showFpsCounter && (
+                  <Card className="px-3 py-1.5 shrink-0 border-muted">
+                    <span
+                      className={`text-xs font-mono ${fps >= 60 ? "text-green-500" : fps >= 30 ? "text-yellow-500" : "text-red-500"
+                        }`}
+                    >
+                      {fps} FPS
+                    </span>
+                  </Card>
+                )}
+              </div>
+            </header>
 
-      <MainWithScrollBehavior>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <ProgressoProvider progressoRef={progressoRef} setProgressoStateRef={setProgressoStateRef} numGeradores={NUM_GERADORES}>
-                  <GeneratorsPage />
-                </ProgressoProvider>
-              }
-            />
-            <Route path="/melhorias" element={<ImprovementsPage />} />
-            <Route path="/estatisticas" element={<EstatisticasPage />} />
-            <Route
-              path="/conquistas"
-              element={
-                <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-                  <AchievementsPage />
-                </div>
-              }
-            />
-            <Route path="/configuracoes" element={<SettingsPage />} />
-          </Routes>
-      </MainWithScrollBehavior>
-    </RootLayout>
-    </CustomContextMenu>
+            <MainWithScrollBehavior>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <ProgressoProvider progressoRef={progressoRef} setProgressoStateRef={setProgressoStateRef} numGeradores={NUM_GERADORES}>
+                      <GeneratorsPage />
+                    </ProgressoProvider>
+                  }
+                />
+                <Route path="/melhorias" element={<ImprovementsPage />} />
+                <Route path="/estatisticas" element={<EstatisticasPage />} />
+                <Route
+                  path="/conquistas"
+                  element={
+                    <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+                      <AchievementsPage />
+                    </div>
+                  }
+                />
+                <Route path="/configuracoes" element={<SettingsPage />} />
+              </Routes>
+            </MainWithScrollBehavior>
+          </RootLayout>
+        </CustomContextMenu>
       </GameContext.Provider>
     </BrowserRouter>
   )
