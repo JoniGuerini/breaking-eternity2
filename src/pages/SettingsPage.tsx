@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Decimal from "break_eternity.js"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -31,7 +30,7 @@ export function SettingsPage() {
   const [clickSoundEnabled, setClickSoundEnabled] = useState(getClickSoundEnabled)
   const [clickSoundVolume, setClickSoundVolume] = useState(() => getClickSoundVolume())
   const [currentTheme, setCurrentTheme] = useState<ThemeId>(() => getTheme())
-  const [tab, setTab] = useState<"geral" | "temas" | "estatisticas" | "atalhos">("geral")
+  const [tab, setTab] = useState<"geral" | "temas" | "atalhos">("geral")
   const [recordingId, setRecordingId] = useState<ShortcutId | null>(null)
   const [, forceUpdate] = useState(0)
   const [isFullscreen, setIsFullscreen] = useState(() => !!document.fullscreenElement)
@@ -91,40 +90,9 @@ export function SettingsPage() {
     resetProgress,
     autoUnlockNextGerador,
     setAutoUnlockNextGerador,
-    total,
-    formatDecimal,
-    geradores,
-    upgrades,
-    speedUpgrades,
-    totalProducedLifetime,
-    totalPlayTimeSeconds,
-    firstPlayTime,
-    geradoresCompradosManual,
     showFpsCounter,
     setShowFpsCounter,
-    generatorUnlockTimestamps,
-    generatorBonusCount,
   } = ctx
-
-  function formatPlayTime(seconds: number): string {
-    if (seconds < 60) return `${Number(seconds.toFixed(2))}s`
-    if (seconds < 3600) return `${Math.floor(seconds / 60)} min`
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ${Math.floor((seconds % 3600) / 60)}min`
-    const d = Math.floor(seconds / 86400)
-    const h = Math.floor((seconds % 86400) / 3600)
-    return h > 0 ? `${d}d ${h}h` : `${d}d`
-  }
-
-  function formatFirstPlayDate(ts: number | null): string {
-    if (!ts) return "—"
-    return new Date(ts).toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
 
   function handleThemeChange(theme: ThemeId) {
     playClickSound()
@@ -186,22 +154,6 @@ export function SettingsPage() {
           role="tab"
         >
           Temas
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            playClickSound()
-            setTab("estatisticas")
-          }}
-          className={`flex-1 min-w-0 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-            tab === "estatisticas"
-              ? "text-foreground border-b-2 border-primary"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-          aria-selected={tab === "estatisticas"}
-          role="tab"
-        >
-          Estatísticas
         </button>
         <button
           type="button"
@@ -332,29 +284,45 @@ export function SettingsPage() {
           </div>
           <div className="space-y-6">
             <div>
-              <p className="font-medium">Baixar para Windows</p>
+              <p className="font-medium">Baixar para desktop</p>
               <p className="text-muted-foreground text-sm mt-1">
-                Versão para executar no computador (arquivo .exe). Baixa diretamente o instalador do GitHub.
+                Instale o jogo no seu PC ou Mac e jogue sem abrir o navegador.
               </p>
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => {
-                  playClickSound()
-                  window.open(
-                    "https://github.com/JoniGuerini/breaking-eternity2/releases/download/desktop-app/Breaking.Eternity_0.1.0_x64-setup.exe",
-                    "_blank",
-                    "noopener,noreferrer",
-                  )
-                }}
-              >
-                Baixar Breaking Eternity para Windows (.exe)
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-2 mt-4">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => {
+                    playClickSound()
+                    window.open(
+                      "https://github.com/JoniGuerini/breaking-eternity2/releases/download/desktop-app/Breaking.Eternity_0.1.0_x64-setup.exe",
+                      "_blank",
+                      "noopener,noreferrer",
+                    )
+                  }}
+                >
+                  Windows (.exe)
+                </Button>
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => {
+                    playClickSound()
+                    window.open(
+                      "https://github.com/JoniGuerini/breaking-eternity2/releases/download/desktop-app/Breaking.Eternity_0.1.0_aarch64.dmg",
+                      "_blank",
+                      "noopener,noreferrer",
+                    )
+                  }}
+                >
+                  Mac (.dmg)
+                </Button>
+              </div>
             </div>
             <div>
               <p className="font-medium">Restaurar configurações padrão</p>
               <p className="text-muted-foreground text-sm mt-1">
-                Som de clique ativo (100%), contador de FPS desligado, desbloquear próximo gerador desativado, tema Escuro e atalhos de teclado padrão.
+                Volta as opções de Geral, Temas e Atalhos para o padrão do jogo.
               </p>
             </div>
             <Button
@@ -467,99 +435,6 @@ export function SettingsPage() {
               </div>
             ))}
           </div>
-        </Card>
-      )}
-
-      {tab === "estatisticas" && (
-        <Card className="p-6 space-y-5">
-          <div>
-            <p className="font-medium">Resumo da sua partida</p>
-            <p className="text-muted-foreground text-sm mt-1">
-              Números gerais do progresso (zeram ao resetar).
-            </p>
-          </div>
-          <dl className="space-y-4">
-            <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Recurso atual</dt>
-              <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(total)}</dd>
-            </div>
-            <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Total já produzido</dt>
-              <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(totalProducedLifetime)}</dd>
-            </div>
-            <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Tempo de jogo</dt>
-              <dd className="font-mono text-sm font-semibold tabular-nums">{formatPlayTime(totalPlayTimeSeconds)}</dd>
-            </div>
-            <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Primeira partida</dt>
-              <dd className="font-mono text-sm tabular-nums">{formatFirstPlayDate(firstPlayTime)}</dd>
-            </div>
-            <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Geradores comprados (manual)</dt>
-              <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(new Decimal(geradoresCompradosManual))}</dd>
-            </div>
-            <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Geradores produzidos (automático)</dt>
-              <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(Decimal.max(new Decimal(0), geradores.reduce((acc, g) => acc.add(g), new Decimal(0)).sub(geradoresCompradosManual)))}</dd>
-            </div>
-            <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Melhorias de produção</dt>
-              <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(new Decimal(upgrades.reduce((a, b) => a + b, 0)))}</dd>
-            </div>
-            <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Melhorias de velocidade</dt>
-              <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(new Decimal(speedUpgrades.reduce((a, b) => a + b, 0)))}</dd>
-            </div>
-          </dl>
-          {geradores.some((g) => g >= 1) && (
-            <>
-              <div className="pt-4 border-t">
-                <p className="font-medium">Tempos por gerador</p>
-                <p className="text-muted-foreground text-sm mt-1">
-                  Quanto tempo desde o início até desbloquear cada gerador e quanto tempo você passou em cada tier. Desbloqueios a partir de agora passam a ser registrados.
-                </p>
-              </div>
-              <dl className="space-y-3 pt-2">
-                {geradores.map((count, i) => {
-                  if (count < 1) return null
-                  const ts = generatorUnlockTimestamps[i] ?? 0
-                  const segundosDesdeInicioBruto = ts > 0 && firstPlayTime != null ? (ts - firstPlayTime) / 1000 : 0
-                  const dentroDoTempoDeJogo = segundosDesdeInicioBruto >= 0 && segundosDesdeInicioBruto <= totalPlayTimeSeconds + 120
-                  const temDado = ts > 0 && firstPlayTime != null && dentroDoTempoDeJogo
-                  const segundosDesdeInicio = temDado ? segundosDesdeInicioBruto : 0
-                  const tsAnterior = generatorUnlockTimestamps[i - 1] ?? 0
-                  const segundosNoTierAnterior =
-                    i === 0 ? 0 : tsAnterior > 0 && ts > 0 ? (ts - tsAnterior) / 1000 : 0
-                  const temDadoTierAnterior = i > 0 && tsAnterior > 0 && ts > 0 && segundosNoTierAnterior >= 0 && segundosNoTierAnterior <= totalPlayTimeSeconds + 120
-                  return (
-                    <div key={i} className="flex flex-col gap-0.5 py-2 px-3 rounded-md bg-muted/50">
-                      <div className="flex justify-between items-baseline gap-2">
-                        <dt className="text-muted-foreground text-sm">Gerador {i + 1} — tempo até desbloquear</dt>
-                        <dd className="font-mono text-sm font-semibold tabular-nums">
-                          {temDado ? formatPlayTime(segundosDesdeInicio) : "—"}
-                        </dd>
-                      </div>
-                      {i > 0 && (
-                        <div className="flex justify-between items-baseline gap-2">
-                          <dt className="text-muted-foreground text-xs">Tempo só no tier anterior (Gerador {i})</dt>
-                          <dd className="font-mono text-xs tabular-nums">
-                            {temDadoTierAnterior ? formatPlayTime(segundosNoTierAnterior) : "—"}
-                          </dd>
-                        </div>
-                      )}
-                      <div className="flex justify-between items-baseline gap-2">
-                        <dt className="text-muted-foreground text-xs">Vezes que gerou recurso bônus (sorte)</dt>
-                        <dd className="font-mono text-xs tabular-nums">
-                          {(generatorBonusCount[i] ?? 0).toLocaleString("pt-BR")}
-                        </dd>
-                      </div>
-                    </div>
-                  )
-                })}
-              </dl>
-            </>
-          )}
         </Card>
       )}
 

@@ -36,12 +36,15 @@ jobs:
           name: breaking-eternity-macos
           path: |
             src-tauri/target/release/bundle/macos/*
+            src-tauri/target/release/bundle/dmg/*.dmg
 
       - name: Upload to Release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: src-tauri/target/release/bundle/macos/*
+          files: |
+            src-tauri/target/release/bundle/macos/*.app
+            src-tauri/target/release/bundle/dmg/*.dmg
           fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

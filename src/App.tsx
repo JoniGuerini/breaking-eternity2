@@ -13,6 +13,7 @@ import { ACHIEVEMENTS, filterValidAchievementIds, getNewlyUnlockedAchievementIds
 import { AchievementsPage } from "@/pages/AchievementsPage"
 import { GeneratorsPage } from "@/pages/GeneratorsPage"
 import { ImprovementsPage } from "@/pages/ImprovementsPage"
+import { EstatisticasPage } from "@/pages/EstatisticasPage"
 import { SettingsPage } from "@/pages/SettingsPage"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
@@ -1108,6 +1109,16 @@ function App() {
               Conquistas
             </NavLink>
             <NavLink
+              to="/estatisticas"
+              onClick={() => playClickSound()}
+              className={({ isActive }) =>
+                "text-sm px-2 py-1 rounded-md " +
+                (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+              }
+            >
+              Estatísticas
+            </NavLink>
+            <NavLink
               to="/configuracoes"
               onClick={() => playClickSound()}
               className={({ isActive }) =>
@@ -1152,6 +1163,7 @@ function App() {
               }
             />
             <Route path="/melhorias" element={<ImprovementsPage />} />
+            <Route path="/estatisticas" element={<EstatisticasPage />} />
             <Route
               path="/conquistas"
               element={
