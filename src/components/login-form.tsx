@@ -1,10 +1,14 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuth } from "@/context/AuthContext"
 import { playClickSound } from "@/lib/clickSound"
+import { getDeviceId } from "@/lib/deviceId"
+import { claimSession, getCurrentSessionDevice } from "@/lib/sessionDevice"
+import { supabase } from "@/lib/supabase"
 
 export function LoginForm() {
   const auth = useAuth()
@@ -13,6 +17,7 @@ export function LoginForm() {
   const [mode, setMode] = useState<"login" | "signup">("login")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [showForceLoginModal, setShowForceLoginModal] = useState(false)
 
   if (auth?.loading) {
     return (
@@ -22,7 +27,7 @@ export function LoginForm() {
     )
   }
 
-  if (auth?.user) {
+  if (auth?.user && !showForceLoginModal) {
     return (
       <div className="flex flex-col gap-6">
         <p className="text-center text-sm text-muted-foreground">
@@ -48,6 +53,43 @@ export function LoginForm() {
     )
   }
 
+  if (auth?.user && showForceLoginModal) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog" aria-labelledby="force-login-title">
+        <Card className="max-w-md w-full p-6 space-y-4 shadow-lg">
+          <h2 id="force-login-title" className="font-semibold text-lg">
+            Conta já logada em outro dispositivo
+          </h2>
+          <p className="text-muted-foreground text-sm">
+            Esta conta está em uso em outro dispositivo. Se fizer login aqui, o outro será deslogado e verá uma mensagem informando que a conta foi logada em outro lugar.
+          </p>
+          <div className="flex gap-2 justify-end">
+            <Button
+              variant="outline"
+              onClick={async () => {
+                playClickSound()
+                await auth!.signOut()
+                setShowForceLoginModal(false)
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={async () => {
+                playClickSound()
+                const deviceId = getDeviceId()
+                await claimSession(auth!.user!.id, deviceId)
+                setShowForceLoginModal(false)
+              }}
+            >
+              Forçar login
+            </Button>
+          </div>
+        </Card>
+      </div>
+    )
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!auth || loading || !email.trim() || !password) return
@@ -58,11 +100,25 @@ export function LoginForm() {
       mode === "login"
         ? await auth.signIn(email.trim(), password)
         : await auth.signUp(email.trim(), password)
-    setLoading(false)
     if (err) {
+      setLoading(false)
       setError(err.message)
       return
     }
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      setLoading(false)
+      return
+    }
+    const deviceId = getDeviceId()
+    const currentDevice = await getCurrentSessionDevice(user.id)
+    if (currentDevice != null && currentDevice !== deviceId) {
+      setShowForceLoginModal(true)
+      setLoading(false)
+      return
+    }
+    await claimSession(user.id, deviceId)
+    setLoading(false)
     if (mode === "signup") {
       setEmail("")
       setPassword("")

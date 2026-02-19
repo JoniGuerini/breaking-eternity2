@@ -6,6 +6,12 @@ import { Card } from "@/components/ui/card"
 import { AuthProvider, useAuth } from "@/context/AuthContext"
 import { GameContext, type GameContextValue } from "@/context/GameContext"
 import { supabase } from "@/lib/supabase"
+import { getDeviceId } from "@/lib/deviceId"
+import {
+  claimSession,
+  getCurrentSessionDevice,
+  subscribeSessionDevice,
+} from "@/lib/sessionDevice"
 import { playAchievementSound, playClickSound } from "@/lib/clickSound"
 import { ProgressoProvider } from "@/context/ProgressoContext"
 import { ShortcutHandler } from "@/components/ShortcutHandler"
@@ -472,6 +478,33 @@ function AppContent() {
         const raw = data.save_data as SavedState
         if (raw?.total && Array.isArray(raw.geradores) && raw.geradores.length === NUM_GERADORES) applySave(raw)
       })
+  }, [auth?.user?.id])
+
+  useEffect(() => {
+    const userId = auth?.user?.id
+    if (!userId) return
+    const deviceId = getDeviceId()
+    let cancelled = false
+    let unsub: (() => void) | null = null
+    getCurrentSessionDevice(userId).then((current) => {
+      if (cancelled) return
+      if (current != null && current !== deviceId) {
+        auth?.signOut()
+        toast.info("Sua conta foi logada em outro dispositivo.")
+        return
+      }
+      return claimSession(userId, deviceId)
+    }).then(() => {
+      if (cancelled) return
+      unsub = subscribeSessionDevice(userId, deviceId, () => {
+        auth?.signOut()
+        toast.info("Sua conta foi logada em outro dispositivo.")
+      })
+    })
+    return () => {
+      cancelled = true
+      unsub?.()
+    }
   }, [auth?.user?.id])
 
   useEffect(() => {
