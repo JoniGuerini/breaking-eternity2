@@ -3,7 +3,9 @@ import { BrowserRouter, NavLink, Route, Routes, useLocation } from "react-router
 import Decimal from "break_eternity.js"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { AuthProvider, useAuth } from "@/context/AuthContext"
 import { GameContext, type GameContextValue } from "@/context/GameContext"
+import { supabase } from "@/lib/supabase"
 import { playAchievementSound, playClickSound } from "@/lib/clickSound"
 import { ProgressoProvider } from "@/context/ProgressoContext"
 import { ShortcutHandler } from "@/components/ShortcutHandler"
@@ -14,6 +16,7 @@ import { AchievementsPage } from "@/pages/AchievementsPage"
 import { GeneratorsPage } from "@/pages/GeneratorsPage"
 import { ImprovementsPage } from "@/pages/ImprovementsPage"
 import { EstatisticasPage } from "@/pages/EstatisticasPage"
+import { LoginPage } from "@/pages/LoginPage"
 import { SettingsPage } from "@/pages/SettingsPage"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
@@ -258,7 +261,8 @@ function loadSavedState(): SavedState | null {
   }
 }
 
-function App() {
+function AppContent() {
+  const auth = useAuth()
   const [total, setTotal] = useState<Decimal>(() => {
     const saved = loadSavedState()
     if (!saved) return new Decimal(0)
@@ -389,6 +393,86 @@ function App() {
   const autoUnlockNextGeradorRef = useRef(false)
   const framesRef = useRef(0)
   const fpsIntervalRef = useRef(0)
+  const authUserIdRef = useRef<string | null>(null)
+  const cloudSaveAppliedForRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    authUserIdRef.current = auth?.user?.id ?? null
+    if (!auth?.user?.id) cloudSaveAppliedForRef.current = null
+  }, [auth?.user?.id])
+
+  function applySave(payload: SavedState) {
+    try {
+      const geradoresArr = payload.geradores?.length === NUM_GERADORES ? payload.geradores : Array(NUM_GERADORES).fill(0)
+      const upgradesArr = payload.upgrades?.length === NUM_GERADORES ? payload.upgrades : Array(NUM_GERADORES).fill(0)
+      const speedArr = payload.speedUpgrades?.length === NUM_GERADORES ? payload.speedUpgrades : Array(NUM_GERADORES).fill(0)
+      const luckArr = payload.luckUpgrades?.length === NUM_GERADORES ? payload.luckUpgrades : Array(NUM_GERADORES).fill(0)
+      const luckMultArr = payload.luckMultiplierUpgrades?.length === NUM_GERADORES ? payload.luckMultiplierUpgrades : Array(NUM_GERADORES).fill(0)
+      const tsArr = payload.generatorUnlockTimestamps?.length === NUM_GERADORES ? payload.generatorUnlockTimestamps : Array(NUM_GERADORES).fill(0)
+      const bonusArr = payload.generatorBonusCount?.length === NUM_GERADORES ? payload.generatorBonusCount : Array(NUM_GERADORES).fill(0)
+      const totalDec = Decimal.fromString(payload.total)
+      const lifetimeDec = payload.totalProducedLifetime ? Decimal.fromString(payload.totalProducedLifetime) : new Decimal(0)
+      const now = payload.lastSaveTime ?? Date.now()
+
+      setTotal(totalDec)
+      setGeradores(geradoresArr)
+      setJaColetouManual(payload.jaColetouManual ?? false)
+      setUpgrades(upgradesArr)
+      setSpeedUpgrades(speedArr)
+      setLuckUpgrades(luckArr)
+      setLuckMultiplierUpgrades(luckMultArr)
+      setGlobalProductionLevel(payload.globalProductionLevel ?? 0)
+      setGlobalSpeedLevel(payload.globalSpeedLevel ?? 0)
+      setGlobalPriceReductionLevel(payload.globalPriceReductionLevel ?? 0)
+      setAutoUnlockNextGerador(payload.autoUnlockNextGerador ?? false)
+      setShowFpsCounter(payload.showFpsCounter ?? false)
+      setGeneratorUnlockTimestamps(tsArr)
+      setGeneratorBonusCount(bonusArr)
+      setTotalProducedLifetime(lifetimeDec)
+      setTotalPlayTimeSeconds(payload.totalPlayTimeSeconds ?? 0)
+      setFirstPlayTime(payload.firstPlayTime ?? null)
+      setGeradoresCompradosManual(payload.geradoresCompradosManual ?? 0)
+      setAchievementsUnlocked(filterValidAchievementIds(payload.achievementsUnlocked ?? []))
+
+      totalRef.current = totalDec
+      geradoresRef.current = geradoresArr
+      jaColetouManualRef.current = payload.jaColetouManual ?? false
+      upgradesRef.current = upgradesArr
+      speedUpgradesRef.current = speedArr
+      luckUpgradesRef.current = luckArr
+      luckMultiplierUpgradesRef.current = luckMultArr
+      globalProductionLevelRef.current = payload.globalProductionLevel ?? 0
+      globalSpeedLevelRef.current = payload.globalSpeedLevel ?? 0
+      globalPriceReductionLevelRef.current = payload.globalPriceReductionLevel ?? 0
+      autoUnlockNextGeradorRef.current = payload.autoUnlockNextGerador ?? false
+      generatorUnlockTimestampsRef.current = tsArr
+      generatorBonusCountRef.current = bonusArr
+      totalProducedLifetimeRef.current = lifetimeDec
+      totalPlayTimeSecondsRef.current = payload.totalPlayTimeSeconds ?? 0
+      geradoresCompradosManualRef.current = payload.geradoresCompradosManual ?? 0
+      firstPlayTimeRef.current = payload.firstPlayTime ?? null
+      achievementsUnlockedRef.current = filterValidAchievementIds(payload.achievementsUnlocked ?? [])
+      lastSessionStartRef.current = now
+    } catch {
+      // ignora payload inválido
+    }
+  }
+
+  useEffect(() => {
+    if (!auth?.user?.id) return
+    if (cloudSaveAppliedForRef.current === auth.user.id) return
+    cloudSaveAppliedForRef.current = auth.user.id
+    supabase
+      .from("saves")
+      .select("save_data")
+      .eq("user_id", auth.user.id)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (error || !data?.save_data) return
+        const raw = data.save_data as SavedState
+        if (raw?.total && Array.isArray(raw.geradores) && raw.geradores.length === NUM_GERADORES) applySave(raw)
+      })
+  }, [auth?.user?.id])
 
   useEffect(() => {
     geradoresRef.current = geradores
@@ -514,6 +598,16 @@ function App() {
     }
     try {
       localStorage.setItem(SAVE_KEY, JSON.stringify(payload))
+      if (authUserIdRef.current) {
+        supabase
+          .from("saves")
+          .upsert(
+            { user_id: authUserIdRef.current, save_data: payload, updated_at: new Date().toISOString() },
+            { onConflict: "user_id" }
+          )
+          .then(() => {})
+          .catch(() => {})
+      }
     } catch {
       // storage cheio ou indisponível
     }
@@ -1014,8 +1108,6 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <Toaster position="top-right" />
       <GameContext.Provider value={gameContextValue}>
         <ShortcutHandler />
         <ScrollToTop />
@@ -1173,12 +1265,23 @@ function App() {
                     </div>
                   }
                 />
+                <Route path="/entrar" element={<LoginPage />} />
                 <Route path="/configuracoes" element={<SettingsPage />} />
               </Routes>
             </MainWithScrollBehavior>
           </RootLayout>
         </CustomContextMenu>
       </GameContext.Provider>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Toaster position="top-right" />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </BrowserRouter>
   )
 }

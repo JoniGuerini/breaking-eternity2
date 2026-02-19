@@ -22,6 +22,7 @@ import {
   type ShortcutId,
 } from "@/lib/shortcuts"
 import { applyTheme, getTheme, setTheme, THEMES, THEME_PREVIEW_COLORS, type ThemeId } from "@/lib/theme"
+import { useAuth } from "@/context/AuthContext"
 
 export function SettingsPage() {
   const ctx = useContext(GameContext)
@@ -31,7 +32,7 @@ export function SettingsPage() {
   const [clickSoundEnabled, setClickSoundEnabled] = useState(getClickSoundEnabled)
   const [clickSoundVolume, setClickSoundVolume] = useState(() => getClickSoundVolume())
   const [currentTheme, setCurrentTheme] = useState<ThemeId>(() => getTheme())
-  const [tab, setTab] = useState<"geral" | "temas" | "atalhos" | "avancado">("geral")
+  const [tab, setTab] = useState<"geral" | "temas" | "atalhos" | "conta" | "avancado">("geral")
   const [recordingId, setRecordingId] = useState<ShortcutId | null>(null)
   const [, forceUpdate] = useState(0)
   const [isFullscreen, setIsFullscreen] = useState(() => !!document.fullscreenElement)
@@ -84,6 +85,13 @@ export function SettingsPage() {
     document.addEventListener("fullscreenchange", onFullscreenChange)
     return () => document.removeEventListener("fullscreenchange", onFullscreenChange)
   }, [])
+
+  const auth = useAuth()
+
+  function goToLogin() {
+    playClickSound()
+    navigate("/entrar")
+  }
 
   async function toggleFullscreen() {
     playClickSound()
@@ -201,6 +209,21 @@ export function SettingsPage() {
           role="tab"
         >
           Atalhos
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            playClickSound()
+            setTab("conta")
+          }}
+          className={`flex-1 min-w-0 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${tab === "conta"
+            ? "text-foreground border-b-2 border-primary"
+            : "text-muted-foreground hover:text-foreground"
+          }`}
+          aria-selected={tab === "conta"}
+          role="tab"
+        >
+          Conta
         </button>
         <button
           type="button"
@@ -498,6 +521,44 @@ export function SettingsPage() {
               </div>
             ))}
           </div>
+        </Card>
+      )}
+
+      {tab === "conta" && (
+        <Card className="p-6 space-y-5">
+          <div>
+            <p className="font-medium">Sua conta</p>
+            <p className="text-muted-foreground text-sm mt-1">
+              Entre ou crie uma conta para, no futuro, acessar seus saves em qualquer dispositivo e participar do leaderboard.
+            </p>
+          </div>
+          {auth?.loading ? (
+            <p className="text-muted-foreground text-sm">Carregando…</p>
+          ) : auth?.user ? (
+            <div className="space-y-4">
+              <p className="text-sm">
+                Conectado como <span className="font-medium text-foreground">{auth.user.email}</span>
+              </p>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  playClickSound()
+                  auth.signOut()
+                }}
+              >
+                Sair
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Use a página de login para entrar ou criar conta.
+              </p>
+              <Button onClick={goToLogin}>
+                Ir para página de login
+              </Button>
+            </div>
+          )}
         </Card>
       )}
 
