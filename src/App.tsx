@@ -269,6 +269,7 @@ function loadSavedState(): SavedState | null {
 
 function AppContent() {
   const auth = useAuth()
+  const location = useLocation()
   const [total, setTotal] = useState<Decimal>(() => {
     const saved = loadSavedState()
     if (!saved) return new Decimal(0)
@@ -489,6 +490,8 @@ function AppContent() {
     getCurrentSessionDevice(userId).then((current) => {
       if (cancelled) return
       if (current != null && current !== deviceId) {
+        // Se estamos na página de login, o modal "Forçar login" vai tratar; não deslogar aqui.
+        if (location.pathname === "/entrar") return
         auth?.signOut()
         toast.info("Sua conta foi logada em outro dispositivo.")
         return
@@ -505,7 +508,7 @@ function AppContent() {
       cancelled = true
       unsub?.()
     }
-  }, [auth?.user?.id])
+  }, [auth?.user?.id, location.pathname])
 
   useEffect(() => {
     geradoresRef.current = geradores
