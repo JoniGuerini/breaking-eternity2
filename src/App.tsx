@@ -599,14 +599,14 @@ function AppContent() {
     try {
       localStorage.setItem(SAVE_KEY, JSON.stringify(payload))
       if (authUserIdRef.current) {
-        supabase
-          .from("saves")
-          .upsert(
-            { user_id: authUserIdRef.current, save_data: payload, updated_at: new Date().toISOString() },
-            { onConflict: "user_id" }
-          )
-          .then(() => {})
-          .catch(() => {})
+        void Promise.resolve(
+          supabase
+            .from("saves")
+            .upsert(
+              { user_id: authUserIdRef.current, save_data: payload, updated_at: new Date().toISOString() },
+              { onConflict: "user_id" }
+            )
+        ).catch(() => {})
       }
     } catch {
       // storage cheio ou indisponível
