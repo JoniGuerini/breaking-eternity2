@@ -477,7 +477,65 @@ function AppContent() {
       .then(({ data, error }) => {
         if (error || !data?.save_data) return
         const raw = data.save_data as SavedState
-        if (raw?.total && Array.isArray(raw.geradores) && raw.geradores.length === NUM_GERADORES) applySave(raw)
+        if (raw?.total && Array.isArray(raw.geradores) && raw.geradores.length === NUM_GERADORES) {
+          // Calcular progresso offline ao carregar do cloud
+          if (raw.lastSaveTime) {
+            const offlineSeconds = (Date.now() - raw.lastSaveTime) / 1000
+            if (offlineSeconds > 5) {
+              const totalAntes = Decimal.fromString(raw.total)
+              const savedUpgrades =
+                raw.upgrades && raw.upgrades.length === NUM_GERADORES
+                  ? raw.upgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
+                  : Array(NUM_GERADORES).fill(0)
+              const savedSpeedUpgrades =
+                raw.speedUpgrades && raw.speedUpgrades.length === NUM_GERADORES
+                  ? raw.speedUpgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
+                  : Array(NUM_GERADORES).fill(0)
+              const savedLuckUpgrades =
+                raw.luckUpgrades && raw.luckUpgrades.length === NUM_GERADORES
+                  ? raw.luckUpgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
+                  : Array(NUM_GERADORES).fill(0)
+              const savedLuckMult =
+                raw.luckMultiplierUpgrades && raw.luckMultiplierUpgrades.length === NUM_GERADORES
+                  ? raw.luckMultiplierUpgrades.map((v) => (typeof v === "boolean" ? (v ? 1 : 0) : Number(v)))
+                  : Array(NUM_GERADORES).fill(0)
+              const savedGlobalProd = typeof raw.globalProductionLevel === "number" && raw.globalProductionLevel >= 0 ? raw.globalProductionLevel : 0
+              const savedGlobalSpeed = typeof raw.globalSpeedLevel === "number" && raw.globalSpeedLevel >= 0 ? raw.globalSpeedLevel : 0
+
+              const result = simulateOffline(
+                totalAntes,
+                raw.geradores,
+                offlineSeconds,
+                savedUpgrades,
+                savedSpeedUpgrades,
+                savedLuckUpgrades,
+                savedLuckMult,
+                savedGlobalProd,
+                savedGlobalSpeed
+              )
+
+              // Atualiza o estado carregado com o resultado da simulação
+              raw.total = result.total.toString()
+              raw.geradores = result.geradores
+              
+              if (result.totalGain.gt(0)) {
+                const base = raw.totalProducedLifetime
+                  ? Decimal.fromString(raw.totalProducedLifetime)
+                  : new Decimal(0)
+                raw.totalProducedLifetime = base.add(result.totalGain).toString()
+              }
+
+              const currentBonus = raw.generatorBonusCount && raw.generatorBonusCount.length === NUM_GERADORES 
+                ? raw.generatorBonusCount.map(Number) 
+                : Array(NUM_GERADORES).fill(0)
+                
+              raw.generatorBonusCount = currentBonus.map((c, i) => c + (result.bonusCountDelta[i] ?? 0))
+
+              setOfflineCard({ totalGain: result.totalGain, seconds: offlineSeconds })
+            }
+          }
+          applySave(raw)
+        }
       })
   }, [auth?.user?.id])
 
