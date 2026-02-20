@@ -49,7 +49,6 @@ function RootLayout({ children }: { children: React.ReactNode }) {
 /** Envolve o main e o conteúdo; na página de conquistas desativa rolagem aqui (só a lista interna rola). */
 function MainWithScrollBehavior({ children }: { children: React.ReactNode }) {
   const location = useLocation()
-  const navigate = useNavigate()
   const isConquistas = location.pathname === "/conquistas"
   return (
     <main className="scroll-overlay flex-1 min-h-0 flex flex-col overflow-hidden px-4 py-4 md:px-6">
