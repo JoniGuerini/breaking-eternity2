@@ -193,6 +193,7 @@
     0 1px 2px rgba(0, 0, 0, 0.08),
     0 4px 12px rgba(100, 70, 30, 0.18);
 }
+
 .theme-vintage button.bg-primary,
 .theme-vintage .bg-primary.text-primary-foreground {
   box-shadow: 0 2px 8px rgba(120, 80, 40, 0.25);
@@ -961,21 +962,440 @@
   --sidebar-ring: oklch(0.62 0.15 85);
 }
 
+/* Windows 95 (Teal, Silver, Gray - Retro) */
+.theme-win95 {
+  --radius: 0;
+  --background: oklch(0.48 0.11 196);
+  --foreground: oklch(0 0 0);
+  --card: oklch(0.82 0 0);
+  --card-foreground: oklch(0 0 0);
+  --popover: oklch(0.82 0 0);
+  --popover-foreground: oklch(0 0 0);
+  --primary: oklch(0.3 0.15 260);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.75 0 0);
+  --secondary-foreground: oklch(0 0 0);
+  --muted: oklch(0.75 0 0);
+  --muted-foreground: oklch(0.4 0 0);
+  --accent: oklch(0.3 0.15 260);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.55 0.2 25);
+  --border: oklch(0.5 0 0);
+  --input: oklch(1 0 0);
+  --ring: oklch(0 0 0);
+  --chart-1: oklch(0.3 0.15 260);
+  --chart-2: oklch(0.48 0.11 196);
+  --chart-3: oklch(0.7 0.1 80);
+  --chart-4: oklch(0.6 0 0);
+  --chart-5: oklch(0.2 0.05 260);
+  --sidebar: oklch(0.82 0 0);
+  --sidebar-foreground: oklch(0 0 0);
+  --sidebar-primary: oklch(0.3 0.15 260);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.3 0.15 260);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.5 0 0);
+  --sidebar-ring: oklch(0 0 0);
+}
+
+/* Win95 3D borders */
+.theme-win95 [data-slot="card"],
+.theme-win95 .card,
+.theme-win95 .popover {
+  border: 2px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf;
+  box-shadow: none;
+}
+
+.theme-win95 button,
+.theme-win95 .btn {
+  border: 2px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf;
+  background-color: oklch(0.82 0 0);
+}
+
+.theme-win95 button:active {
+  border-color: #404040 #dfdfdf #dfdfdf #404040;
+}
+
+/* Windows XP (Luna - Blue/Green/White) */
+/* Windows XP (Luna - Blue/Green/White) */
+.theme-winxp {
+  --radius: 8px;
+  /* Slightly more rounded */
+  --background: oklch(0.65 0.12 250);
+  /* Fallback */
+  --foreground: oklch(0 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0 0 0);
+  --primary: oklch(0.45 0.2 260);
+  /* Luna Blue */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0 0);
+  --secondary-foreground: oklch(0 0 0);
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.4 0 0);
+  --accent: oklch(0.6 0.2 145);
+  /* Start Green */
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.55 0.2 25);
+  --border: oklch(0.45 0.2 260);
+  --input: oklch(1 0 0);
+  --ring: oklch(0.6 0.2 145);
+  --chart-1: oklch(0.45 0.2 260);
+  --chart-2: oklch(0.6 0.2 145);
+  --chart-3: oklch(0.9 0.1 85);
+  --chart-4: oklch(0.8 0.1 25);
+  --chart-5: oklch(0.5 0.15 300);
+  --sidebar: oklch(0.5 0.15 255);
+  /* Explorer Side Bar Blue */
+  --sidebar-foreground: oklch(0 0 0);
+  /* Dark text on sidebar usually, or white? Explorer was gradient. Let's stick to readable. */
+  --sidebar-primary: oklch(0.6 0.2 145);
+  /* Green highlight */
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.5 0.2 260);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(1 0 0 / 20%);
+  --sidebar-ring: oklch(0.6 0.2 145);
+
+  font-family: "Tahoma", "Verdana", "Segoe UI", sans-serif;
+}
+
+/* XP Bliss Background */
+.theme-winxp body {
+  background: linear-gradient(to bottom, #3B93FF 0%, #8EB6E6 50%, #68B556 50%, #4C9738 100%);
+  background-attachment: fixed;
+}
+
+/* XP Window Cards */
+.theme-winxp [data-slot="card"],
+.theme-winxp .card,
+.theme-winxp .popover {
+  border: 4px solid #0055EA;
+  /* Thick blue border */
+  border-radius: 8px 8px 0 0;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  background: #ffffff;
+  overflow: hidden;
+  position: relative;
+  padding-top: 32px;
+  /* Space for title bar */
+}
+
+/* Fake Title Bar via Pseudo-element */
+.theme-winxp [data-slot="card"]::before,
+.theme-winxp .card::before,
+.theme-winxp .popover::before {
+  content: "Windows XP";
+  /* Fallback text or could be empty */
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  /* Classic XP Title Gradient: Blue */
+  background: linear-gradient(to bottom, #0058EE 0%, #3593FF 4%, #2884F0 50%, #0055EA 96%, #0045C0 100%);
+  /* Corner rounding matches card */
+  border-radius: 4px 4px 0 0;
+  /* Subtle sheen */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  z-index: 0;
+}
+
+/* Buttons */
+.theme-winxp button {
+  background: linear-gradient(to bottom, #ffffff 0%, #f0f0f0 45%, #e0e0e0 50%, #d0d0d0 100%);
+  border: 1px solid #003c74;
+  border-radius: 3px;
+  color: #000;
+}
+
+.theme-winxp button:hover {
+  box-shadow: inset 0 0 2px #f8b334;
+  /* Orange glow on hover */
+  border-color: #f8b334;
+}
+
+/* Primary Button (Exp Green or Blue?) - Let's go Green for Start/Action */
+.theme-winxp .bg-primary,
+.theme-winxp button.bg-primary {
+  background: linear-gradient(to bottom, #3E9C36 0%, #66CE5C 10%, #3E9C36 100%);
+  /* Green Start Button */
+  border: 1px solid #1a5113;
+  color: white;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+  font-style: italic;
+  /* Start button esque */
+}
+
+.theme-winxp button.bg-primary:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 2px white;
+}
+
+/* MacOS (Clean White, San Francisco, Apple Blue) */
+.theme-macos {
+  --radius: 12px;
+  --background: oklch(0.96 0.01 260);
+  /* #F5F5F7 */
+  --foreground: oklch(0 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0 0 0);
+  --primary: oklch(0.48 0.2 260);
+  /* #007AFF */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0 0);
+  --secondary-foreground: oklch(0 0 0);
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.4 0 0);
+  --accent: oklch(0.93 0 0);
+  --accent-foreground: oklch(0 0 0);
+  --destructive: oklch(0.55 0.2 25);
+  --border: oklch(0.9 0 0);
+  --input: oklch(0.9 0 0);
+  --ring: oklch(0.48 0.2 260);
+  /* Focus ring same as primary */
+  --chart-1: oklch(0.48 0.2 260);
+  --chart-2: oklch(0.6 0.2 145);
+  --chart-3: oklch(0.9 0.1 85);
+  --chart-4: oklch(0.8 0.1 25);
+  --chart-5: oklch(0.5 0.15 300);
+  --sidebar: oklch(0.96 0.01 260);
+  /* Match background */
+  --sidebar-foreground: oklch(0 0 0);
+  --sidebar-primary: oklch(0.48 0.2 260);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.9 0 0);
+  --sidebar-accent-foreground: oklch(0 0 0);
+  --sidebar-border: oklch(0 0 0 / 5%);
+  --sidebar-ring: oklch(0.48 0.2 260);
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+/* MacOS Visual Adjustments */
+.theme-macos [data-slot="card"],
+.theme-macos .card,
+.theme-macos .popover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.theme-macos button {
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.theme-macos .bg-primary,
+.theme-macos button.bg-primary {
+  background: #007AFF;
+  border: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.theme-macos button.bg-primary:hover {
+  background: #006ADC;
+  /* Slightly darker on hover */
+  transform: translateY(-0.5px);
+}
+
+/* World of Warcraft (Dark Stone, Gold, Fantasy) */
+.theme-wow {
+  --radius: 4px;
+  --background: oklch(0.2 0.05 260);
+  /* #050608 Dark Stone */
+  --foreground: oklch(0.9 0.1 85);
+  /* #FFD100 Gold Text (Light) or Parchment */
+  --card: oklch(0.15 0.04 260);
+  /* #15171E Panels */
+  --card-foreground: oklch(0.85 0.18 85);
+  /* Gold */
+  --popover: oklch(0.15 0.04 260);
+  --popover-foreground: oklch(0.85 0.18 85);
+  --primary: oklch(0.7 0.18 85);
+  /* #FFD100 Gold Primary */
+  --primary-foreground: oklch(0.1 0.05 260);
+  --secondary: oklch(0.3 0 0);
+  /* Dark Grey */
+  --secondary-foreground: oklch(0.9 0.1 85);
+  --muted: oklch(0.3 0 0);
+  --muted-foreground: oklch(0.7 0.1 85);
+  --accent: oklch(0.25 0.05 260);
+  --accent-foreground: oklch(0.85 0.18 85);
+  --destructive: oklch(0.5 0.2 25);
+  --border: oklch(0.5 0.15 85);
+  /* Gold Border */
+  --input: oklch(0.1 0.05 260);
+  --ring: oklch(0.7 0.18 85);
+  --chart-1: oklch(0.7 0.18 85);
+  --chart-2: oklch(0.6 0.15 30);
+  --chart-3: oklch(0.4 0.1 260);
+  --chart-4: oklch(0.5 0.15 140);
+  --chart-5: oklch(0.6 0.2 300);
+  --sidebar: oklch(0.15 0.04 260);
+  --sidebar-foreground: oklch(0.85 0.18 85);
+  --sidebar-primary: oklch(0.7 0.18 85);
+  --sidebar-primary-foreground: oklch(0.1 0.05 260);
+  --sidebar-accent: oklch(0.25 0.05 260);
+  --sidebar-accent-foreground: oklch(0.85 0.18 85);
+  --sidebar-border: oklch(0.5 0.15 85);
+  --sidebar-ring: oklch(0.7 0.18 85);
+
+  font-family: "Cinzel", "Times New Roman", serif;
+}
+
+/* WoW Visuals */
+.theme-wow [data-slot="card"],
+.theme-wow .card,
+.theme-wow .popover {
+  border: 2px solid #CDB380;
+  /* Gold Border */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.5);
+  background: #111318;
+  border-radius: 4px;
+}
+
+.theme-wow button {
+  background: linear-gradient(to bottom, #5B0F0F 0%, #300000 100%);
+  /* Horde Red or just dark metal */
+  background: linear-gradient(to bottom, #4a4a4a 0%, #2b2b2b 100%);
+  border: 1px solid #CDB380;
+  color: #FFD100;
+  text-transform: uppercase;
+  font-weight: bold;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 1px 0 #000;
+  letter-spacing: 1px;
+}
+
+.theme-wow .bg-primary,
+.theme-wow button.bg-primary {
+  background: linear-gradient(to bottom, #8B0000 0%, #500000 100%);
+  /* Red/Gold vibe */
+  border: 2px solid #FFD100;
+  color: #FFF;
+}
+
+.theme-wow button:hover {
+  filter: brightness(1.2);
+  box-shadow: 0 0 10px #FFD100;
+}
+
+
+
+/* Dark High Contrast (Black, White, Yellow, Cyan) */
+.theme-high-contrast {
+  --radius: 0px;
+  --background: oklch(0 0 0);
+  /* Pure Black */
+  --foreground: oklch(1 0 0);
+  /* Pure White */
+  --card: oklch(0 0 0);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0 0 0);
+  --popover-foreground: oklch(1 0 0);
+  --primary: oklch(0.95 0.2 110);
+  /* Bright Yellow */
+  --primary-foreground: oklch(0 0 0);
+  --secondary: oklch(0.9 0.15 190);
+  /* Cyan */
+  --secondary-foreground: oklch(0 0 0);
+  --muted: oklch(0.2 0 0);
+  --muted-foreground: oklch(1 0 0);
+  --accent: oklch(0.9 0.15 190);
+  --accent-foreground: oklch(0 0 0);
+  --destructive: oklch(0.6 0.25 25);
+  --border: oklch(1 0 0);
+  /* White Border */
+  --input: oklch(0 0 0);
+  --ring: oklch(0.95 0.2 110);
+  --chart-1: oklch(0.95 0.2 110);
+  --chart-2: oklch(0.9 0.15 190);
+  --chart-3: oklch(1 0 0);
+  --chart-4: oklch(0.6 0.25 25);
+  --chart-5: oklch(0.8 0.2 300);
+  --sidebar: oklch(0 0 0);
+  --sidebar-foreground: oklch(1 0 0);
+  --sidebar-primary: oklch(0.95 0.2 110);
+  --sidebar-primary-foreground: oklch(0 0 0);
+  --sidebar-accent: oklch(0.9 0.15 190);
+  --sidebar-accent-foreground: oklch(0 0 0);
+  --sidebar-border: oklch(1 0 0);
+  --sidebar-ring: oklch(0.95 0.2 110);
+
+  font-family: "Verdana", "Arial", sans-serif;
+  letter-spacing: 0.5px;
+}
+
+/* High Contrast Visuals */
+.theme-high-contrast [data-slot="card"],
+.theme-high-contrast .card,
+.theme-high-contrast .popover {
+  border: 2px solid #FFFFFF;
+  box-shadow: none;
+  background: #000000;
+}
+
+.theme-high-contrast button {
+  border: 2px solid #FFFFFF;
+  background: #000000;
+  color: #FFFFFF;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.theme-high-contrast .bg-primary,
+.theme-high-contrast button.bg-primary {
+  background: #FFFF00;
+  color: #000000;
+  border: 2px solid #FFFFFF;
+}
+
+.theme-high-contrast button:hover,
+.theme-high-contrast button:focus {
+  outline: 2px solid #00FFFF;
+  outline-offset: 2px;
+  background: #000000;
+  color: #00FFFF;
+  border-color: #00FFFF;
+}
+
+.theme-high-contrast button.bg-primary:hover,
+.theme-high-contrast button.bg-primary:focus {
+  background: #FFFF00;
+  color: #000000;
+  outline: 2px solid #FFFFFF;
+}
+
 /* Bordas retas para todos os elementos no tema Terminal (toggles, barras, botões, cards) */
 .theme-terminal .rounded-full,
 .theme-terminal [class*="rounded-full"] {
   border-radius: 0;
 }
+
 .theme-terminal input[type="range"]::-webkit-slider-thumb {
   border-radius: 0;
 }
+
 .theme-terminal input[type="range"]::-moz-range-thumb {
   border-radius: 0;
 }
 
 @keyframes flow-bar {
-  0% { transform: translate3d(-50%, 0, 0); }
-  100% { transform: translate3d(0, 0, 0); }
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 /* Barra de rolagem invisível (html/body = onde o scroll da página acontece; .scroll-overlay = main ou wrapper) */
@@ -985,6 +1405,7 @@ body,
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+
 html::-webkit-scrollbar,
 body::-webkit-scrollbar,
 .scroll-overlay::-webkit-scrollbar {
@@ -992,6 +1413,7 @@ body::-webkit-scrollbar,
   height: 0 !important;
   display: none !important;
 }
+
 html::-webkit-scrollbar-track,
 html::-webkit-scrollbar-thumb,
 body::-webkit-scrollbar-track,
@@ -1007,6 +1429,7 @@ body::-webkit-scrollbar-thumb,
   color: var(--foreground) !important;
   opacity: 1;
 }
+
 /* Título do toast também segue o tema */
 .toaster [data-title] {
   color: var(--foreground) !important;
@@ -1016,6 +1439,7 @@ body::-webkit-scrollbar-thumb,
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

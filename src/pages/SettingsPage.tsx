@@ -114,6 +114,8 @@ export function SettingsPage() {
     showFpsCounter,
     setShowFpsCounter,
     persistSave,
+    cloudSaveInterval,
+    setCloudSaveInterval,
   } = ctx
 
   function handleThemeChange(theme: ThemeId) {
@@ -219,7 +221,7 @@ export function SettingsPage() {
           className={`flex-1 min-w-0 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${tab === "conta"
             ? "text-foreground border-b-2 border-primary"
             : "text-muted-foreground hover:text-foreground"
-          }`}
+            }`}
           aria-selected={tab === "conta"}
           role="tab"
         >
@@ -331,6 +333,54 @@ export function SettingsPage() {
             </div>
             <div className="space-y-6">
               <div>
+                <p className="font-medium">Salvar progresso</p>
+                <p className="text-muted-foreground text-sm mt-1">
+                  O jogo salva automaticamente a cada <span className="font-mono font-semibold text-foreground">{cloudSaveInterval / 1000}</span> segundos. Você pode forçar um save aqui.
+                </p>
+                <div className="flex flex-col gap-2 mt-4">
+                  <div className="space-y-4 pt-2 pb-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm font-medium">Intervalo de salvamento na nuvem</span>
+                      <span className="text-sm font-mono tabular-nums">{cloudSaveInterval / 1000}s</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={5000}
+                      max={60000}
+                      step={5000}
+                      value={cloudSaveInterval}
+                      onChange={(e) => {
+                        const val = Number(e.target.value)
+                        setCloudSaveInterval(val)
+                      }}
+                      onMouseUp={() => playClickSound()}
+                      onTouchEnd={() => playClickSound()}
+                      className="w-full h-2 rounded-full appearance-none bg-muted accent-primary cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-0 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
+                      aria-label="Intervalo de salvamento"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Menor = Saves mais frequentes. Maior = Menos uso de rede.
+                    </p>
+                  </div>
+                  <div className="text-sm text-muted-foreground mb-2">
+                    Último save: <span className="font-mono text-foreground">{ctx.lastSaveTime ? new Date(ctx.lastSaveTime).toLocaleString() : "Nunca"}</span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      playClickSound()
+                      persistSave()
+                    }}
+                  >
+                    Salvar agora
+                  </Button>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div>
                 <p className="font-medium">Baixar para desktop</p>
                 <p className="text-muted-foreground text-sm mt-1">
                   Instale o jogo no seu PC ou Mac e jogue sem abrir o navegador.
@@ -366,45 +416,56 @@ export function SettingsPage() {
                   </Button>
                 </div>
               </div>
+
+              <Separator />
+
               <div>
-                <p className="font-medium">Restaurar configurações padrão</p>
-                <p className="text-muted-foreground text-sm mt-1">
-                  Volta as opções de Geral, Temas e Atalhos para o padrão do jogo.
-                </p>
+                <div>
+                  <p className="font-medium">Restaurar configurações padrão</p>
+                  <p className="text-muted-foreground text-sm mt-1">
+                    Volta as opções de Geral, Temas e Atalhos para o padrão do jogo.
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  className="w-full mt-4"
+                  onClick={() => {
+                    playClickSound()
+                    persistClickSound(true)
+                    setClickSoundEnabled(true)
+                    persistClickSoundVolume(100)
+                    setClickSoundVolume(100)
+                    setShowFpsCounter(false)
+                    setAutoUnlockNextGerador(false)
+                    setTheme("dark")
+                    applyTheme("dark")
+                    setCurrentTheme("dark")
+                    resetShortcutsToDefaults()
+                    setCloudSaveInterval(10000)
+                    forceUpdate((n) => n + 1)
+                  }}
+                >
+                  Restaurar configurações padrão
+                </Button>
               </div>
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => {
-                  playClickSound()
-                  persistClickSound(true)
-                  setClickSoundEnabled(true)
-                  persistClickSoundVolume(100)
-                  setClickSoundVolume(100)
-                  setShowFpsCounter(false)
-                  setAutoUnlockNextGerador(false)
-                  setTheme("dark")
-                  applyTheme("dark")
-                  setCurrentTheme("dark")
-                  resetShortcutsToDefaults()
-                  forceUpdate((n) => n + 1)
-                }}
-              >
-                Restaurar configurações padrão
-              </Button>
+
+              <Separator />
+
               <div>
-                <p className="font-medium">Sair do jogo</p>
-                <p className="text-muted-foreground text-sm mt-1">
-                  Salva o progresso e fecha o jogo.
-                </p>
+                <div>
+                  <p className="font-medium">Sair do jogo</p>
+                  <p className="text-muted-foreground text-sm mt-1">
+                    Salva o progresso e fecha o jogo.
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  className="w-full mt-4"
+                  onClick={handleExit}
+                >
+                  Sair
+                </Button>
               </div>
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={handleExit}
-              >
-                Sair
-              </Button>
             </div>
           </div>
         </Card>

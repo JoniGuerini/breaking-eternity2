@@ -25,12 +25,22 @@ export type ThemeId =
   | "sage"
   | "ink"
   | "honey"
+  | "win95"
+  | "winxp"
+  | "macos"
+  | "wow"
+  | "high-contrast"
 
 const DEFAULT_THEME: ThemeId = "dark"
 
 export const THEMES: { id: ThemeId; label: string }[] = [
   { id: "light", label: "Claro" },
   { id: "dark", label: "Escuro" },
+  { id: "high-contrast", label: "Alto Contraste (Escuro)" },
+  { id: "wow", label: "World of Warcraft" },
+  { id: "macos", label: "MacOS" },
+  { id: "winxp", label: "Windows XP" },
+  { id: "win95", label: "Windows 95" },
   { id: "vintage", label: "Vintage" },
   { id: "terminal", label: "Terminal" },
   { id: "nord", label: "Nord" },
@@ -59,6 +69,11 @@ export const THEMES: { id: ThemeId; label: string }[] = [
 export const THEME_PREVIEW_COLORS: Record<ThemeId, [string, string, string, string]> = {
   light: ["oklch(1 0 0)", "oklch(0.97 0 0)", "oklch(0.205 0 0)", "oklch(0.97 0 0)"],
   dark: ["oklch(0.145 0 0)", "oklch(0.205 0 0)", "oklch(0.922 0 0)", "oklch(0.269 0 0)"],
+  "high-contrast": ["oklch(0 0 0)", "oklch(1 0 0)", "oklch(0.95 0.2 110)", "oklch(0.9 0.15 190)"],
+  wow: ["oklch(0.2 0.05 260)", "oklch(0.15 0.04 260)", "oklch(0.85 0.18 85)", "oklch(0.18 0.02 260)"],
+  macos: ["oklch(0.96 0.01 260)", "oklch(1 0 0)", "oklch(0.48 0.2 260)", "oklch(0.96 0.01 260)"],
+  winxp: ["oklch(0.65 0.12 250)", "oklch(1 0 0)", "oklch(0.45 0.2 260)", "oklch(0.6 0.2 145)"],
+  win95: ["oklch(0.48 0.11 196)", "oklch(0.82 0 0)", "oklch(0.3 0.15 260)", "oklch(0.6 0 0)"],
   vintage: ["oklch(0.22 0.04 55)", "oklch(0.28 0.05 60)", "oklch(0.75 0.15 75)", "oklch(0.38 0.08 70)"],
   terminal: ["oklch(0.12 0 0)", "oklch(0.16 0.02 155)", "oklch(0.78 0.18 155)", "oklch(0.26 0.06 155)"],
   nord: ["oklch(0.26 0.02 250)", "oklch(0.31 0.02 250)", "oklch(0.72 0.08 220)", "oklch(0.42 0.04 250)"],

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
-import { BrowserRouter, NavLink, Route, Routes, useLocation } from "react-router-dom"
+import { BrowserRouter, NavLink, Route, Routes, useLocation, useNavigate } from "react-router-dom"
+import { BarChart3, Settings, Trophy } from "lucide-react"
 import Decimal from "break_eternity.js"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -26,6 +27,8 @@ import { LoginPage } from "@/pages/LoginPage"
 import { SettingsPage } from "@/pages/SettingsPage"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
+import { NotificationProvider, useNotification } from "@/context/NotificationContext"
+import { NotificationCenter } from "@/components/NotificationCenter"
 
 /** Na página de conquistas trava o layout em 100vh para o documento não rolar; só a lista rola. */
 function RootLayout({ children }: { children: React.ReactNode }) {
@@ -46,6 +49,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
 /** Envolve o main e o conteúdo; na página de conquistas desativa rolagem aqui (só a lista interna rola). */
 function MainWithScrollBehavior({ children }: { children: React.ReactNode }) {
   const location = useLocation()
+  const navigate = useNavigate()
   const isConquistas = location.pathname === "/conquistas"
   return (
     <main className="scroll-overlay flex-1 min-h-0 flex flex-col overflow-hidden px-4 py-4 md:px-6">
@@ -63,7 +67,6 @@ function MainWithScrollBehavior({ children }: { children: React.ReactNode }) {
 
 const NUM_GERADORES = 100
 const SAVE_KEY = "breaking-eternity-save"
-const SAVE_INTERVAL_MS = 5000
 const MAX_OFFLINE_SECONDS = 7 * 24 * 3600 // 7 dias (simulação em passos de 1s)
 /** Se o tick demorar mais que isso em tempo real (tela bloqueada, tampa fechada, aba em segundo plano), aplicamos catch-up com simulação offline. */
 const PAUSE_THRESHOLD_SECONDS = 3
@@ -115,6 +118,7 @@ interface SavedState {
   lastSessionStart?: number
   geradoresCompradosManual?: number
   achievementsUnlocked?: string[]
+  cloudSaveInterval?: number
 }
 
 /** Chance de crítico (dobro) para gerador i com nível da melhoria Sorte */
@@ -171,10 +175,12 @@ function simulateOffline(
   return { total: curTotal, geradores: curGen, totalGain, bonusCountDelta }
 }
 
-// Custo base: Gerador 1 = 1; cada tier custa 100x mais que o anterior (10^(2*i))
-// G1=1, G2=100, G3=10.000, G4=1.000.000, G5=10^8, ...
+// Custo base: Fórmula ajustada para escalar mais rápido que 100x
+// Antes: 10^(2*i)
+// Agora: 10^(2*i + (i^2)/10) -> Curva mais acentuada
 function custoBase(i: number): Decimal {
-  return Decimal.pow(10, 2 * i)
+  // Ajuste o divisor (10) para controlar o quão rápido o "gap" aumenta
+  return Decimal.pow(10, 2 * i + (i * i) / 8)
 }
 
 /** Multiplicador de preço pós-desbloqueio: cada nível global reduz 5% (0.95^nível); só afeta compras quando gerador já está desbloqueado */
@@ -332,6 +338,7 @@ function AppContent() {
     return saved?.autoUnlockNextGerador ?? false
   })
   const [fps, setFps] = useState(0)
+  const { addNotification, clearAll } = useNotification()
   const [showFpsCounter, setShowFpsCounter] = useState(() => {
     const saved = loadSavedState()
     return saved?.showFpsCounter === true
@@ -398,10 +405,19 @@ function AppContent() {
   const progressoRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const setProgressoStateRef = useRef<((v: number[]) => void) | null>(null)
   const autoUnlockNextGeradorRef = useRef(false)
+  const [lastSaveTime, setLastSaveTime] = useState(() => loadSavedState()?.lastSaveTime ?? Date.now())
+  const [cloudSaveInterval, setCloudSaveInterval] = useState(() => {
+    const saved = loadSavedState()
+    const val = saved?.cloudSaveInterval ?? 10000
+    if (val < 5000) return 5000
+    if (val > 60000) return 60000
+    return val
+  })
   const framesRef = useRef(0)
   const fpsIntervalRef = useRef(0)
   const authUserIdRef = useRef<string | null>(null)
   const cloudSaveAppliedForRef = useRef<string | null>(null)
+  const sessionLoadTimeRef = useRef(Date.now())
 
   useEffect(() => {
     authUserIdRef.current = auth?.user?.id ?? null
@@ -440,6 +456,13 @@ function AppContent() {
       setFirstPlayTime(payload.firstPlayTime ?? null)
       setGeradoresCompradosManual(payload.geradoresCompradosManual ?? 0)
       setAchievementsUnlocked(filterValidAchievementIds(payload.achievementsUnlocked ?? []))
+
+      const savedInterval = payload.cloudSaveInterval ?? 10000
+      setCloudSaveInterval(Math.max(5000, Math.min(60000, savedInterval)))
+
+      // Notifications logic
+      // We don't want to spam notifications on load, but we could add a "Game Loaded" one if desired.
+      // For now, let's just respect the loaded state.
 
       totalRef.current = totalDec
       geradoresRef.current = geradoresArr
@@ -517,7 +540,7 @@ function AppContent() {
               // Atualiza o estado carregado com o resultado da simulação
               raw.total = result.total.toString()
               raw.geradores = result.geradores
-              
+
               if (result.totalGain.gt(0)) {
                 const base = raw.totalProducedLifetime
                   ? Decimal.fromString(raw.totalProducedLifetime)
@@ -525,10 +548,10 @@ function AppContent() {
                 raw.totalProducedLifetime = base.add(result.totalGain).toString()
               }
 
-              const currentBonus = raw.generatorBonusCount && raw.generatorBonusCount.length === NUM_GERADORES 
-                ? raw.generatorBonusCount.map(Number) 
+              const currentBonus = raw.generatorBonusCount && raw.generatorBonusCount.length === NUM_GERADORES
+                ? raw.generatorBonusCount.map(Number)
                 : Array(NUM_GERADORES).fill(0)
-                
+
               raw.generatorBonusCount = currentBonus.map((c, i) => c + (result.bonusCountDelta[i] ?? 0))
 
               setOfflineCard({ totalGain: result.totalGain, seconds: offlineSeconds })
@@ -566,7 +589,7 @@ function AppContent() {
       cancelled = true
       unsub?.()
     }
-  }, [auth?.user?.id, location.pathname])
+  }, [auth?.user?.id])
 
   useEffect(() => {
     geradoresRef.current = geradores
@@ -661,7 +684,7 @@ function AppContent() {
         if (achievement) {
           toast.success(achievement.name, {
             description: `${achievement.description}\n${achievement.points} pts`,
-            position: "top-right",
+            position: "bottom-right",
           })
         }
       })
@@ -689,21 +712,27 @@ function AppContent() {
       lastSessionStart: now,
       geradoresCompradosManual: geradoresCompradosManualRef.current,
       achievementsUnlocked: achievementsUnlockedRef.current,
+      cloudSaveInterval: cloudSaveInterval,
     }
+    setLastSaveTime(now)
     try {
       localStorage.setItem(SAVE_KEY, JSON.stringify(payload))
       if (authUserIdRef.current) {
-        void Promise.resolve(
-          supabase
-            .from("saves")
-            .upsert(
-              { user_id: authUserIdRef.current, save_data: payload, updated_at: new Date().toISOString() },
-              { onConflict: "user_id" }
-            )
-        ).catch(() => {})
+        // Notification for manual/cloud save if enough time passed since load
+        void supabase
+          .from("saves")
+          .upsert(
+            { user_id: authUserIdRef.current, save_data: payload, updated_at: new Date().toISOString() },
+            { onConflict: "user_id" }
+          )
+          .then(() => {
+            if (Date.now() - sessionLoadTimeRef.current > 5000) {
+              // addNotification("Jogo Salvo", "Progresso salvo na nuvem com sucesso.", "save")
+            }
+          })
       }
     } catch {
-      // storage cheio ou indisponível
+      // ignora erro de quota ou network
     }
   }
 
@@ -783,19 +812,18 @@ function AppContent() {
   }, [])
 
   // Salvar a cada 5 segundos e ao fechar/sair da aba (refs têm sempre o estado atual)
+  // Salvar a cada X segundos (configurável) e ao fechar/sair da aba
   useEffect(() => {
-    const interval = setInterval(persistSave, SAVE_INTERVAL_MS)
+    const interval = setInterval(persistSave, cloudSaveInterval)
     const onBeforeUnload = () => {
       persistSave()
     }
     window.addEventListener("beforeunload", onBeforeUnload)
-    const timeout = setTimeout(persistSave, 1000)
     return () => {
       clearInterval(interval)
-      clearTimeout(timeout)
       window.removeEventListener("beforeunload", onBeforeUnload)
     }
-  }, [])
+  }, [cloudSaveInterval])
 
   useEffect(() => {
     let id: number
@@ -841,6 +869,7 @@ function AppContent() {
       ultimoTick.current = now
       lastTickWallTimeRef.current = wallNow
       framesRef.current += 1
+
       if (now - fpsIntervalRef.current >= 500) {
         setFps(
           Math.round(
@@ -950,16 +979,24 @@ function AppContent() {
       const newly = getNewlyUnlockedAchievementIds(checkState, achievementsUnlockedRef.current)
       if (newly.length > 0) {
         const next = [...achievementsUnlockedRef.current, ...newly]
+        console.log("Desbloqueando conquistas:", newly)
         achievementsUnlockedRef.current = next
         setAchievementsUnlocked(next)
         playAchievementSound()
         newly.forEach((id) => {
           const achievement = ACHIEVEMENTS.find((a) => a.id === id)
           if (achievement) {
-            toast.success(achievement.name, {
+            toast.success(`Conquista: ${achievement.name}`, {
+              id: achievement.id,
+              className: `toast-${achievement.id}`,
               description: `${achievement.description}\n${achievement.points} pts`,
-              position: "top-right",
+              position: "bottom-right",
             })
+            addNotification(
+              `Conquista: ${achievement.name}`,
+              `${achievement.description} (+${achievement.points} pontos)`,
+              "achievement"
+            )
           }
         })
       }
@@ -971,7 +1008,9 @@ function AppContent() {
   }, [])
 
   const custoGerador = (i: number): Decimal => {
-    const base = custoBase(i).times(Decimal.pow(1.5, geradores[i])).floor()
+    // Multiplicador base cresce com o tier: G1=1.5, G2=1.6, G3=1.7...
+    const multBase = 1.5 + i * 0.1
+    const base = custoBase(i).times(Decimal.pow(multBase, geradores[i])).floor()
     if (geradores[i] === 0) return base
     const mult = globalPriceMultiplier(globalPriceReductionLevel)
     return base.times(mult).floor()
@@ -1091,6 +1130,7 @@ function AppContent() {
   function resetProgress() {
     try {
       localStorage.removeItem(SAVE_KEY)
+      clearAll()
     } catch {
       // ignore
     }
@@ -1113,6 +1153,27 @@ function AppContent() {
     setGeradoresCompradosManual(0)
     setAchievementsUnlocked([])
     setShowFpsCounter(false)
+
+    // Atualizar Refs imediatamente para o save forçado
+    totalRef.current = new Decimal(0)
+    geradoresRef.current = Array(NUM_GERADORES).fill(0)
+    upgradesRef.current = Array(NUM_GERADORES).fill(0)
+    speedUpgradesRef.current = Array(NUM_GERADORES).fill(0)
+    luckUpgradesRef.current = Array(NUM_GERADORES).fill(0)
+    luckMultiplierUpgradesRef.current = Array(NUM_GERADORES).fill(0)
+    globalProductionLevelRef.current = 0
+    globalSpeedLevelRef.current = 0
+    globalPriceReductionLevelRef.current = 0
+    generatorUnlockTimestampsRef.current = Array(NUM_GERADORES).fill(0)
+    jaColetouManualRef.current = false
+    totalProducedLifetimeRef.current = new Decimal(0)
+    totalPlayTimeSecondsRef.current = 0
+    firstPlayTimeRef.current = null
+    geradoresCompradosManualRef.current = 0
+    achievementsUnlockedRef.current = []
+
+    // Forçar save imediato do estado zerado
+    setTimeout(() => persistSave(), 0)
     geradoresCompradosManualRef.current = 0
     achievementsUnlockedRef.current = []
     geradoresRef.current = Array(NUM_GERADORES).fill(0)
@@ -1142,6 +1203,8 @@ function AppContent() {
     if (seconds < 86400) return `${(seconds / 3600).toFixed(1)} h`
     return `${(seconds / 86400).toFixed(1)} dias`
   }
+
+  const navigate = useNavigate()
 
   const gameContextValue: GameContextValue = {
     total,
@@ -1199,183 +1262,198 @@ function AppContent() {
     generatorUnlockTimestamps,
     generatorBonusCount,
     persistSave,
+    lastSaveTime,
+    cloudSaveInterval,
+    setCloudSaveInterval,
   }
 
   return (
-      <GameContext.Provider value={gameContextValue}>
-        <ShortcutHandler />
-        <ScrollToTop />
-        <CustomContextMenu>
-          <RootLayout>
-            {total.lt(1) && !jaColetouManual && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog" aria-labelledby="welcome-dialog-title">
-                <Card className="max-w-md w-full p-6 space-y-5 shadow-lg">
-                  <h2 id="welcome-dialog-title" className="font-semibold text-xl">Boas-vindas ao Breaking Eternity</h2>
-                  <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
-                    <p>
-                      Este é um jogo <strong className="text-foreground">incremental</strong> (idle): você coleta recurso, compra geradores que produzem mais recurso e desbloqueia melhorias. Os números podem ficar enormes — milhões, bilhões e além.
-                    </p>
-                    <p>
-                      Para lidar com números tão grandes, o jogo usa a biblioteca <strong className="text-foreground">break_eternity.js</strong>, que permite operar com valores muito além do que o JavaScript nativo suporta (notação científica, sufixos como M, B, T, Q e letras).
-                    </p>
-                    <p>
-                      O <strong className="text-foreground">objetivo</strong> é chegar ao limite dessa biblioteca — o maior número que ela consegue representar. Resgate seu primeiro recurso abaixo e comece a comprar geradores. Bom jogo!
-                    </p>
-                  </div>
-                  <Button
-                    className="w-full"
-                    onClick={() => {
-                      playClickSound()
-                      setTotal((t) => Decimal.add(t, 1))
-                      setJaColetouManual(true)
-                      setTotalProducedLifetime((prev) => prev.add(1))
-                      totalProducedLifetimeRef.current = totalProducedLifetimeRef.current.add(1)
-                    }}
-                  >
-                    Resgatar primeiro recurso
-                  </Button>
-                </Card>
-              </div>
-            )}
-            {offlineCard && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog">
-                <Card className="max-w-sm w-full p-6 space-y-4">
-                  <h2 className="font-semibold text-lg">Ganho offline</h2>
-                  <p className="text-muted-foreground text-sm">
-                    Você ganhou <span className="font-mono font-semibold text-foreground">{formatDecimal(offlineCard.totalGain)}</span> enquanto estava offline.
+    <GameContext.Provider value={gameContextValue}>
+      <ShortcutHandler />
+      <ScrollToTop />
+      <CustomContextMenu>
+        <RootLayout>
+          {total.lt(1) && !jaColetouManual && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog" aria-labelledby="welcome-dialog-title">
+              <Card className="max-w-md w-full p-6 space-y-5 shadow-lg">
+                <h2 id="welcome-dialog-title" className="font-semibold text-xl">Boas-vindas ao Breaking Eternity</h2>
+                <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
+                  <p>
+                    Este é um jogo <strong className="text-foreground">incremental</strong> (idle): você coleta recurso, compra geradores que produzem mais recurso e desbloqueia melhorias. Os números podem ficar enormes — milhões, bilhões e além.
                   </p>
-                  <p className="text-muted-foreground text-xs">
-                    Tempo ausente: {formatOfflineTime(offlineCard.seconds)}
+                  <p>
+                    Para lidar com números tão grandes, o jogo usa a biblioteca <strong className="text-foreground">break_eternity.js</strong>, que permite operar com valores muito além do que o JavaScript nativo suporta (notação científica, sufixos como M, B, T, Q e letras).
                   </p>
-                  <Button
-                    className="w-full"
-                    onClick={() => {
-                      playClickSound()
-                      setOfflineCard(null)
-                    }}
-                  >
-                    OK
-                  </Button>
-                </Card>
-              </div>
-            )}
-            <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 flex items-center gap-4">
-              {/* Esquerda: nome do jogo + menus (futuros menus podem preencher aqui) */}
-              <div className="flex items-center gap-4 flex-1 min-w-0 justify-start">
-                <h1 className="text-lg font-semibold tracking-tight truncate shrink-0">
-                  Breaking Eternity
-                </h1>
-                <nav className="flex gap-2 flex-wrap">
-                  <NavLink
-                    to="/"
-                    onClick={() => playClickSound()}
-                    className={({ isActive }) =>
-                      "text-sm px-2 py-1 rounded-md " +
-                      (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-                    }
-                  >
-                    Geradores
-                  </NavLink>
-                  <NavLink
-                    to="/melhorias"
-                    onClick={() => playClickSound()}
-                    className={({ isActive }) =>
-                      "text-sm px-2 py-1 rounded-md " +
-                      (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-                    }
-                  >
-                    Melhorias
-                  </NavLink>
-                  <NavLink
-                    to="/conquistas"
-                    onClick={() => playClickSound()}
-                    className={({ isActive }) =>
-                      "text-sm px-2 py-1 rounded-md " +
-                      (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-                    }
-                  >
-                    Conquistas
-                  </NavLink>
-                  <NavLink
-                    to="/estatisticas"
-                    onClick={() => playClickSound()}
-                    className={({ isActive }) =>
-                      "text-sm px-2 py-1 rounded-md " +
-                      (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-                    }
-                  >
-                    Estatísticas
-                  </NavLink>
-                  <NavLink
-                    to="/configuracoes"
-                    onClick={() => playClickSound()}
-                    className={({ isActive }) =>
-                      "text-sm px-2 py-1 rounded-md " +
-                      (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-                    }
-                  >
-                    Configurações
-                  </NavLink>
-                </nav>
-              </div>
-              {/* Centro: contador do recurso principal */}
-              <div className="flex-shrink-0 px-2">
-                <p className="text-2xl font-mono tabular-nums break-all text-center">
-                  {formatDecimal(total)}
+                  <p>
+                    O <strong className="text-foreground">objetivo</strong> é chegar ao limite dessa biblioteca — o maior número que ela consegue representar. Resgate seu primeiro recurso abaixo e comece a comprar geradores. Bom jogo!
+                  </p>
+                </div>
+                <Button
+                  className="w-full"
+                  onClick={() => {
+                    playClickSound()
+                    setTotal((t) => Decimal.add(t, 1))
+                    setJaColetouManual(true)
+                    setTotalProducedLifetime((prev) => prev.add(1))
+                    totalProducedLifetimeRef.current = totalProducedLifetimeRef.current.add(1)
+                  }}
+                >
+                  Resgatar primeiro recurso
+                </Button>
+              </Card>
+            </div>
+          )}
+          {offlineCard && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog">
+              <Card className="max-w-sm w-full p-6 space-y-4">
+                <h2 className="font-semibold text-lg">Ganho offline</h2>
+                <p className="text-muted-foreground text-sm">
+                  Você ganhou <span className="font-mono font-semibold text-foreground">{formatDecimal(offlineCard.totalGain)}</span> enquanto estava offline.
                 </p>
-              </div>
-              {/* Direita: FPS (se ativado) e futuros menus */}
-              <div className="flex items-center gap-4 flex-1 min-w-0 justify-end">
-                {showFpsCounter && (
-                  <Card className="px-3 py-1.5 shrink-0 border-muted">
-                    <span
-                      className={`text-xs font-mono ${fps >= 60 ? "text-green-500" : fps >= 30 ? "text-yellow-500" : "text-red-500"
-                        }`}
-                    >
-                      {fps} FPS
-                    </span>
-                  </Card>
-                )}
-              </div>
-            </header>
+                <p className="text-muted-foreground text-xs">
+                  Tempo ausente: {formatOfflineTime(offlineCard.seconds)}
+                </p>
+                <Button
+                  className="w-full"
+                  onClick={() => {
+                    playClickSound()
+                    setOfflineCard(null)
+                  }}
+                >
+                  OK
+                </Button>
+              </Card>
+            </div>
+          )}
+          <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 flex items-center gap-4">
+            {/* Esquerda: nome do jogo + menus (futuros menus podem preencher aqui) */}
+            <div className="flex items-center gap-4 flex-1 min-w-0 justify-start">
+              <h1 className="text-lg font-semibold tracking-tight truncate shrink-0">
+                Breaking Eternity
+              </h1>
+              <nav className="flex gap-2 flex-wrap">
+                <NavLink
+                  to="/"
+                  onClick={() => playClickSound()}
+                  className={({ isActive }) =>
+                    "text-sm px-2 py-1 rounded-md " +
+                    (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+                  }
+                >
+                  Geradores
+                </NavLink>
+                <NavLink
+                  to="/melhorias"
+                  onClick={() => playClickSound()}
+                  className={({ isActive }) =>
+                    "text-sm px-2 py-1 rounded-md " +
+                    (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
+                  }
+                >
+                  Melhorias
+                </NavLink>
 
-            <MainWithScrollBehavior>
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <ProgressoProvider progressoRef={progressoRef} setProgressoStateRef={setProgressoStateRef} numGeradores={NUM_GERADORES}>
-                      <GeneratorsPage />
-                    </ProgressoProvider>
-                  }
-                />
-                <Route path="/melhorias" element={<ImprovementsPage />} />
-                <Route path="/estatisticas" element={<EstatisticasPage />} />
-                <Route
-                  path="/conquistas"
-                  element={
-                    <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-                      <AchievementsPage />
-                    </div>
-                  }
-                />
-                <Route path="/entrar" element={<LoginPage />} />
-                <Route path="/configuracoes" element={<SettingsPage />} />
-              </Routes>
-            </MainWithScrollBehavior>
-          </RootLayout>
-        </CustomContextMenu>
-      </GameContext.Provider>
+
+
+              </nav>
+            </div>
+            {/* Centro: contador do recurso principal */}
+            <div className="flex-shrink-0 px-2">
+              <p className="text-2xl font-mono tabular-nums break-all text-center">
+                {formatDecimal(total)}
+              </p>
+            </div>
+            {/* Direita: FPS, Notificações e futuros menus */}
+            <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
+              {showFpsCounter && (
+                <Card className="px-3 py-1.5 shrink-0 border-muted">
+                  <span
+                    className={`text-xs font-mono ${fps >= 60 ? "text-green-500" : fps >= 30 ? "text-yellow-500" : "text-red-500"
+                      }`}
+                  >
+                    {fps} FPS
+                  </span>
+                </Card>
+              )}
+              <NotificationCenter />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  playClickSound()
+                  navigate("/conquistas")
+                }}
+                className="relative"
+              >
+                <Trophy className="h-5 w-5" />
+                <span className="sr-only">Conquistas</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  playClickSound()
+                  navigate("/estatisticas")
+                }}
+                className="relative"
+              >
+                <BarChart3 className="h-5 w-5" />
+                <span className="sr-only">Estatísticas</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  playClickSound()
+                  navigate("/configuracoes")
+                }}
+                className="relative"
+              >
+                <Settings className="h-5 w-5" />
+                <span className="sr-only">Configurações</span>
+              </Button>
+            </div>
+          </header>
+
+          <MainWithScrollBehavior>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <ProgressoProvider progressoRef={progressoRef} setProgressoStateRef={setProgressoStateRef} numGeradores={NUM_GERADORES}>
+                    <GeneratorsPage />
+                  </ProgressoProvider>
+                }
+              />
+              <Route path="/melhorias" element={<ImprovementsPage />} />
+              <Route path="/estatisticas" element={<EstatisticasPage />} />
+              <Route
+                path="/conquistas"
+                element={
+                  <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+                    <AchievementsPage />
+                  </div>
+                }
+              />
+              <Route path="/entrar" element={<LoginPage />} />
+              <Route path="/configuracoes" element={<SettingsPage />} />
+            </Routes>
+          </MainWithScrollBehavior>
+        </RootLayout>
+      </CustomContextMenu>
+    </GameContext.Provider>
   )
 }
 
 function App() {
   return (
     <BrowserRouter>
-      <Toaster position="top-right" />
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <Toaster position="bottom-right" />
+      <NotificationProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </NotificationProvider>
     </BrowserRouter>
   )
 }

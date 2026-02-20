@@ -42,6 +42,14 @@ export function CustomContextMenu({ children }: CustomContextMenuProps) {
         <ContextMenuItem
           onSelect={() => {
             playClickSound()
+            ctx?.persistSave()
+          }}
+        >
+          Salvar Jogo
+        </ContextMenuItem>
+        <ContextMenuItem
+          onSelect={() => {
+            playClickSound()
             navigate("/configuracoes")
           }}
         >

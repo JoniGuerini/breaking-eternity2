@@ -57,6 +57,9 @@ export interface GameContextValue {
   generatorUnlockTimestamps: number[]
   generatorBonusCount: number[]
   persistSave: () => void
+  lastSaveTime: number
+  cloudSaveInterval: number
+  setCloudSaveInterval: React.Dispatch<React.SetStateAction<number>>
 }
 
 export const GameContext = createContext<GameContextValue | null>(null)
