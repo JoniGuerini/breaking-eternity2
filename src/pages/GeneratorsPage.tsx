@@ -106,10 +106,10 @@ export function GeneratorsPage() {
                 <span className="text-muted-foreground text-[10px] uppercase">Quantidade</span>
               </div>
 
-              <div className="flex flex-col gap-0.5 min-w-0" title={`Marco: ${progressInTier} / ${tierGoal} (+${ptsForNext} pts) | Total: ${countGen} / ${nextThreshold}`}>
+              <div className="flex flex-col gap-0.5 min-w-0" title={`Marco: ${formatDecimal(new Decimal(progressInTier))} / ${formatDecimal(new Decimal(tierGoal))} (+${ptsForNext} pts) | Total: ${formatDecimal(new Decimal(countGen))} / ${formatDecimal(new Decimal(nextThreshold))}`}>
                 <div className="flex items-center gap-1.5 w-full mt-0.5">
                   <Progress value={progressToNext} className="h-1.5 flex-1 bg-muted/50" />
-                  <span className="font-mono text-sm tabular-nums leading-none opacity-80 w-16 text-right shrink-0">{progressInTier}/{tierGoal}</span>
+                  <span className="font-mono text-sm tabular-nums leading-none opacity-80 whitespace-nowrap text-right shrink-0">{formatDecimal(new Decimal(progressInTier))}/{formatDecimal(new Decimal(tierGoal))}</span>
                 </div>
                 <div className="flex justify-between items-center w-full mt-0.5">
                   <span className="text-muted-foreground text-[10px] uppercase truncate">Marco</span>
