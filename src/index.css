@@ -980,7 +980,8 @@
   --accent: oklch(0.3 0.15 260);
   --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.55 0.2 25);
-  --border: oklch(0.5 0 0);
+  --border: oklch(0.2 0 0);
+  /* Dark gray/black for high contrast lines */
   --input: oklch(1 0 0);
   --ring: oklch(0 0 0);
   --chart-1: oklch(0.3 0.15 260);
@@ -1002,20 +1003,165 @@
 .theme-win95 [data-slot="card"],
 .theme-win95 .card,
 .theme-win95 .popover {
-  border: 2px solid;
-  border-color: #dfdfdf #404040 #404040 #dfdfdf;
-  box-shadow: none;
+  border: 2px solid !important;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  background-color: #dfdfdf !important;
 }
 
 .theme-win95 button,
-.theme-win95 .btn {
-  border: 2px solid;
-  border-color: #dfdfdf #404040 #404040 #dfdfdf;
-  background-color: oklch(0.82 0 0);
+.theme-win95 .btn,
+.theme-win95 header a {
+  border: 2px solid !important;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf !important;
+  background-color: oklch(0.82 0 0) !important;
+  /* Silver */
+  color: #000 !important;
+  /* Black text */
+  border-radius: 0 !important;
+  opacity: 1 !important;
 }
 
-.theme-win95 button:active {
-  border-color: #404040 #dfdfdf #dfdfdf #404040;
+.theme-win95 button:active:not(:disabled),
+.theme-win95 .btn:active:not(:disabled),
+.theme-win95 header a:active,
+.theme-win95 header a.active,
+.theme-win95 [role="tab"][aria-selected="true"] {
+  border-color: #404040 #dfdfdf #dfdfdf #404040 !important;
+}
+
+/* Win95 Toggle Switch (styled as a 3D block track) */
+.theme-win95 button[role="switch"] {
+  border-radius: 0 !important;
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: #808080 #ffffff #ffffff #808080 !important;
+  background-color: #ffffff !important;
+  padding: 0 !important;
+  width: 44px !important;
+  height: 24px !important;
+  /* Ensure container lays out children cleanly from the edge */
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Force exact translate overrides regardless of what generic Tailwind classes say */
+.theme-win95 button[role="switch"]>span {
+  border-radius: 0 !important;
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: #ffffff #404040 #404040 #ffffff !important;
+  background-color: #dfdfdf !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+
+  /* Kill Tailwind transforms aggressively */
+  transform: none !important;
+  --tw-translate-x: 0 !important;
+  --tw-translate-y: 0 !important;
+
+  /* Hardcode exact dimensions and layout */
+  width: 18px !important;
+  height: 20px !important;
+  display: block !important;
+  margin-left: 0px !important;
+  transition: margin-left 0.1s ease-in-out !important;
+}
+
+.theme-win95 button[role="switch"][aria-checked="true"]>span {
+  /* Simple exact math: 44px container - (2*2px border) - 18px thumb = 22px remaining space */
+  margin-left: 22px !important;
+}
+
+/* Win95 Range Slider */
+.theme-win95 input[type="range"] {
+  background: transparent !important;
+}
+
+.theme-win95 input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px !important;
+  background: #dfdfdf !important;
+  border-left: 1px solid #808080 !important;
+  border-top: 1px solid #808080 !important;
+  border-right: 1px solid #ffffff !important;
+  border-bottom: 1px solid #ffffff !important;
+}
+
+.theme-win95 input[type="range"]::-moz-range-track {
+  height: 4px !important;
+  background: #dfdfdf !important;
+  border-left: 1px solid #808080 !important;
+  border-top: 1px solid #808080 !important;
+  border-right: 1px solid #ffffff !important;
+  border-bottom: 1px solid #ffffff !important;
+}
+
+.theme-win95 input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  height: 19px !important;
+  width: 11px !important;
+  background-color: transparent !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='19' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='10' height='1' fill='%23fff'/%3E%3Crect x='0' y='1' width='1' height='13' fill='%23fff'/%3E%3Crect x='1' y='14' width='1' height='1' fill='%23fff'/%3E%3Crect x='2' y='15' width='1' height='1' fill='%23fff'/%3E%3Crect x='3' y='16' width='1' height='1' fill='%23fff'/%3E%3Crect x='4' y='17' width='1' height='1' fill='%23fff'/%3E%3Crect x='1' y='1' width='8' height='13' fill='%23dfdfdf'/%3E%3Crect x='2' y='14' width='6' height='1' fill='%23dfdfdf'/%3E%3Crect x='3' y='15' width='4' height='1' fill='%23dfdfdf'/%3E%3Crect x='4' y='16' width='2' height='1' fill='%23dfdfdf'/%3E%3Crect x='5' y='17' width='1' height='1' fill='%23dfdfdf'/%3E%3Crect x='9' y='1' width='1' height='13' fill='%23808080'/%3E%3Crect x='8' y='14' width='1' height='1' fill='%23808080'/%3E%3Crect x='7' y='15' width='1' height='1' fill='%23808080'/%3E%3Crect x='6' y='16' width='1' height='1' fill='%23808080'/%3E%3Crect x='10' y='0' width='1' height='14' fill='%23000'/%3E%3Crect x='9' y='14' width='1' height='1' fill='%23000'/%3E%3Crect x='8' y='15' width='1' height='1' fill='%23000'/%3E%3Crect x='7' y='16' width='1' height='1' fill='%23000'/%3E%3Crect x='6' y='17' width='1' height='1' fill='%23000'/%3E%3Crect x='5' y='18' width='1' height='1' fill='%23000'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  border: none !important;
+  border-radius: 0 !important;
+  margin-top: -8px !important;
+  box-shadow: none !important;
+  cursor: default !important;
+}
+
+.theme-win95 input[type="range"]::-moz-range-thumb {
+  appearance: none !important;
+  height: 19px !important;
+  width: 11px !important;
+  background-color: transparent !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='19' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='10' height='1' fill='%23fff'/%3E%3Crect x='0' y='1' width='1' height='13' fill='%23fff'/%3E%3Crect x='1' y='14' width='1' height='1' fill='%23fff'/%3E%3Crect x='2' y='15' width='1' height='1' fill='%23fff'/%3E%3Crect x='3' y='16' width='1' height='1' fill='%23fff'/%3E%3Crect x='4' y='17' width='1' height='1' fill='%23fff'/%3E%3Crect x='1' y='1' width='8' height='13' fill='%23dfdfdf'/%3E%3Crect x='2' y='14' width='6' height='1' fill='%23dfdfdf'/%3E%3Crect x='3' y='15' width='4' height='1' fill='%23dfdfdf'/%3E%3Crect x='4' y='16' width='2' height='1' fill='%23dfdfdf'/%3E%3Crect x='5' y='17' width='1' height='1' fill='%23dfdfdf'/%3E%3Crect x='9' y='1' width='1' height='13' fill='%23808080'/%3E%3Crect x='8' y='14' width='1' height='1' fill='%23808080'/%3E%3Crect x='7' y='15' width='1' height='1' fill='%23808080'/%3E%3Crect x='6' y='16' width='1' height='1' fill='%23808080'/%3E%3Crect x='10' y='0' width='1' height='14' fill='%23000'/%3E%3Crect x='9' y='14' width='1' height='1' fill='%23000'/%3E%3Crect x='8' y='15' width='1' height='1' fill='%23000'/%3E%3Crect x='7' y='16' width='1' height='1' fill='%23000'/%3E%3Crect x='6' y='17' width='1' height='1' fill='%23000'/%3E%3Crect x='5' y='18' width='1' height='1' fill='%23000'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  cursor: default !important;
+}
+
+.theme-win95 [role="tablist"] {
+  background-color: transparent !important;
+}
+
+/* Win95 Progress Bar */
+.theme-win95 [data-slot="progress"] {
+  border-radius: 0 !important;
+  background-color: #dfdfdf !important;
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: #808080 #ffffff #ffffff #808080 !important;
+  /* Inner shadow to complete the classic 3D sunken look */
+  box-shadow: inset 1px 1px 0px 0px #000000, inset -1px -1px 0px 0px #dfdfdf !important;
+  height: 18px !important;
+  /* Taller than modern default */
+  padding: 1px !important;
+  /* Padding keeps the fill off the border */
+}
+
+.theme-win95 [data-slot="progress-indicator"] {
+  background-color: #000080 !important;
+  background-image: none !important;
+  /* Classic Navy Blue */
+  height: 100% !important;
+  border-radius: 0 !important;
+  transition: none !important;
+}
+
+/* Override utility colors for better contrast in Win95 */
+.theme-win95 .text-green-500,
+.theme-win95 .text-green-600,
+.theme-win95 .dark\:text-green-500 {
+  color: #008000 !important;
+  /* Classic darker green */
+  font-weight: bold !important;
 }
 
 /* Windows XP (Luna - Blue/Green/White) */

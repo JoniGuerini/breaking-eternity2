@@ -5,10 +5,12 @@
 export function FlowBar() {
   return (
     <div
+      data-slot="progress"
       className="h-2 w-full rounded-full overflow-hidden bg-primary/20"
       aria-hidden
     >
       <div
+        data-slot="progress-indicator"
         className="h-full w-[200%] animate-[flow-bar_4s_linear_infinite] will-change-transform"
         style={{
           background:

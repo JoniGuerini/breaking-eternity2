@@ -7,19 +7,16 @@ import { Progress } from "@/components/ui/progress"
 import { GameContext } from "@/context/GameContext"
 import { useProgresso } from "@/context/ProgressoContext"
 import { playClickSound } from "@/lib/clickSound"
+import { formatTime } from "@/lib/formatTime"
+import { getMilestoneIndex, getNextMilestoneThreshold, getCurrentMilestoneThreshold } from "@/App"
 
-function formatInterval(seconds: number): string {
-  if (seconds < 60) return `${Number(seconds.toFixed(2))}s`
-  const m = Math.floor(seconds / 60)
-  const s = Math.floor(seconds % 60)
-  return s === 0 ? `${m}m` : `${m}m ${s}s`
-}
 
 export function GeneratorsPage() {
   const ctx = useContext(GameContext)
   const progresso = useProgresso()
   if (!ctx) return null
   const {
+    total,
     geradores,
     upgrades,
     formatDecimal,
@@ -28,6 +25,7 @@ export function GeneratorsPage() {
     custoGerador,
     intervaloEfetivo,
     NUM_GERADORES,
+    milestonesReached,
   } = ctx
 
   return (
@@ -67,9 +65,11 @@ export function GeneratorsPage() {
                 <div className="h-10 w-px bg-border shrink-0" aria-hidden />
                 <div className="flex flex-col gap-0.5 text-center">
                   <span className="text-muted-foreground text-xs uppercase tracking-wider">Custo para desbloquear</span>
-                  <span className={`font-mono text-sm tabular-nums font-semibold ${podeComprar(i) ? "text-green-600 dark:text-green-500" : "text-destructive"}`}>
-                    {formatDecimal(custoGerador(i))}
-                  </span>
+                  <div className="flex flex-col items-center">
+                    <span className={`font-mono text-sm tabular-nums font-semibold ${total.gte(custoGerador(i)) ? "text-green-600 dark:text-green-500" : "text-destructive"}`}>
+                      {formatDecimal(custoGerador(i))} Fragmentos
+                    </span>
+                  </div>
                 </div>
               </div>
             </Card>
@@ -81,22 +81,44 @@ export function GeneratorsPage() {
         const produzidoPeloProximo = i < NUM_GERADORES - 1 && geradores[i + 1] >= 1
         const mostraBotaoComprar = !produzidoPeloProximo
         const mult = Math.pow(2, upgrades[i] ?? 0)
+
+        const countGen = geradores[i]
+        const currentMilestoneIndex = milestonesReached[i] ?? getMilestoneIndex(countGen)
+        const currentThreshold = getCurrentMilestoneThreshold(currentMilestoneIndex)
+        const nextThreshold = getNextMilestoneThreshold(currentMilestoneIndex)
+
+        const progressInTier = Math.max(0, countGen - currentThreshold)
+        const tierGoal = nextThreshold - currentThreshold
+        const progressToNext = Math.max(0, Math.min(100, (progressInTier / tierGoal) * 100))
+        const ptsForNext = i + 1
+
         return (
           <Card key={i} className="py-3 px-4">
-            <div className="grid grid-cols-[6rem_7rem_5rem_1fr_10rem_7rem] items-center gap-4 min-w-0">
+            <div className="grid grid-cols-[1.1fr_0.8fr_1.3fr_0.7fr_0.8fr_1.1fr_1.6fr_0.9fr] items-center gap-3 min-w-0">
               <div className="flex flex-col gap-0.5">
-                <span className="font-semibold leading-tight">Gerador {i + 1}</span>
-                <span className="text-muted-foreground text-xs">Gerador</span>
+                <span className="font-semibold leading-tight text-sm">Gerador {i + 1}</span>
+                <span className="text-muted-foreground text-[10px] uppercase">Gerador</span>
               </div>
               <div className="flex flex-col gap-0.5 min-w-0">
                 <span className="font-mono text-sm tabular-nums leading-tight break-all">
-                  {formatDecimal(new Decimal(geradores[i]))}
+                  {formatDecimal(new Decimal(countGen))}
                 </span>
-                <span className="text-muted-foreground text-xs">Quantidade</span>
+                <span className="text-muted-foreground text-[10px] uppercase">Quantidade</span>
+              </div>
+
+              <div className="flex flex-col gap-0.5 min-w-0" title={`Marco: ${progressInTier} / ${tierGoal} (+${ptsForNext} pts) | Total: ${countGen} / ${nextThreshold}`}>
+                <div className="flex items-center gap-1.5 w-full mt-0.5">
+                  <Progress value={progressToNext} className="h-1.5 flex-1 bg-muted/50" />
+                  <span className="font-mono text-sm tabular-nums leading-none opacity-80 w-16 text-right shrink-0">{progressInTier}/{tierGoal}</span>
+                </div>
+                <div className="flex justify-between items-center w-full mt-0.5">
+                  <span className="text-muted-foreground text-[10px] uppercase truncate">Marco</span>
+                  <span className="text-muted-foreground text-[10px] uppercase">+{ptsForNext} pts</span>
+                </div>
               </div>
               <div className="flex flex-col gap-0.5 min-w-0 items-end">
-                <span className="font-mono text-sm tabular-nums leading-tight text-right whitespace-nowrap">{formatInterval(interval)}</span>
-                <span className="text-muted-foreground text-xs text-right">Tempo</span>
+                <span className="font-mono text-sm tabular-nums leading-tight text-right whitespace-nowrap">{formatTime(interval)}</span>
+                <span className="text-muted-foreground text-[10px] uppercase text-right">Tempo</span>
               </div>
               <div className="flex flex-col gap-0.5 min-w-0">
                 {cicloRapido ? (
@@ -104,33 +126,47 @@ export function GeneratorsPage() {
                 ) : (
                   <Progress value={(progresso ?? [])[i] ?? 0} className="h-2 w-full" />
                 )}
-                <span className="text-muted-foreground text-xs">Ciclo</span>
+                <span className="text-muted-foreground text-[10px] uppercase">Ciclo</span>
               </div>
               <div className="flex flex-col gap-0.5 min-w-0">
                 <span className="font-mono text-sm tabular-nums leading-tight break-all">
-                  +{formatDecimal(new Decimal(geradores[i] * mult))}
-                  {mult > 1 && <span className="text-green-600 dark:text-green-500 ml-0.5">(x{mult})</span>}
+                  +{formatDecimal(new Decimal(countGen * mult))}
+                  {mult > 1 && <span className="text-green-600 dark:text-green-500 ml-0.5">(x{formatDecimal(new Decimal(mult))})</span>}
                 </span>
-                <span className="text-muted-foreground text-xs">{produz}</span>
+                <span className="text-muted-foreground text-[10px] uppercase">{produz}</span>
+              </div>
+              <div className="flex flex-col gap-0.5 min-w-0">
+                {mostraBotaoComprar ? (
+                  <>
+                    <div className="flex items-baseline gap-2 whitespace-nowrap">
+                      <span className={`font-mono text-sm tabular-nums leading-tight ${total.gte(custoGerador(i)) ? "text-foreground font-semibold" : "text-destructive font-semibold"}`}>
+                        {formatDecimal(custoGerador(i))} Fragmentos
+                      </span>
+                    </div>
+                    <span className="text-muted-foreground text-[10px] uppercase tracking-tight">Preço</span>
+                  </>
+                ) : (
+                  <div className="flex flex-col">
+                    <span className="text-muted-foreground text-xs italic">Gerado automaticamente</span>
+                    <span className="text-muted-foreground text-[10px] uppercase tracking-tight opacity-0">Preço</span>
+                  </div>
+                )}
               </div>
               <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
                 {mostraBotaoComprar ? (
                   <Button
                     size="sm"
-                    className="w-full h-auto flex flex-col gap-0.5 py-2 bg-primary text-primary-foreground hover:bg-primary/90"
+                    className="w-full py-2 bg-primary text-primary-foreground hover:bg-primary/90"
                     onClick={() => {
                       playClickSound()
                       comprarGerador(i)
                     }}
                     disabled={!podeComprar(i)}
                   >
-                    <span>Comprar</span>
-                    <span className="font-mono text-xs tabular-nums">
-                      {formatDecimal(custoGerador(i))}
-                    </span>
+                    Comprar
                   </Button>
                 ) : (
-                  <span className="w-full inline-flex items-center justify-center rounded-md border border-border bg-muted px-2 py-2 min-h-[3.5rem] text-xs font-medium text-muted-foreground">
+                  <span className="w-full inline-flex items-center justify-center rounded-md border border-border bg-muted px-2 py-2 min-h-[2.25rem] text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
                     Automático
                   </span>
                 )}

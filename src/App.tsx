@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react"
-import { BrowserRouter, NavLink, Route, Routes, useLocation, useNavigate } from "react-router-dom"
-import { BarChart3, Settings, Trophy } from "lucide-react"
+import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom"
+import { BarChart3, Cpu, Settings, Trophy, Zap } from "lucide-react"
 import Decimal from "break_eternity.js"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import { Card } from "@/components/ui/card"
 import { AuthProvider, useAuth } from "@/context/AuthContext"
 import { GameContext, type GameContextValue } from "@/context/GameContext"
@@ -29,6 +30,13 @@ import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 import { NotificationProvider, useNotification } from "@/context/NotificationContext"
 import { NotificationCenter } from "@/components/NotificationCenter"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { getShortcut, getShortcutDisplayKey } from "@/lib/shortcuts"
 
 /** Na página de conquistas trava o layout em 100vh para o documento não rolar; só a lista rola. */
 function RootLayout({ children }: { children: React.ReactNode }) {
@@ -118,6 +126,8 @@ interface SavedState {
   geradoresCompradosManual?: number
   achievementsUnlocked?: string[]
   cloudSaveInterval?: number
+  upgradePoints?: number
+  milestonesReached?: number[]
 }
 
 /** Chance de crítico (dobro) para gerador i com nível da melhoria Sorte */
@@ -136,7 +146,7 @@ function simulateOffline(
   luckMultiplierUpgrades: number[] = [],
   globalProductionLevel = 0,
   globalSpeedLevel = 0
-): { total: Decimal; geradores: number[]; totalGain: Decimal; bonusCountDelta: number[] } {
+): { total: Decimal; geradores: number[]; totalGain: Decimal; bonusCountDelta: number[]; offlineUpgradePointsGain: number; curMilestones: number[] } {
   const capped = Math.min(seconds, MAX_OFFLINE_SECONDS)
   let curTotal = new Decimal(total)
   const curGen = [...geradores]
@@ -170,8 +180,38 @@ function simulateOffline(
       }
     }
   }
+
+  // Calculate offline milestone points
+  let offlineUpgradePointsGain = 0
+  const curMilestones = Array(NUM_GERADORES).fill(0)
+  for (let i = 0; i < NUM_GERADORES; i++) {
+    const oldIndex = getMilestoneIndex(geradores[i] ?? 0)
+    const newIndex = getMilestoneIndex(curGen[i] ?? 0)
+    if (newIndex > oldIndex) {
+      offlineUpgradePointsGain += (newIndex - oldIndex) * (i + 1)
+    }
+    curMilestones[i] = newIndex
+  }
+
   const totalGain = Decimal.sub(curTotal, total)
-  return { total: curTotal, geradores: curGen, totalGain, bonusCountDelta }
+  return { total: curTotal, geradores: curGen, totalGain, bonusCountDelta, offlineUpgradePointsGain, curMilestones }
+}
+
+/** Retorna em qual "marco" de quantidade o gerador está. */
+export function getMilestoneIndex(count: number): number {
+  if (count < 10) return 0
+  return Math.floor(Math.log10(count))
+}
+
+/** Retorna qual a quantidade necessária para o próximo marco. */
+export function getNextMilestoneThreshold(currentIndex: number): number {
+  return Math.pow(10, currentIndex + 1)
+}
+
+/** Retorna a quantidade do marco atual (ou 0 se não atingiu o primeiro). */
+export function getCurrentMilestoneThreshold(currentIndex: number): number {
+  if (currentIndex === 0) return 0
+  return Math.pow(10, currentIndex)
 }
 
 // Custo base: Fórmula ajustada para escalar mais rápido que 100x
@@ -208,23 +248,34 @@ function formatDecimal(d: Decimal): string {
   if (d.lt(0)) return "-" + formatDecimal(d.neg())
   if (d.eq(0)) return "0"
 
-  const n = d.toNumber()
-  if (!Number.isFinite(n)) {
+  const dExp = d.log10().floor().toNumber()
+
+  if (dExp < 3) {
+    return d.floor().toString()
+  }
+
+  if (dExp < 6) {
+    return d.floor().toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+  }
+
+  // Se o expoente for monstruoso (> 10^35 milhões), o cálculo de array de letras não faz mais sentido.
+  // Vamos delegar direto pra notação científica de break_eternity. 
+  const index = Math.floor((dExp - 18) / 3)
+  if (index >= LIMIT_5) {
     return d.toStringWithDecimalPlaces(2)
   }
 
-  if (n < 1000) {
-    return Math.floor(n).toString()
-  }
-
-  if (n < 1e6) {
-    return Math.floor(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-  }
-
-  const exp = Math.floor(Math.log10(n))
-  const mantissa = n / Math.pow(10, exp)
+  // Extract mantissa and exp cleanly via break_eternity logic to avoid JS Math.pow(10, 308+) overflows
+  const exp = dExp
   const remainder = exp % 3
-  const displayMantissa = mantissa * Math.pow(10, remainder)
+
+  // Extrai a mantissa diretamente da estrutura de dados do banco interno da instância do break_eternity
+  // Break_eternity mantém 'mantissa' (1-10) e 'e' (expoente inteiro) de forma segura em Numbers internos
+  // Isso impede que qualquer Math.pow intermediário toque no teto de 10^308
+  const baseMantissa = (d as any).mantissa !== undefined ? (d as any).mantissa : Math.pow(10, d.log10().toNumber() - exp)
+
+  const displayMantissa = baseMantissa * Math.pow(10, remainder)
+
   const rounded = Math.round(displayMantissa * 100) / 100
   const mantissaStr =
     rounded % 1 === 0
@@ -235,12 +286,6 @@ function formatDecimal(d: Decimal): string {
   if (exp < 12) return mantissaStr + " B"
   if (exp < 15) return mantissaStr + " T"
   if (exp < 18) return mantissaStr + " Q"
-
-  // A partir de 10^18: 2 letras (1 AA .. 1 ZZ), depois 3 (1 AAA .. 1 ZZZ), 4, 5; acima → notação científica
-  const index = Math.floor((exp - 18) / 3)
-  if (index >= LIMIT_5) {
-    return d.toStringWithDecimalPlaces(2)
-  }
   let numLetters: number
   let localIndex: number
   if (index < LIMIT_2) {
@@ -292,6 +337,17 @@ function AppContent() {
   const [jaColetouManual, setJaColetouManual] = useState(() => {
     const saved = loadSavedState()
     return saved?.jaColetouManual ?? false
+  })
+  const [upgradePoints, setUpgradePoints] = useState<number>(() => {
+    const saved = loadSavedState()
+    return saved?.upgradePoints ?? 0
+  })
+  const [milestonesReached, setMilestonesReached] = useState<number[]>(() => {
+    const saved = loadSavedState()
+    if (saved?.milestonesReached && Array.isArray(saved.milestonesReached) && saved.milestonesReached.length === NUM_GERADORES) {
+      return saved.milestonesReached
+    }
+    return Array(NUM_GERADORES).fill(0)
   })
   const [upgrades, setUpgrades] = useState<number[]>(() => {
     const saved = loadSavedState()
@@ -391,6 +447,8 @@ function AppContent() {
   const totalPlayTimeSecondsRef = useRef(0)
   const geradoresCompradosManualRef = useRef(0)
   const jaColetouManualRef = useRef(false)
+  const upgradePointsRef = useRef(0)
+  const milestonesReachedRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const upgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const speedUpgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const luckUpgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
@@ -448,6 +506,11 @@ function AppContent() {
       setGlobalPriceReductionLevel(payload.globalPriceReductionLevel ?? 0)
       setAutoUnlockNextGerador(payload.autoUnlockNextGerador ?? false)
       setShowFpsCounter(payload.showFpsCounter ?? false)
+      setUpgradePoints(payload.upgradePoints ?? 0)
+
+      const milestonesArr = payload.milestonesReached?.length === NUM_GERADORES ? payload.milestonesReached : Array(NUM_GERADORES).fill(0)
+      setMilestonesReached(milestonesArr)
+
       setGeneratorUnlockTimestamps(tsArr)
       setGeneratorBonusCount(bonusArr)
       setTotalProducedLifetime(lifetimeDec)
@@ -474,6 +537,11 @@ function AppContent() {
       globalSpeedLevelRef.current = payload.globalSpeedLevel ?? 0
       globalPriceReductionLevelRef.current = payload.globalPriceReductionLevel ?? 0
       autoUnlockNextGeradorRef.current = payload.autoUnlockNextGerador ?? false
+      upgradePointsRef.current = payload.upgradePoints ?? 0
+
+      const milestonesArr2 = payload.milestonesReached?.length === NUM_GERADORES ? payload.milestonesReached : Array(NUM_GERADORES).fill(0)
+      milestonesReachedRef.current = milestonesArr2
+
       generatorUnlockTimestampsRef.current = tsArr
       generatorBonusCountRef.current = bonusArr
       totalProducedLifetimeRef.current = lifetimeDec
@@ -553,6 +621,11 @@ function AppContent() {
 
               raw.generatorBonusCount = currentBonus.map((c, i) => c + (result.bonusCountDelta[i] ?? 0))
 
+              if (result.offlineUpgradePointsGain > 0) {
+                raw.upgradePoints = (raw.upgradePoints ?? 0) + result.offlineUpgradePointsGain
+                raw.milestonesReached = result.curMilestones
+              }
+
               setOfflineCard({ totalGain: result.totalGain, seconds: offlineSeconds })
             }
           }
@@ -599,6 +672,12 @@ function AppContent() {
   useEffect(() => {
     jaColetouManualRef.current = jaColetouManual
   }, [jaColetouManual])
+  useEffect(() => {
+    upgradePointsRef.current = upgradePoints
+  }, [upgradePoints])
+  useEffect(() => {
+    milestonesReachedRef.current = milestonesReached
+  }, [milestonesReached])
   useEffect(() => {
     upgradesRef.current = upgrades
   }, [upgrades])
@@ -712,6 +791,8 @@ function AppContent() {
       geradoresCompradosManual: geradoresCompradosManualRef.current,
       achievementsUnlocked: achievementsUnlockedRef.current,
       cloudSaveInterval: cloudSaveInterval,
+      upgradePoints: upgradePointsRef.current,
+      milestonesReached: milestonesReachedRef.current,
     }
     setLastSaveTime(now)
     try {
@@ -884,7 +965,10 @@ function AppContent() {
       let deltaTotal = new Decimal(0)
       const deltaGen = Array(NUM_GERADORES).fill(0)
       const newProgresso = [...progressoRef.current]
+      const currentMilestones = milestonesReachedRef.current
+      const nextMilestones = [...currentMilestones]
       let hadBonusThisTick = false
+      let gainedUpgradePoints = 0
 
       const globalProdMult = Math.pow(2, globalProductionLevelRef.current)
       const mult = (idx: number) => Math.pow(2, upgradesRef.current[idx] ?? 0) * globalProdMult
@@ -917,7 +1001,16 @@ function AppContent() {
         }
       }
 
-      const nextGeradores = current.map((g, i) => g + deltaGen[i])
+      const nextGeradores = current.map((g, i) => {
+        const nextQtd = g + deltaGen[i]
+        const oldIndex = currentMilestones[i]
+        const newIndex = getMilestoneIndex(nextQtd)
+        if (newIndex > oldIndex) {
+          gainedUpgradePoints += (newIndex - oldIndex) * (i + 1)
+          nextMilestones[i] = newIndex
+        }
+        return nextQtd
+      })
       const totalAfterProd = totalRef.current.add(deltaTotal)
       let finalTotal = totalAfterProd
       let finalGeradores = nextGeradores
@@ -962,6 +1055,18 @@ function AppContent() {
         }
         geradoresRef.current = finalGeradores
         setGeradores(finalGeradores)
+      }
+
+      if (gainedUpgradePoints > 0) {
+        upgradePointsRef.current += gainedUpgradePoints
+        setUpgradePoints(upgradePointsRef.current)
+        milestonesReachedRef.current = nextMilestones
+        setMilestonesReached(nextMilestones)
+
+        toast.success("Pontos de Melhoria Ganhos!", {
+          description: `Você atingiu novos marcos e ganhou ${gainedUpgradePoints} Pontos de Melhoria!`,
+          position: "bottom-right",
+        })
       }
 
       // Verificar conquistas no tick para toast imediato (evita delay de até 5s do persistSave)
@@ -1015,11 +1120,16 @@ function AppContent() {
     return base.times(mult).floor()
   }
 
-  const podeComprar = (i: number) => total.gte(custoGerador(i))
+  const podeComprar = (i: number) => {
+    const cost = custoGerador(i)
+    if (total.lt(cost)) return false
+    return true
+  }
 
   const comprarGerador = (i: number) => {
-    const custo = custoGerador(i)
-    if (!total.gte(custo)) return
+    const cost = custoGerador(i)
+    if (!podeComprar(i)) return
+
     const eraPrimeiroDoGerador = geradores[i] === 0
     if (eraPrimeiroDoGerador) {
       setGeneratorUnlockTimestamps((prev) => {
@@ -1028,7 +1138,7 @@ function AppContent() {
         return next
       })
     }
-    setTotal((t) => Decimal.sub(t, custo))
+    setTotal((t) => Decimal.sub(t, cost))
     setGeradoresCompradosManual((n) => n + 1)
     setGeradores((prev) => {
       const next = [...prev]
@@ -1039,11 +1149,16 @@ function AppContent() {
 
   const custoProximoNivel = (i: number): Decimal =>
     Decimal.pow(10, 4 + i).times(Decimal.pow(10, upgrades[i]))
-  const podeComprarMelhoria = (i: number) => total.gte(custoProximoNivel(i))
+  const custoPontosMelhoria = (i: number, nivel: number): number => (nivel + 1) * (i + 1)
+  const custoPontosMelhoriaGlobal = (nivel: number): number => nivel + 1
+
+  const podeComprarMelhoria = (i: number) => total.gte(custoProximoNivel(i)) && upgradePoints >= custoPontosMelhoria(i, upgrades[i])
   const comprarMelhoria = (i: number) => {
     const custo = custoProximoNivel(i)
-    if (!total.gte(custo)) return
+    const custoPts = custoPontosMelhoria(i, upgrades[i])
+    if (!podeComprarMelhoria(i)) return
     setTotal((t) => Decimal.sub(t, custo))
+    setUpgradePoints((p) => p - custoPts)
     setUpgrades((prev) => {
       const next = [...prev]
       next[i] += 1
@@ -1055,12 +1170,14 @@ function AppContent() {
     Decimal.pow(10, 6 + i).times(Decimal.pow(10, speedUpgrades[i]))
   const podeComprarMelhoriaVelocidade = (i: number) =>
     total.gte(custoProximoNivelVelocidade(i)) &&
-    intervaloEfetivo(i, speedUpgrades[i] + 1) >= MIN_INTERVALO
+    intervaloEfetivo(i, speedUpgrades[i] + 1) >= MIN_INTERVALO &&
+    upgradePoints >= custoPontosMelhoria(i, speedUpgrades[i])
   const comprarMelhoriaVelocidade = (i: number) => {
     const custo = custoProximoNivelVelocidade(i)
-    if (!total.gte(custo)) return
-    if (intervaloEfetivo(i, speedUpgrades[i] + 1) < MIN_INTERVALO) return
+    const custoPts = custoPontosMelhoria(i, speedUpgrades[i])
+    if (!podeComprarMelhoriaVelocidade(i)) return
     setTotal((t) => Decimal.sub(t, custo))
+    setUpgradePoints((p) => p - custoPts)
     setSpeedUpgrades((prev) => {
       const next = [...prev]
       next[i] += 1
@@ -1070,11 +1187,13 @@ function AppContent() {
 
   const custoProximoNivelSorte = (i: number) =>
     Decimal.pow(10, 7 + i).times(Decimal.pow(10, luckUpgrades[i]))
-  const podeComprarMelhoriaSorte = (i: number) => total.gte(custoProximoNivelSorte(i))
+  const podeComprarMelhoriaSorte = (i: number) => total.gte(custoProximoNivelSorte(i)) && upgradePoints >= custoPontosMelhoria(i, luckUpgrades[i])
   const comprarMelhoriaSorte = (i: number) => {
     const custo = custoProximoNivelSorte(i)
-    if (!total.gte(custo)) return
+    const custoPts = custoPontosMelhoria(i, luckUpgrades[i])
+    if (!podeComprarMelhoriaSorte(i)) return
     setTotal((t) => Decimal.sub(t, custo))
+    setUpgradePoints((p) => p - custoPts)
     setLuckUpgrades((prev) => {
       const next = [...prev]
       next[i] += 1
@@ -1084,11 +1203,13 @@ function AppContent() {
 
   const custoProximoNivelEfeitoSorte = (i: number) =>
     Decimal.pow(10, 8 + i).times(Decimal.pow(10, luckMultiplierUpgrades[i]))
-  const podeComprarMelhoriaEfeitoSorte = (i: number) => total.gte(custoProximoNivelEfeitoSorte(i))
+  const podeComprarMelhoriaEfeitoSorte = (i: number) => total.gte(custoProximoNivelEfeitoSorte(i)) && upgradePoints >= custoPontosMelhoria(i, luckMultiplierUpgrades[i])
   const comprarMelhoriaEfeitoSorte = (i: number) => {
     const custo = custoProximoNivelEfeitoSorte(i)
-    if (!total.gte(custo)) return
+    const custoPts = custoPontosMelhoria(i, luckMultiplierUpgrades[i])
+    if (!podeComprarMelhoriaEfeitoSorte(i)) return
     setTotal((t) => Decimal.sub(t, custo))
+    setUpgradePoints((p) => p - custoPts)
     setLuckMultiplierUpgrades((prev) => {
       const next = [...prev]
       next[i] += 1
@@ -1098,31 +1219,37 @@ function AppContent() {
 
   const custoProximoNivelGlobalProducao = () =>
     Decimal.pow(10, 12).times(Decimal.pow(10, globalProductionLevel))
-  const podeComprarMelhoriaGlobalProducao = () => total.gte(custoProximoNivelGlobalProducao())
+  const podeComprarMelhoriaGlobalProducao = () => total.gte(custoProximoNivelGlobalProducao()) && upgradePoints >= custoPontosMelhoriaGlobal(globalProductionLevel)
   const comprarMelhoriaGlobalProducao = () => {
     const custo = custoProximoNivelGlobalProducao()
-    if (!total.gte(custo)) return
+    const custoPts = custoPontosMelhoriaGlobal(globalProductionLevel)
+    if (!podeComprarMelhoriaGlobalProducao()) return
     setTotal((t) => Decimal.sub(t, custo))
+    setUpgradePoints((p) => p - custoPts)
     setGlobalProductionLevel((n) => n + 1)
   }
 
   const custoProximoNivelGlobalVelocidade = () =>
     Decimal.pow(10, 13).times(Decimal.pow(10, globalSpeedLevel))
-  const podeComprarMelhoriaGlobalVelocidade = () => total.gte(custoProximoNivelGlobalVelocidade())
+  const podeComprarMelhoriaGlobalVelocidade = () => total.gte(custoProximoNivelGlobalVelocidade()) && upgradePoints >= custoPontosMelhoriaGlobal(globalSpeedLevel)
   const comprarMelhoriaGlobalVelocidade = () => {
     const custo = custoProximoNivelGlobalVelocidade()
-    if (!total.gte(custo)) return
+    const custoPts = custoPontosMelhoriaGlobal(globalSpeedLevel)
+    if (!podeComprarMelhoriaGlobalVelocidade()) return
     setTotal((t) => Decimal.sub(t, custo))
+    setUpgradePoints((p) => p - custoPts)
     setGlobalSpeedLevel((n) => n + 1)
   }
 
   const custoProximoNivelGlobalPreco = () =>
     Decimal.pow(10, 14).times(Decimal.pow(10, globalPriceReductionLevel))
-  const podeComprarMelhoriaGlobalPreco = () => total.gte(custoProximoNivelGlobalPreco())
+  const podeComprarMelhoriaGlobalPreco = () => total.gte(custoProximoNivelGlobalPreco()) && upgradePoints >= custoPontosMelhoriaGlobal(globalPriceReductionLevel)
   const comprarMelhoriaGlobalPreco = () => {
     const custo = custoProximoNivelGlobalPreco()
-    if (!total.gte(custo)) return
+    const custoPts = custoPontosMelhoriaGlobal(globalPriceReductionLevel)
+    if (!podeComprarMelhoriaGlobalPreco()) return
     setTotal((t) => Decimal.sub(t, custo))
+    setUpgradePoints((p) => p - custoPts)
     setGlobalPriceReductionLevel((n) => n + 1)
   }
 
@@ -1152,6 +1279,8 @@ function AppContent() {
     setGeradoresCompradosManual(0)
     setAchievementsUnlocked([])
     setShowFpsCounter(false)
+    setUpgradePoints(0)
+    setMilestonesReached(Array(NUM_GERADORES).fill(0))
 
     // Atualizar Refs imediatamente para o save forçado
     totalRef.current = new Decimal(0)
@@ -1170,6 +1299,8 @@ function AppContent() {
     firstPlayTimeRef.current = null
     geradoresCompradosManualRef.current = 0
     achievementsUnlockedRef.current = []
+    upgradePointsRef.current = 0
+    milestonesReachedRef.current = Array(NUM_GERADORES).fill(0)
 
     // Forçar save imediato do estado zerado
     setTimeout(() => persistSave(), 0)
@@ -1218,6 +1349,8 @@ function AppContent() {
     comprarMelhoria,
     podeComprarMelhoria,
     custoProximoNivel,
+    custoPontosMelhoria,
+    custoPontosMelhoriaGlobal,
     intervaloGerador,
     intervaloEfetivo: (i: number) => intervaloEfetivo(i, speedUpgrades[i] + globalSpeedLevel),
     NUM_GERADORES,
@@ -1258,6 +1391,9 @@ function AppContent() {
     achievementsUnlocked,
     showFpsCounter,
     setShowFpsCounter,
+    upgradePoints,
+    setUpgradePoints,
+    milestonesReached,
     generatorUnlockTimestamps,
     generatorBonusCount,
     persistSave,
@@ -1324,95 +1460,154 @@ function AppContent() {
               </Card>
             </div>
           )}
-          <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 flex items-center gap-4">
-            {/* Esquerda: nome do jogo + menus (futuros menus podem preencher aqui) */}
-            <div className="flex items-center gap-4 flex-1 min-w-0 justify-start">
-              <h1 className="text-lg font-semibold tracking-tight truncate shrink-0">
-                Breaking Eternity
-              </h1>
-              <nav className="flex gap-2 flex-wrap">
-                <NavLink
-                  to="/"
-                  onClick={() => playClickSound()}
-                  className={({ isActive }) =>
-                    "text-sm px-2 py-1 rounded-md " +
-                    (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-                  }
-                >
-                  Geradores
-                </NavLink>
-                <NavLink
-                  to="/melhorias"
-                  onClick={() => playClickSound()}
-                  className={({ isActive }) =>
-                    "text-sm px-2 py-1 rounded-md " +
-                    (isActive ? "text-foreground bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")
-                  }
-                >
-                  Melhorias
-                </NavLink>
+          <TooltipProvider>
+            <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 flex items-center gap-4">
+              {/* Esquerda: nome do jogo */}
+              <div className="flex items-center gap-4 flex-1 min-w-0 justify-start">
+                <h1 className="text-lg font-semibold tracking-tight truncate shrink-0">
+                  Breaking Eternity
+                </h1>
+              </div>
+              {/* Centro: contador do recurso principal */}
+              <div className="flex-shrink-0 px-2">
+                <p className="text-2xl font-mono tabular-nums break-all text-center">
+                  {formatDecimal(total)}
+                </p>
+              </div>
+              {/* Direita: Todos os menus e FPS */}
+              <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
+                {showFpsCounter && (
+                  <Card className="px-3 py-1.5 shrink-0 border-muted">
+                    <span
+                      className={`text-xs font-mono ${fps >= 60 ? "text-green-500" : fps >= 30 ? "text-yellow-500" : "text-red-500"
+                        }`}
+                    >
+                      {fps} FPS
+                    </span>
+                  </Card>
+                )}
+                <nav className="flex items-center gap-2 flex-wrap">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          playClickSound()
+                          navigate("/")
+                        }}
+                        className={cn("transition-colors", location.pathname === "/" ? "text-foreground bg-muted hover:text-foreground hover:bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}
+                      >
+                        <Cpu className="h-5 w-5" />
+                        <span className="sr-only">Geradores</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="flex items-center gap-2">
+                      <span>Geradores</span>
+                      <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                        {getShortcutDisplayKey(getShortcut("menuGeradores"))}
+                      </kbd>
+                    </TooltipContent>
+                  </Tooltip>
 
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          playClickSound()
+                          navigate("/melhorias")
+                        }}
+                        className={cn("transition-colors", location.pathname === "/melhorias" ? "text-foreground bg-muted hover:text-foreground hover:bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}
+                      >
+                        <Zap className="h-5 w-5" />
+                        <span className="sr-only">Melhorias</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="flex items-center gap-2">
+                      <span>Melhorias</span>
+                      <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                        {getShortcutDisplayKey(getShortcut("menuMelhorias"))}
+                      </kbd>
+                    </TooltipContent>
+                  </Tooltip>
 
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          playClickSound()
+                          navigate("/conquistas")
+                        }}
+                        className="relative"
+                      >
+                        <Trophy className="h-5 w-5" />
+                        <span className="sr-only">Conquistas</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="flex items-center gap-2">
+                      <span>Conquistas</span>
+                      <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                        {getShortcutDisplayKey(getShortcut("menuConquistas"))}
+                      </kbd>
+                    </TooltipContent>
+                  </Tooltip>
 
-              </nav>
-            </div>
-            {/* Centro: contador do recurso principal */}
-            <div className="flex-shrink-0 px-2">
-              <p className="text-2xl font-mono tabular-nums break-all text-center">
-                {formatDecimal(total)}
-              </p>
-            </div>
-            {/* Direita: FPS, Notificações e futuros menus */}
-            <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
-              {showFpsCounter && (
-                <Card className="px-3 py-1.5 shrink-0 border-muted">
-                  <span
-                    className={`text-xs font-mono ${fps >= 60 ? "text-green-500" : fps >= 30 ? "text-yellow-500" : "text-red-500"
-                      }`}
-                  >
-                    {fps} FPS
-                  </span>
-                </Card>
-              )}
-              <NotificationCenter />
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  playClickSound()
-                  navigate("/conquistas")
-                }}
-                className="relative"
-              >
-                <Trophy className="h-5 w-5" />
-                <span className="sr-only">Conquistas</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  playClickSound()
-                  navigate("/estatisticas")
-                }}
-                className="relative"
-              >
-                <BarChart3 className="h-5 w-5" />
-                <span className="sr-only">Estatísticas</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  playClickSound()
-                  navigate("/configuracoes")
-                }}
-                className="relative"
-              >
-                <Settings className="h-5 w-5" />
-                <span className="sr-only">Configurações</span>
-              </Button>
-            </div>
-          </header>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          playClickSound()
+                          navigate("/estatisticas")
+                        }}
+                        className="relative"
+                      >
+                        <BarChart3 className="h-5 w-5" />
+                        <span className="sr-only">Estatísticas</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="flex items-center gap-2">
+                      <span>Estatísticas</span>
+                      <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                        {getShortcutDisplayKey(getShortcut("menuEstatisticas"))}
+                      </kbd>
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <div className="w-px h-5 bg-border mx-1" aria-hidden="true" />
+                  <NotificationCenter />
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          playClickSound()
+                          navigate("/configuracoes")
+                        }}
+                        className="relative"
+                      >
+                        <Settings className="h-5 w-5" />
+                        <span className="sr-only">Configurações</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="flex items-center gap-2">
+                      <span>Configurações</span>
+                      <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                        {getShortcutDisplayKey(getShortcut("menuConfiguracoes"))}
+                      </kbd>
+                    </TooltipContent>
+                  </Tooltip>
+                </nav>
+              </div>
+            </header>
+          </TooltipProvider>
 
           <MainWithScrollBehavior>
             <Routes>

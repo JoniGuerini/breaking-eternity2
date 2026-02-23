@@ -4,6 +4,9 @@ import type Decimal from "break_eternity.js"
 export interface GameContextValue {
   total: Decimal
   setTotal: React.Dispatch<React.SetStateAction<Decimal>>
+  upgradePoints: number
+  setUpgradePoints: React.Dispatch<React.SetStateAction<number>>
+  milestonesReached: number[]
   geradores: number[]
   progressoRef: React.MutableRefObject<number[]>
   upgrades: number[]
@@ -15,6 +18,8 @@ export interface GameContextValue {
   comprarMelhoria: (i: number) => void
   podeComprarMelhoria: (i: number) => boolean
   custoProximoNivel: (i: number) => Decimal
+  custoPontosMelhoria: (i: number, nivel: number) => number
+  custoPontosMelhoriaGlobal: (nivel: number) => number
   intervaloGerador: (i: number) => number
   intervaloEfetivo: (i: number) => number
   NUM_GERADORES: number
