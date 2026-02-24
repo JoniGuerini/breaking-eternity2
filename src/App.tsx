@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState, useMemo } from "react"
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom"
 import { BarChart3, Cpu, Settings, Trophy, Zap } from "lucide-react"
 import Decimal from "break_eternity.js"
@@ -15,7 +15,6 @@ import {
   subscribeSessionDevice,
 } from "@/lib/sessionDevice"
 import { playAchievementSound, playClickSound } from "@/lib/clickSound"
-import { ProgressoProvider } from "@/context/ProgressoContext"
 import { ShortcutHandler } from "@/components/ShortcutHandler"
 import { ScrollToTop } from "@/components/ScrollToTop"
 import { CustomContextMenu } from "@/components/CustomContextMenu"
@@ -38,39 +37,6 @@ import {
 } from "@/components/ui/tooltip"
 import { getShortcut, getShortcutDisplayKey } from "@/lib/shortcuts"
 
-/** Na página de conquistas trava o layout em 100vh para o documento não rolar; só a lista rola. */
-function RootLayout({ children }: { children: React.ReactNode }) {
-  const location = useLocation()
-  const isConquistas = location.pathname === "/conquistas"
-  return (
-    <div
-      className={
-        "scroll-overlay bg-background text-foreground flex flex-col select-none " +
-        (isConquistas ? "h-screen overflow-hidden" : "min-h-screen")
-      }
-    >
-      {children}
-    </div>
-  )
-}
-
-/** Envolve o main e o conteúdo; na página de conquistas desativa rolagem aqui (só a lista interna rola). */
-function MainWithScrollBehavior({ children }: { children: React.ReactNode }) {
-  const location = useLocation()
-  const isConquistas = location.pathname === "/conquistas"
-  return (
-    <main className="scroll-overlay flex-1 min-h-0 flex flex-col overflow-hidden px-4 py-4 md:px-6">
-      <div
-        className={
-          "flex-1 flex flex-col min-h-0 " +
-          (isConquistas ? "overflow-hidden" : "overflow-auto")
-        }
-      >
-        {children}
-      </div>
-    </main>
-  )
-}
 
 const NUM_GERADORES = 100
 const SAVE_KEY = "breaking-eternity-save"
@@ -317,9 +283,201 @@ function loadSavedState(): SavedState | null {
   }
 }
 
+const MemoizedHeader = React.memo(({ fps, showFpsCounter }: { fps: number, showFpsCounter: boolean }) => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const gameCtx = React.useContext(GameContext)
+
+  return (
+    <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 flex items-center gap-4">
+      {/* Esquerda: nome do jogo */}
+      <div className="flex items-center gap-4 flex-1 min-w-0 justify-start">
+        <h1 className="text-lg font-semibold tracking-tight truncate shrink-0">
+          Breaking Eternity
+        </h1>
+      </div>
+      {/* Centro: contador do recurso principal */}
+      <div className="flex-shrink-0 px-2">
+        <p className="text-2xl font-mono tabular-nums break-all text-center">
+          {gameCtx?.formatDecimal(gameCtx.total) || "0"}
+        </p>
+      </div>
+      {/* Direita: Todos os menus e FPS */}
+      <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
+        {showFpsCounter && (
+          <Card className="px-3 py-1.5 shrink-0 border-muted">
+            <span
+              className={`text-xs font-mono ${fps >= 60 ? "text-green-500" : fps >= 30 ? "text-yellow-500" : "text-red-500"
+                }`}
+            >
+              {fps} FPS
+            </span>
+          </Card>
+        )}
+        <nav className="flex items-center gap-2 flex-wrap">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  playClickSound()
+                  navigate("/")
+                }}
+                className={cn("transition-colors", location.pathname === "/" ? "text-foreground bg-muted hover:text-foreground hover:bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}
+              >
+                <Cpu className="h-5 w-5" />
+                <span className="sr-only">Geradores</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="flex items-center gap-2">
+              <span>Geradores</span>
+              <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                {getShortcutDisplayKey(getShortcut("menuGeradores"))}
+              </kbd>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  playClickSound()
+                  navigate("/melhorias")
+                }}
+                className={cn("transition-colors", location.pathname === "/melhorias" ? "text-foreground bg-muted hover:text-foreground hover:bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}
+              >
+                <Zap className="h-5 w-5" />
+                <span className="sr-only">Melhorias</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="flex items-center gap-2">
+              <span>Melhorias</span>
+              <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                {getShortcutDisplayKey(getShortcut("menuMelhorias"))}
+              </kbd>
+            </TooltipContent>
+          </Tooltip>
+
+          <div className="w-px h-5 bg-border mx-1" aria-hidden="true" />
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  playClickSound()
+                  navigate("/conquistas")
+                }}
+                className="relative"
+              >
+                <Trophy className="h-5 w-5" />
+                <span className="sr-only">Conquistas</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="flex items-center gap-2">
+              <span>Conquistas</span>
+              <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                {getShortcutDisplayKey(getShortcut("menuConquistas"))}
+              </kbd>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  playClickSound()
+                  navigate("/estatisticas")
+                }}
+                className="relative"
+              >
+                <BarChart3 className="h-5 w-5" />
+                <span className="sr-only">Estatísticas</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="flex items-center gap-2">
+              <span>Estatísticas</span>
+              <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                {getShortcutDisplayKey(getShortcut("menuEstatisticas"))}
+              </kbd>
+            </TooltipContent>
+          </Tooltip>
+
+          <div className="w-px h-5 bg-border mx-1" aria-hidden="true" />
+          <NotificationCenter />
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  playClickSound()
+                  navigate("/configuracoes")
+                }}
+                className="relative"
+              >
+                <Settings className="h-5 w-5" />
+                <span className="sr-only">Configurações</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="flex items-center gap-2">
+              <span>Configurações</span>
+              <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                {getShortcutDisplayKey(getShortcut("menuConfiguracoes"))}
+              </kbd>
+            </TooltipContent>
+          </Tooltip>
+        </nav>
+      </div>
+    </header>
+  )
+})
+
+/** Na página de conquistas trava o layout em 100vh para o documento não rolar; só a lista rola. */
+function RootLayout({ children }: { children: React.ReactNode }) {
+  const location = useLocation()
+  const isConquistas = location.pathname === "/conquistas"
+  return (
+    <div
+      className={
+        "scroll-overlay bg-background text-foreground flex flex-col select-none " +
+        (isConquistas ? "h-screen overflow-hidden" : "min-h-screen")
+      }
+    >
+      {children}
+    </div>
+  )
+}
+
+/** Envolve o main e o conteúdo; na página de conquistas desativa rolagem aqui (só a lista interna rola). */
+function MainWithScrollBehavior({ children }: { children: React.ReactNode }) {
+  const location = useLocation()
+  const isConquistas = location.pathname === "/conquistas"
+  return (
+    <main className="scroll-overlay flex-1 min-h-0 flex flex-col overflow-hidden px-4 py-4 md:px-6">
+      <div
+        className={
+          "flex-1 flex flex-col min-h-0 " +
+          (isConquistas ? "overflow-hidden" : "overflow-auto")
+        }
+      >
+        {children}
+      </div>
+    </main>
+  )
+}
+
 function AppContent() {
   const auth = useAuth()
   const location = useLocation()
+
   const [total, setTotal] = useState<Decimal>(() => {
     const saved = loadSavedState()
     if (!saved) return new Decimal(0)
@@ -460,7 +618,6 @@ function AppContent() {
   const generatorBonusCountRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const firstPlayTimeRef = useRef<number | null>(null)
   const progressoRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
-  const setProgressoStateRef = useRef<((v: number[]) => void) | null>(null)
   const autoUnlockNextGeradorRef = useRef(false)
   const [lastSaveTime, setLastSaveTime] = useState(() => loadSavedState()?.lastSaveTime ?? Date.now())
   const [cloudSaveInterval, setCloudSaveInterval] = useState(() => {
@@ -1032,7 +1189,6 @@ function AppContent() {
         }
       }
       progressoRef.current = newProgresso
-      setProgressoStateRef.current?.(newProgresso.slice())
       if (hadBonusThisTick) setGeneratorBonusCount(generatorBonusCountRef.current.slice())
       if (deltaTotal.gt(0) || autoUnlockHappened) {
         totalRef.current = finalTotal
@@ -1320,11 +1476,6 @@ function AppContent() {
     globalPriceReductionLevelRef.current = 0
     generatorUnlockTimestampsRef.current = Array(NUM_GERADORES).fill(0)
     generatorBonusCountRef.current = Array(NUM_GERADORES).fill(0)
-    setGeneratorBonusCount(Array(NUM_GERADORES).fill(0))
-    jaColetouManualRef.current = false
-    acumuladoRef.current = Array(NUM_GERADORES).fill(0)
-    progressoRef.current = Array(NUM_GERADORES).fill(0)
-    setProgressoStateRef.current?.(Array(NUM_GERADORES).fill(0))
   }
 
   function formatOfflineTime(seconds: number): string {
@@ -1334,9 +1485,7 @@ function AppContent() {
     return `${(seconds / 86400).toFixed(1)} dias`
   }
 
-  const navigate = useNavigate()
-
-  const gameContextValue: GameContextValue = {
+  const gameContextValue: GameContextValue = useMemo(() => ({
     total,
     setTotal,
     geradores,
@@ -1400,7 +1549,32 @@ function AppContent() {
     lastSaveTime,
     cloudSaveInterval,
     setCloudSaveInterval,
-  }
+  }), [
+    total,
+    geradores,
+    upgrades,
+    speedUpgrades,
+    luckUpgrades,
+    luckMultiplierUpgrades,
+    globalProductionLevel,
+    globalSpeedLevel,
+    globalPriceReductionLevel,
+    autoUnlockNextGerador,
+    totalProducedLifetime,
+    totalPlayTimeSeconds,
+    firstPlayTime,
+    geradoresCompradosManual,
+    achievementsUnlocked,
+    showFpsCounter,
+    upgradePoints,
+    milestonesReached,
+    generatorUnlockTimestamps,
+    generatorBonusCount,
+    lastSaveTime,
+    cloudSaveInterval,
+    // Add stable functions/refs that don't technically need to be here but are part of the value:
+    progressoRef,
+  ])
 
   return (
     <GameContext.Provider value={gameContextValue}>
@@ -1460,163 +1634,15 @@ function AppContent() {
               </Card>
             </div>
           )}
-          <TooltipProvider>
-            <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 flex items-center gap-4">
-              {/* Esquerda: nome do jogo */}
-              <div className="flex items-center gap-4 flex-1 min-w-0 justify-start">
-                <h1 className="text-lg font-semibold tracking-tight truncate shrink-0">
-                  Breaking Eternity
-                </h1>
-              </div>
-              {/* Centro: contador do recurso principal */}
-              <div className="flex-shrink-0 px-2">
-                <p className="text-2xl font-mono tabular-nums break-all text-center">
-                  {formatDecimal(total)}
-                </p>
-              </div>
-              {/* Direita: Todos os menus e FPS */}
-              <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
-                {showFpsCounter && (
-                  <Card className="px-3 py-1.5 shrink-0 border-muted">
-                    <span
-                      className={`text-xs font-mono ${fps >= 60 ? "text-green-500" : fps >= 30 ? "text-yellow-500" : "text-red-500"
-                        }`}
-                    >
-                      {fps} FPS
-                    </span>
-                  </Card>
-                )}
-                <nav className="flex items-center gap-2 flex-wrap">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          playClickSound()
-                          navigate("/")
-                        }}
-                        className={cn("transition-colors", location.pathname === "/" ? "text-foreground bg-muted hover:text-foreground hover:bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}
-                      >
-                        <Cpu className="h-5 w-5" />
-                        <span className="sr-only">Geradores</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="flex items-center gap-2">
-                      <span>Geradores</span>
-                      <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-                        {getShortcutDisplayKey(getShortcut("menuGeradores"))}
-                      </kbd>
-                    </TooltipContent>
-                  </Tooltip>
+          <MemoizedHeader fps={fps} showFpsCounter={showFpsCounter} />
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          playClickSound()
-                          navigate("/melhorias")
-                        }}
-                        className={cn("transition-colors", location.pathname === "/melhorias" ? "text-foreground bg-muted hover:text-foreground hover:bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}
-                      >
-                        <Zap className="h-5 w-5" />
-                        <span className="sr-only">Melhorias</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="flex items-center gap-2">
-                      <span>Melhorias</span>
-                      <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-                        {getShortcutDisplayKey(getShortcut("menuMelhorias"))}
-                      </kbd>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          playClickSound()
-                          navigate("/conquistas")
-                        }}
-                        className="relative"
-                      >
-                        <Trophy className="h-5 w-5" />
-                        <span className="sr-only">Conquistas</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="flex items-center gap-2">
-                      <span>Conquistas</span>
-                      <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-                        {getShortcutDisplayKey(getShortcut("menuConquistas"))}
-                      </kbd>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          playClickSound()
-                          navigate("/estatisticas")
-                        }}
-                        className="relative"
-                      >
-                        <BarChart3 className="h-5 w-5" />
-                        <span className="sr-only">Estatísticas</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="flex items-center gap-2">
-                      <span>Estatísticas</span>
-                      <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-                        {getShortcutDisplayKey(getShortcut("menuEstatisticas"))}
-                      </kbd>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <div className="w-px h-5 bg-border mx-1" aria-hidden="true" />
-                  <NotificationCenter />
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          playClickSound()
-                          navigate("/configuracoes")
-                        }}
-                        className="relative"
-                      >
-                        <Settings className="h-5 w-5" />
-                        <span className="sr-only">Configurações</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="flex items-center gap-2">
-                      <span>Configurações</span>
-                      <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-                        {getShortcutDisplayKey(getShortcut("menuConfiguracoes"))}
-                      </kbd>
-                    </TooltipContent>
-                  </Tooltip>
-                </nav>
-              </div>
-            </header>
-          </TooltipProvider>
 
           <MainWithScrollBehavior>
             <Routes>
               <Route
                 path="/"
                 element={
-                  <ProgressoProvider progressoRef={progressoRef} setProgressoStateRef={setProgressoStateRef} numGeradores={NUM_GERADORES}>
-                    <GeneratorsPage />
-                  </ProgressoProvider>
+                  <GeneratorsPage />
                 }
               />
               <Route path="/melhorias" element={<ImprovementsPage />} />
@@ -1643,11 +1669,13 @@ function App() {
   return (
     <BrowserRouter>
       <Toaster position="bottom-right" />
-      <NotificationProvider>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
-      </NotificationProvider>
+      <TooltipProvider>
+        <NotificationProvider>
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
+        </NotificationProvider>
+      </TooltipProvider>
     </BrowserRouter>
   )
 }
