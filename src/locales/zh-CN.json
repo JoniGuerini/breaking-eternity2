@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "欢迎来到 Breaking Eternity",
+    "welcomeP1": "这是一款<strong>放置</strong>（idle）游戏：你收集资源，购买产出更多资源的生成器，并解锁升级。数字可以变得极大——百万、十亿甚至更大。",
+    "welcomeP2": "为处理如此大的数字，游戏使用 <strong>break_eternity.js</strong> 库，可在远超 JavaScript 原生支持的范围内运算（科学计数法、M/B/T/Q 等后缀及字母）。",
+    "welcomeP3": "<strong>目标</strong>是达到该库的极限——它能表示的最大数字。在下方领取你的第一份资源并开始购买生成器。玩得开心！",
+    "firstResource": "领取第一份资源",
+    "offlineTitle": "离线收益",
+    "offlineGain": "你离线期间获得了 {{amount}}。",
+    "offlineTime": "离开时长"
+  },
+  "nav": {
+    "geradores": "生成器",
+    "melhorias": "升级",
+    "conquistas": "成就",
+    "estatisticas": "统计",
+    "configuracoes": "设置"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "常规",
+      "temas": "主题",
+      "atalhos": "快捷键",
+      "conta": "账户",
+      "avancado": "高级选项"
+    },
+    "language": "语言",
+    "languageDesc": "更改游戏界面语言。",
+    "clickSound": "点击音效",
+    "clickSoundDesc": "购买生成器/升级或切换菜单时播放点击声。",
+    "clickVolume": "点击音量",
+    "clickVolumeLabel": "点击音效音量",
+    "fpsCounter": "显示 FPS 计数",
+    "fpsCounterDesc": "在游戏右上角显示每秒帧数。",
+    "fullscreen": "全屏",
+    "fullscreenDesc": "在浏览器中全屏运行游戏。按 Esc 或点击按钮退出。",
+    "saveProgress": "保存进度",
+    "saveProgressDescBefore": "游戏每",
+    "saveProgressDescAfter": "秒自动保存。你可以在此强制保存。",
+    "cloudSaveInterval": "云存档间隔",
+    "cloudSaveHint": "数值越小保存越频繁，数值越大越省流量。",
+    "lastSave": "上次保存",
+    "saveNow": "立即保存",
+    "never": "从未",
+    "downloadDesktop": "下载桌面版",
+    "downloadDesktopDesc": "在电脑或 Mac 上安装游戏，无需打开浏览器即可游玩。",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "恢复默认设置",
+    "restoreDefaultsDesc": "将常规、主题和快捷键恢复为游戏默认值。",
+    "exitGame": "退出游戏",
+    "exitGameDesc": "保存进度并关闭游戏。",
+    "exit": "退出",
+    "themeTitle": "视觉主题",
+    "themeDesc": "选择界面外观。所有选项可用。",
+    "themes": {
+      "light": "浅色",
+      "dark": "深色",
+      "high-contrast": "高对比度（深色）",
+      "wow": "魔兽世界",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "复古",
+      "terminal": "终端",
+      "nord": "Nord",
+      "dracula": "德古拉",
+      "sepia": "棕褐色",
+      "ocean": "海洋",
+      "forest": "森林",
+      "sunset": "日落",
+      "rose": "玫瑰",
+      "coffee": "咖啡",
+      "midnight": "午夜",
+      "synthwave": "合成波",
+      "lavender": "薰衣草",
+      "mint": "薄荷",
+      "candy": "糖果",
+      "crimson": "深红",
+      "peacock": "孔雀",
+      "desert": "沙漠",
+      "berry": "浆果",
+      "sage": "鼠尾草",
+      "ink": "墨色",
+      "honey": "蜂蜜"
+    },
+    "shortcutsTitle": "快捷键",
+    "shortcutsDesc": "点击按钮后按下要使用的键（或鼠标按键）。快捷键在所有界面有效。",
+    "pressKey": "按下按键…",
+    "accountTitle": "你的账户",
+    "accountDesc": "登录或注册账户，以便在任何设备上访问存档并参与排行榜。",
+    "connectedAs": "已登录为",
+    "goToLogin": "前往登录页",
+    "useLoginPage": "使用登录页进行登录或注册。",
+    "advancedUnlock": "自动解锁下一生成器",
+    "advancedUnlockDesc": "开启后，当资源足够时会自动解锁下一生成器（仍为 0 单位）。不会额外购买单位。",
+    "resetProgress": "重置进度",
+    "resetProgressDesc": "将游戏恢复至初始状态：计数为 0，无生成器与升级。存档将被清除。",
+    "resetDialogTitle": "确定重置进度？",
+    "resetDialogDesc": "确定要重置全部进度吗？计数、生成器和升级将归零。"
+  },
+  "auth": {
+    "loading": "加载中…",
+    "connectedAs": "已登录为",
+    "signOut": "退出登录",
+    "goToGame": "进入游戏",
+    "forceLoginTitle": "该账户已在其他设备登录",
+    "forceLoginDesc": "此账户正在另一台设备使用。若在此处登录，另一台设备将被登出并会看到账户在别处登录的提示。",
+    "cancel": "取消",
+    "forceLogin": "强制登录",
+    "email": "邮箱",
+    "emailPlaceholder": "nome@exemplo.com",
+    "password": "密码",
+    "login": "登录",
+    "signUp": "注册",
+    "wait": "请稍候…",
+    "noAccount": "没有账户？注册",
+    "hasAccount": "已有账户？登录"
+  },
+  "common": {
+    "cancel": "取消",
+    "confirm": "确认",
+    "ok": "确定"
+  },
+  "shortcuts": {
+    "nextMenu": "下一菜单",
+    "prevMenu": "上一菜单",
+    "menuGeradores": "前往生成器",
+    "menuMelhorias": "前往升级",
+    "menuConquistas": "前往成就",
+    "menuEstatisticas": "前往统计",
+    "menuConfiguracoes": "前往设置",
+    "scrollTop": "滚到顶部",
+    "scrollBottom": "滚到底部"
+  },
+  "generators": {
+    "generatorN": "生成器 {{n}}",
+    "unlockToProduce": "解锁后开始产出",
+    "costToUnlock": "解锁消耗",
+    "fragments": "碎片",
+    "quantity": "数量",
+    "milestone": "里程碑",
+    "milestoneProgress": "里程碑进度",
+    "totalGenerators": "生成器总数",
+    "time": "时间",
+    "cycle": "周期",
+    "continuous": "连续",
+    "resource": "资源",
+    "price": "价格",
+    "generatedAutomatically": "自动产出",
+    "automatic": "自动",
+    "buy": "购买"
+  },
+  "improvements": {
+    "upgradePoints": "升级点",
+    "perGenerator": "每生成器",
+    "global": "全局",
+    "production": "产出",
+    "level": "等级",
+    "multiplier": "倍率",
+    "next": "下一级",
+    "buy": "购买",
+    "frag": "碎片",
+    "speed": "速度",
+    "currentCycle": "当前周期",
+    "luck": "幸运",
+    "currentChance": "当前概率",
+    "nextChance": "下一概率",
+    "luckEffect": "幸运效果",
+    "multOnCrit": "暴击倍率",
+    "globalProduction": "全局产出",
+    "globalProductionDesc": "每级全体 x2",
+    "globalSpeed": "全局速度",
+    "globalSpeedDesc": "每级 −10%",
+    "cycleFactor": "当前周期系数",
+    "generatorPrice": "生成器价格",
+    "generatorPriceDesc": "每级 −5%",
+    "currentReduction": "当前减免",
+    "nextReduction": "下一级",
+    "unlockGeneratorsHint": "在生成器页面解锁生成器后，可在此查看升级。"
+  },
+  "achievements": {
+    "totalPoints": "总点数",
+    "ofAchievements": "/ {{total}} 项成就",
+    "emptyCategory": "此分类暂无成就。",
+    "unlocked": "已解锁",
+    "locked": "未解锁",
+    "categories": {
+      "primeiros-passos": "第一步",
+      "recurso": "资源",
+      "unidades-geradores": "生成器单位",
+      "gerador-especifico": "特定生成器",
+      "producao-total": "总产出",
+      "tempo-jogo": "游戏时长",
+      "compras-manuais": "手动购买",
+      "melhorias-producao": "产出升级",
+      "melhorias-velocidade": "速度升级"
+    },
+    "primeiro-gerador": {
+      "name": "第一个生成器",
+      "description": "解锁生成器 1"
+    },
+    "primeira-melhoria": {
+      "name": "第一次升级",
+      "description": "购买一项产出升级"
+    },
+    "primeira-velocidade": {
+      "name": "加速",
+      "description": "购买一项速度升级"
+    },
+    "rec-100": {
+      "name": "一百资源",
+      "description": "累计 100 资源"
+    },
+    "rec-1e3": {
+      "name": "一千资源",
+      "description": "累计 1,000 资源"
+    },
+    "rec-1e4": {
+      "name": "一万",
+      "description": "累计 10,000 资源"
+    },
+    "rec-1e5": {
+      "name": "十万",
+      "description": "累计 100,000 资源"
+    },
+    "rec-1e6": {
+      "name": "百万",
+      "description": "累计 100 万资源"
+    },
+    "rec-1e7": {
+      "name": "一千万",
+      "description": "累计 1,000 万资源"
+    },
+    "rec-1e8": {
+      "name": "一亿",
+      "description": "累计 1 亿资源"
+    },
+    "rec-1e9": {
+      "name": "十亿",
+      "description": "累计 10 亿资源"
+    },
+    "rec-1e10": {
+      "name": "一百亿",
+      "description": "累计 100 亿资源"
+    },
+    "rec-1e11": {
+      "name": "一千亿",
+      "description": "累计 1,000 亿资源"
+    },
+    "rec-1e12": {
+      "name": "万亿",
+      "description": "累计 1 万亿资源"
+    },
+    "unid-10": {
+      "name": "十单位",
+      "description": "共拥有 10 个生成器单位"
+    },
+    "unid-50": {
+      "name": "五十单位",
+      "description": "共拥有 50 个生成器单位"
+    },
+    "unid-100": {
+      "name": "一百单位",
+      "description": "共拥有 100 个生成器单位"
+    },
+    "g10": {
+      "name": "生成器 10",
+      "description": "解锁生成器 10"
+    },
+    "g20": {
+      "name": "生成器 20",
+      "description": "解锁生成器 20"
+    },
+    "g100": {
+      "name": "最终生成器",
+      "description": "解锁生成器 100"
+    },
+    "prod-1e6": {
+      "name": "产出：100万",
+      "description": "累计产出 100 万（生涯）"
+    },
+    "prod-1e9": {
+      "name": "产出：10亿",
+      "description": "累计产出 10 亿（生涯）"
+    },
+    "tempo-1h": {
+      "name": "一小时",
+      "description": "累计游玩 1 小时"
+    },
+    "tempo-24h": {
+      "name": "一天",
+      "description": "累计游玩 24 小时"
+    },
+    "comp-10": {
+      "name": "热心买家",
+      "description": "手动（点击）购买 10 个生成器"
+    },
+    "comp-1k": {
+      "name": "点击大师",
+      "description": "手动（点击）购买 1,000 个生成器"
+    },
+    "melh-10": {
+      "name": "十项升级",
+      "description": "共购买 10 项产出升级"
+    },
+    "vel-10": {
+      "name": "十项速度",
+      "description": "共购买 10 项速度升级"
+    }
+  },
+  "notifications": {
+    "title": "通知",
+    "empty": "暂无通知",
+    "markAllRead": "全部标为已读",
+    "clearHistory": "清空历史"
+  },
+  "stats": {
+    "summary": "游戏摘要",
+    "summaryDesc": "整体进度数据（重置后会清零）。",
+    "currentResource": "当前资源",
+    "totalProduced": "总产出",
+    "playTime": "游戏时长",
+    "firstSession": "首次游玩",
+    "manualPurchases": "手动购买生成器数",
+    "autoProduced": "自动产出生成器数",
+    "productionUpgrades": "产出升级",
+    "speedUpgrades": "速度升级",
+    "timesPerGenerator": "各生成器时间",
+    "timesPerGeneratorDesc": "从开始到解锁各生成器的时间及在各档位停留时间。此后解锁会被记录。",
+    "timeToUnlock": "解锁用时",
+    "timeInPreviousTier": "仅上一档位时间（生成器 {{n}}）",
+    "bonusHits": "幸运暴击次数"
+  },
+  "toasts": {
+    "sessionOtherDevice": "你的账户已在其他设备登录。",
+    "upgradePointsTitle": "获得升级点！",
+    "upgradePointsDesc": "你达成新里程碑，获得 {{count}} 升级点！"
+  }
+}

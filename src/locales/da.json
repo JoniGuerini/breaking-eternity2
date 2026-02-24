@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "Velkommen til Breaking Eternity",
+    "welcomeP1": "Dette er et <strong>inkrementelt</strong> (idle) spil: du samler ressourcer, køber generatorer der producerer mere ressourcer, og låser forbedringer op. Tal kan blive enorme — millioner, milliarder og mere.",
+    "welcomeP2": "For at håndtere så store tal bruger spillet biblioteket <strong>break_eternity.js</strong>, som gør det muligt at regne med værdier langt ud over hvad indbygget JavaScript understøtter (videnskabelig notation, suffikser som M, B, T, Q og bogstaver).",
+    "welcomeP3": "<strong>Målet</strong> er at nå grænsen for dette bibliotek — det største tal det kan repræsentere. Hent din første ressource nedenfor og begynd at købe generatorer. God fornøjelse!",
+    "firstResource": "Hent første ressource",
+    "offlineTitle": "Offline-gevinst",
+    "offlineGain": "Du tjente {{amount}} mens du var offline.",
+    "offlineTime": "Tid væk"
+  },
+  "nav": {
+    "geradores": "Generatorer",
+    "melhorias": "Forbedringer",
+    "conquistas": "Præstationer",
+    "estatisticas": "Statistik",
+    "configuracoes": "Indstillinger"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "Generelt",
+      "temas": "Temaer",
+      "atalhos": "Genveje",
+      "conta": "Konto",
+      "avancado": "Avancerede muligheder"
+    },
+    "language": "Sprog",
+    "languageDesc": "Ændrer spillets grænsefladesprog.",
+    "clickSound": "Kliklyd",
+    "clickSoundDesc": "Afspiller et klik når du køber generatorer/forbedringer og skifter menuer.",
+    "clickVolume": "Klikvolumen",
+    "clickVolumeLabel": "Kliklydens volumen",
+    "fpsCounter": "Vis FPS-tæller",
+    "fpsCounterDesc": "Viser billeder per sekund i øverste højre hjørne af spillet.",
+    "fullscreen": "Fuldskærm",
+    "fullscreenDesc": "Sætter spillet i fuldskærm i browseren. Brug Esc eller knappen for at afslutte.",
+    "saveProgress": "Gem fremskridt",
+    "saveProgressDescBefore": "Spillet gemmer automatisk hver",
+    "saveProgressDescAfter": "sekund. Du kan tvinge et gem her.",
+    "cloudSaveInterval": "Cloud-geminterval",
+    "cloudSaveHint": "Lavere = Hyppigere gem. Højere = Mindre netværksforbrug.",
+    "lastSave": "Sidste gem",
+    "saveNow": "Gem nu",
+    "never": "Aldrig",
+    "downloadDesktop": "Download til computer",
+    "downloadDesktopDesc": "Installer spillet på din PC eller Mac og spil uden at åbne browseren.",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "Gendan standardindstillinger",
+    "restoreDefaultsDesc": "Sætter Generelt, Temaer og Genveje tilbage til spillets standard.",
+    "exitGame": "Afslut spil",
+    "exitGameDesc": "Gemmer fremskridt og lukker spillet.",
+    "exit": "Afslut",
+    "themeTitle": "Visuelt tema",
+    "themeDesc": "Vælg grænsefladens udseende. Alle muligheder er tilgængelige.",
+    "themes": {
+      "light": "Lys",
+      "dark": "Mørk",
+      "high-contrast": "Høj kontrast (mørk)",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "Vintage",
+      "terminal": "Terminal",
+      "nord": "Nord",
+      "dracula": "Dracula",
+      "sepia": "Sepia",
+      "ocean": "Hav",
+      "forest": "Skov",
+      "sunset": "Solnedgang",
+      "rose": "Rose",
+      "coffee": "Kaffe",
+      "midnight": "Midnat",
+      "synthwave": "Synthwave",
+      "lavender": "Lavendel",
+      "mint": "Mynte",
+      "candy": "Slik",
+      "crimson": "Karmosin",
+      "peacock": "Påfugl",
+      "desert": "Ørken",
+      "berry": "Bær",
+      "sage": "Salvie",
+      "ink": "Blæk",
+      "honey": "Honning"
+    },
+    "shortcutsTitle": "Genvejstaster",
+    "shortcutsDesc": "Klik på knappen og tryk på den tast (eller museknap) du vil bruge. Genveje virker på alle skærme.",
+    "pressKey": "Tryk på en tast…",
+    "accountTitle": "Din konto",
+    "accountDesc": "Log ind eller opret en konto for at få adgang til dine gem på enhver enhed og deltage i ranglisten.",
+    "connectedAs": "Forbundet som",
+    "goToLogin": "Gå til login-side",
+    "useLoginPage": "Brug login-siden til at logge ind eller oprette en konto.",
+    "advancedUnlock": "Lås næste generator op automatisk",
+    "advancedUnlockDesc": "Når aktiveret låses næste generator (stadig 0 enheder) op så snart du har nok ressourcer. Køber ikke ekstra enheder.",
+    "resetProgress": "Nulstil fremskridt",
+    "resetProgressDesc": "Sætter spillet tilbage til udgangspunkt: tæller på 0, ingen generatorer og ingen forbedringer. Gemt vil blive slettet.",
+    "resetDialogTitle": "Nulstil fremskridt?",
+    "resetDialogDesc": "Er du sikker på at du vil nulstille alt fremskridt? Tæller, generatorer og forbedringer vil gå tilbage til nul."
+  },
+  "auth": {
+    "loading": "Indlæser…",
+    "connectedAs": "Forbundet som",
+    "signOut": "Log ud",
+    "goToGame": "Gå til spil",
+    "forceLoginTitle": "Kontoen er allerede logget ind på en anden enhed",
+    "forceLoginDesc": "Denne konto bruges på en anden enhed. Hvis du logger ind her, vil den anden enhed blive logget ud og se en besked om at kontoen blev logget ind et andet sted.",
+    "cancel": "Annuller",
+    "forceLogin": "Tving login",
+    "email": "E-mail",
+    "emailPlaceholder": "navn@eksempel.com",
+    "password": "Adgangskode",
+    "login": "Log ind",
+    "signUp": "Opret konto",
+    "wait": "Vent venligst…",
+    "noAccount": "Har du ikke en konto? Opret konto",
+    "hasAccount": "Har du allerede en konto? Log ind"
+  },
+  "common": {
+    "cancel": "Annuller",
+    "confirm": "Bekræft",
+    "ok": "OK"
+  },
+  "shortcuts": {
+    "nextMenu": "Næste menu",
+    "prevMenu": "Forrige menu",
+    "menuGeradores": "Gå til Generatorer",
+    "menuMelhorias": "Gå til Forbedringer",
+    "menuConquistas": "Gå til Præstationer",
+    "menuEstatisticas": "Gå til Statistik",
+    "menuConfiguracoes": "Gå til Indstillinger",
+    "scrollTop": "Scroll til top",
+    "scrollBottom": "Scroll til bund"
+  },
+  "generators": {
+    "generatorN": "Generator {{n}}",
+    "unlockToProduce": "Lås op for at begynde at producere",
+    "costToUnlock": "Kostnad for at låse op",
+    "fragments": "Fragmenter",
+    "quantity": "Antal",
+    "milestone": "Målsten",
+    "milestoneProgress": "Målstensfremskridt",
+    "totalGenerators": "Totalt antal generatorer",
+    "time": "Tid",
+    "cycle": "Cykel",
+    "continuous": "Kontinuerlig",
+    "resource": "Ressource",
+    "price": "Pris",
+    "generatedAutomatically": "Genereres automatisk",
+    "automatic": "Automatisk",
+    "buy": "Køb"
+  },
+  "improvements": {
+    "upgradePoints": "Opgraderingspoint",
+    "perGenerator": "Per generator",
+    "global": "Global",
+    "production": "Produktion",
+    "level": "Niveau",
+    "multiplier": "Multiplikator",
+    "next": "Næste",
+    "buy": "Køb",
+    "frag": "frag",
+    "speed": "Hastighed",
+    "currentCycle": "Nuværende cykel",
+    "luck": "Held",
+    "currentChance": "Nuværende chance",
+    "nextChance": "Næste chance",
+    "luckEffect": "Held-effekt",
+    "multOnCrit": "Mult. ved krit",
+    "globalProduction": "Global produktion",
+    "globalProductionDesc": "x2 for alle per niveau",
+    "globalSpeed": "Global hastighed",
+    "globalSpeedDesc": "−10% per niveau",
+    "cycleFactor": "Nuværende cykelfaktor",
+    "generatorPrice": "Generatorpris",
+    "generatorPriceDesc": "−5% per niveau",
+    "currentReduction": "Nuværende reduktion",
+    "nextReduction": "Næste",
+    "unlockGeneratorsHint": "Lås generatorer op på Generatorer-siden for at se forbedringer her."
+  },
+  "achievements": {
+    "totalPoints": "Totalt antal point",
+    "ofAchievements": "af {{total}} præstationer",
+    "emptyCategory": "Ingen præstationer i denne kategori.",
+    "unlocked": "Låst op",
+    "locked": "Låst",
+    "categories": {
+      "primeiros-passos": "Første skridt",
+      "recurso": "Ressource",
+      "unidades-geradores": "Generatoreenheder",
+      "gerador-especifico": "Specifikke generatorer",
+      "producao-total": "Total produktion",
+      "tempo-jogo": "Spilletid",
+      "compras-manuais": "Manuelle køb",
+      "melhorias-producao": "Produktionsforbedringer",
+      "melhorias-velocidade": "Hastighedsforbedringer"
+    },
+    "primeiro-gerador": {
+      "name": "Første generator",
+      "description": "Lås Generator 1 op"
+    },
+    "primeira-melhoria": {
+      "name": "Første forbedring",
+      "description": "Køb en produktionsforbedring"
+    },
+    "primeira-velocidade": {
+      "name": "Hurtigere",
+      "description": "Køb en hastighedsforbedring"
+    },
+    "rec-100": {
+      "name": "Hundrede ressourcer",
+      "description": "Akkumuler 100 ressourcer"
+    },
+    "rec-1e3": {
+      "name": "Et tusind ressourcer",
+      "description": "Akkumuler 1.000 ressourcer"
+    },
+    "rec-1e4": {
+      "name": "Ti tusind",
+      "description": "Akkumuler 10.000 ressourcer"
+    },
+    "rec-1e5": {
+      "name": "Hundrede tusind",
+      "description": "Akkumuler 100.000 ressourcer"
+    },
+    "rec-1e6": {
+      "name": "Million",
+      "description": "Akkumuler 1 million ressourcer"
+    },
+    "rec-1e7": {
+      "name": "Ti millioner",
+      "description": "Akkumuler 10 millioner ressourcer"
+    },
+    "rec-1e8": {
+      "name": "Hundrede millioner",
+      "description": "Akkumuler 100 millioner ressourcer"
+    },
+    "rec-1e9": {
+      "name": "Milliard",
+      "description": "Akkumuler 1 milliard ressourcer"
+    },
+    "rec-1e10": {
+      "name": "Ti milliarder",
+      "description": "Akkumuler 10 milliarder ressourcer"
+    },
+    "rec-1e11": {
+      "name": "Hundrede milliarder",
+      "description": "Akkumuler 100 milliarder ressourcer"
+    },
+    "rec-1e12": {
+      "name": "Billion",
+      "description": "Akkumuler 1 billion ressourcer"
+    },
+    "unid-10": {
+      "name": "Ti enheder",
+      "description": "Ha 10 totale generatoreenheder"
+    },
+    "unid-50": {
+      "name": "Halvtreds enheder",
+      "description": "Ha 50 totale generatoreenheder"
+    },
+    "unid-100": {
+      "name": "Hundrede enheder",
+      "description": "Ha 100 totale generatoreenheder"
+    },
+    "g10": {
+      "name": "Generator 10",
+      "description": "Lås Generator 10 op"
+    },
+    "g20": {
+      "name": "Generator 20",
+      "description": "Lås Generator 20 op"
+    },
+    "g100": {
+      "name": "Sidste generator",
+      "description": "Lås Generator 100 op"
+    },
+    "prod-1e6": {
+      "name": "Produktion: 1M",
+      "description": "Producer 1 million totalt (livstid)"
+    },
+    "prod-1e9": {
+      "name": "Produktion: 1B",
+      "description": "Producer 1 milliard totalt (livstid)"
+    },
+    "tempo-1h": {
+      "name": "En time",
+      "description": "Spil i alt 1 time"
+    },
+    "tempo-24h": {
+      "name": "En dag",
+      "description": "Spil i alt 24 timer"
+    },
+    "comp-10": {
+      "name": "Dedikeret køber",
+      "description": "Køb 10 generatorer manuelt (klik)"
+    },
+    "comp-1k": {
+      "name": "Klikmester",
+      "description": "Køb 1.000 generatorer manuelt (klik)"
+    },
+    "melh-10": {
+      "name": "Ti forbedringer",
+      "description": "Køb 10 produktionsforbedringer i alt"
+    },
+    "vel-10": {
+      "name": "Ti hastigheder",
+      "description": "Køb 10 hastighedsforbedringer i alt"
+    }
+  },
+  "notifications": {
+    "title": "Notifikationer",
+    "empty": "Ingen notifikationer",
+    "markAllRead": "Markér alle som læst",
+    "clearHistory": "Ryd historik"
+  },
+  "stats": {
+    "summary": "Din spiloversigt",
+    "summaryDesc": "Overordnede fremskridtstal (nulstilles når du nulstiller).",
+    "currentResource": "Nuværende ressource",
+    "totalProduced": "Totalt produceret",
+    "playTime": "Spilletid",
+    "firstSession": "Første session",
+    "manualPurchases": "Generatorer købt (manuelt)",
+    "autoProduced": "Generatorer produceret (auto)",
+    "productionUpgrades": "Produktionsforbedringer",
+    "speedUpgrades": "Hastighedsforbedringer",
+    "timesPerGenerator": "Tider per generator",
+    "timesPerGeneratorDesc": "Tid fra start indtil hver generator blev låst op og tid i hver niveau. Fremtidige oplåsninger registreres.",
+    "timeToUnlock": "tid til oplåsning",
+    "timeInPreviousTier": "Tid i forrige niveau kun (Generator {{n}})",
+    "bonusHits": "Bonusressourcetræffere (held)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "Din konto blev logget ind på en anden enhed.",
+    "upgradePointsTitle": "Opgraderingspoint tjent!",
+    "upgradePointsDesc": "Du nåede nye målsten og tjente {{count}} Opgraderingspoint!"
+  }
+}

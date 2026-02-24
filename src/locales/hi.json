@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "Breaking Eternity में आपका स्वागत है",
+    "welcomeP1": "यह एक <strong>इन्क्रीमेंटल</strong> (आइडल) गेम है: आप संसाधन जमा करते हैं, जनरेटर खरीदते हैं जो और संसाधन पैदा करते हैं, और सुधार अनलॉक करते हैं। संख्याएँ बहुत बड़ी हो सकती हैं — लाखों, करोड़ों और उससे आगे।",
+    "welcomeP2": "इतनी बड़ी संख्याओं के लिए गेम <strong>break_eternity.js</strong> लाइब्रेरी इस्तेमाल करता है, जो नेटिव JavaScript से कहीं बड़े मानों पर काम करने देती है (वैज्ञानिक अंकन, M, B, T, Q और अक्षर प्रत्यय)।",
+    "welcomeP3": "<strong>लक्ष्य</strong> इस लाइब्रेरी की सीमा तक पहुँचना है — वह सबसे बड़ी संख्या जिसे यह दर्शा सकती है। नीचे अपना पहला संसाधन लें और जनरेटर खरीदना शुरू करें। मज़े करें!",
+    "firstResource": "पहला संसाधन लें",
+    "offlineTitle": "ऑफ़लाइन लाभ",
+    "offlineGain": "ऑफ़लाइन रहते हुए आपने {{amount}} कमाया।",
+    "offlineTime": "दूर रहने का समय"
+  },
+  "nav": {
+    "geradores": "जनरेटर",
+    "melhorias": "सुधार",
+    "conquistas": "उपलब्धियाँ",
+    "estatisticas": "आँकड़े",
+    "configuracoes": "सेटिंग्स"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "सामान्य",
+      "temas": "थीम",
+      "atalhos": "शॉर्टकट",
+      "conta": "खाता",
+      "avancado": "उन्नत विकल्प"
+    },
+    "language": "भाषा",
+    "languageDesc": "गेम इंटरफ़ेस की भाषा बदलता है।",
+    "clickSound": "क्लिक ध्वनि",
+    "clickSoundDesc": "जनरेटर/सुधार खरीदने और मेनू बदलने पर क्लिक बजाता है।",
+    "clickVolume": "क्लिक वॉल्यूम",
+    "clickVolumeLabel": "क्लिक ध्वनि का वॉल्यूम",
+    "fpsCounter": "FPS काउंटर दिखाएं",
+    "fpsCounterDesc": "गेम के ऊपर-दाएँ कोने में प्रति सेकंड फ्रेम दिखाता है।",
+    "fullscreen": "पूर्ण स्क्रीन",
+    "fullscreenDesc": "ब्राउज़र में गेम को पूर्ण स्क्रीन में लाता है। बाहर निकलने के लिए Esc या बटन इस्तेमाल करें।",
+    "saveProgress": "प्रगति सहेजें",
+    "saveProgressDescBefore": "गेम हर",
+    "saveProgressDescAfter": "सेकंड में अपने आप सहेजता है। यहाँ जबरन सहेज सकते हैं।",
+    "cloudSaveInterval": "क्लाउड सेव अंतराल",
+    "cloudSaveHint": "कम = ज़्यादा बार सेव। ज़्यादा = कम नेटवर्क उपयोग।",
+    "lastSave": "आखिरी सेव",
+    "saveNow": "अभी सहेजें",
+    "never": "कभी नहीं",
+    "downloadDesktop": "डेस्कटॉप के लिए डाउनलोड",
+    "downloadDesktopDesc": "PC या Mac पर गेम इंस्टॉल करें और ब्राउज़र खोले बिना खेलें।",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "डिफ़ॉल्ट सेटिंग्स पुनर्स्थापित करें",
+    "restoreDefaultsDesc": "सामान्य, थीम और शॉर्टकट को गेम डिफ़ॉल्ट पर वापस लाता है।",
+    "exitGame": "गेम से बाहर",
+    "exitGameDesc": "प्रगति सहेजता है और गेम बंद करता है।",
+    "exit": "बाहर निकलें",
+    "themeTitle": "दृश्य थीम",
+    "themeDesc": "इंटरफ़ेस का रूप चुनें। सभी विकल्प उपलब्ध हैं।",
+    "themes": {
+      "light": "लाइट",
+      "dark": "डार्क",
+      "high-contrast": "हाई कॉन्ट्रास्ट (डार्क)",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "विंटेज",
+      "terminal": "टर्मिनल",
+      "nord": "नॉर्ड",
+      "dracula": "ड्रैकुला",
+      "sepia": "सेपिया",
+      "ocean": "ओशन",
+      "forest": "फॉरेस्ट",
+      "sunset": "सनसेट",
+      "rose": "रोज़",
+      "coffee": "कॉफ़ी",
+      "midnight": "मिडनाइट",
+      "synthwave": "सिंथवेव",
+      "lavender": "लैवेंडर",
+      "mint": "मिंट",
+      "candy": "कैंडी",
+      "crimson": "क्रिमसन",
+      "peacock": "पीकॉक",
+      "desert": "डेजर्ट",
+      "berry": "बेरी",
+      "sage": "सेज",
+      "ink": "इंक",
+      "honey": "हनी"
+    },
+    "shortcutsTitle": "शॉर्टकट कुंजियाँ",
+    "shortcutsDesc": "बटन पर क्लिक करें और वह कुंजी (या माउस बटन) दबाएं जो इस्तेमाल करनी है। शॉर्टकट किसी भी स्क्रीन पर काम करते हैं।",
+    "pressKey": "कुंजी दबाएं...",
+    "accountTitle": "आपका खाता",
+    "accountDesc": "किसी भी डिवाइस पर सेव और लीडरबोर्ड के लिए साइन इन करें या खाता बनाएं।",
+    "connectedAs": "इस रूप में जुड़े",
+    "goToLogin": "लॉगिन पेज पर जाएं",
+    "useLoginPage": "साइन इन या खाता बनाने के लिए लॉगिन पेज इस्तेमाल करें।",
+    "advancedUnlock": "अगला जनरेटर ऑटो-अनलॉक",
+    "advancedUnlockDesc": "चालू होने पर, अगला जनरेटर (अभी भी 0 यूनिट) जैसे ही पर्याप्त संसाधन हो अनलॉक हो जाता है। अतिरिक्त यूनिट नहीं खरीदता।",
+    "resetProgress": "प्रगति रीसेट करें",
+    "resetProgressDesc": "गेम को शुरुआती स्थिति में लाता है: काउंटर 0, कोई जनरेटर/सुधार नहीं। सेव मिट जाएगी।",
+    "resetDialogTitle": "प्रगति रीसेट करें?",
+    "resetDialogDesc": "क्या आप सभी प्रगति रीसेट करना चाहते हैं? काउंटर, जनरेटर और सुधार शून्य पर वापस आ जाएंगे।"
+  },
+  "auth": {
+    "loading": "लोड हो रहा है…",
+    "connectedAs": "इस रूप में जुड़े",
+    "signOut": "साइन आउट",
+    "goToGame": "गेम पर जाएं",
+    "forceLoginTitle": "यह खाता दूसरे डिवाइस पर लॉग इन है",
+    "forceLoginDesc": "यह खाता दूसरे डिवाइस पर इस्तेमाल में है। यहाँ लॉग इन करने पर दूसरा डिवाइस साइन आउट हो जाएगा और संदेश दिखेगा कि खाता कहीं और लॉग इन हुआ।",
+    "cancel": "रद्द करें",
+    "forceLogin": "जबरन लॉग इन",
+    "email": "ईमेल",
+    "emailPlaceholder": "name@example.com",
+    "password": "पासवर्ड",
+    "login": "साइन इन",
+    "signUp": "खाता बनाएं",
+    "wait": "कृपया प्रतीक्षा करें…",
+    "noAccount": "खाता नहीं है? खाता बनाएं",
+    "hasAccount": "पहले से खाता है? साइन इन करें"
+  },
+  "common": {
+    "cancel": "रद्द करें",
+    "confirm": "पुष्टि करें",
+    "ok": "ठीक"
+  },
+  "shortcuts": {
+    "nextMenu": "अगला मेनू",
+    "prevMenu": "पिछला मेनू",
+    "menuGeradores": "जनरेटर पर जाएं",
+    "menuMelhorias": "सुधार पर जाएं",
+    "menuConquistas": "उपलब्धियाँ पर जाएं",
+    "menuEstatisticas": "आँकड़े पर जाएं",
+    "menuConfiguracoes": "सेटिंग्स पर जाएं",
+    "scrollTop": "ऊपर स्क्रॉल",
+    "scrollBottom": "नीचे स्क्रॉल"
+  },
+  "generators": {
+    "generatorN": "जनरेटर {{n}}",
+    "unlockToProduce": "उत्पादन शुरू करने के लिए अनलॉक करें",
+    "costToUnlock": "अनलॉक लागत",
+    "fragments": "फ्रैगमेंट",
+    "quantity": "मात्रा",
+    "milestone": "माइलस्टोन",
+    "milestoneProgress": "माइलस्टोन प्रगति",
+    "totalGenerators": "कुल जनरेटर",
+    "time": "समय",
+    "cycle": "चक्र",
+    "continuous": "निरंतर",
+    "resource": "संसाधन",
+    "price": "कीमत",
+    "generatedAutomatically": "स्वचालित रूप से उत्पन्न",
+    "automatic": "स्वचालित",
+    "buy": "खरीदें"
+  },
+  "improvements": {
+    "upgradePoints": "अपग्रेड पॉइंट्स",
+    "perGenerator": "प्रति जनरेटर",
+    "global": "ग्लोबल",
+    "production": "उत्पादन",
+    "level": "स्तर",
+    "multiplier": "गुणक",
+    "next": "अगला",
+    "buy": "खरीदें",
+    "frag": "फ्रैग",
+    "speed": "स्पीड",
+    "currentCycle": "वर्तमान चक्र",
+    "luck": "लक",
+    "currentChance": "वर्तमान चांस",
+    "nextChance": "अगला चांस",
+    "luckEffect": "लक प्रभाव",
+    "multOnCrit": "क्रिट पर गुणक",
+    "globalProduction": "ग्लोबल उत्पादन",
+    "globalProductionDesc": "प्रति स्तर सभी के लिए x2",
+    "globalSpeed": "ग्लोबल स्पीड",
+    "globalSpeedDesc": "प्रति स्तर −10%",
+    "cycleFactor": "वर्तमान चक्र फैक्टर",
+    "generatorPrice": "जनरेटर कीमत",
+    "generatorPriceDesc": "प्रति स्तर −5%",
+    "currentReduction": "वर्तमान कमी",
+    "nextReduction": "अगला",
+    "unlockGeneratorsHint": "यहाँ सुधार देखने के लिए जनरेटर पेज पर जनरेटर अनलॉक करें।"
+  },
+  "achievements": {
+    "totalPoints": "कुल पॉइंट्स",
+    "ofAchievements": "{{total}} उपलब्धियों में से",
+    "emptyCategory": "इस श्रेणी में कोई उपलब्धि नहीं।",
+    "unlocked": "अनलॉक",
+    "locked": "लॉक",
+    "categories": {
+      "primeiros-passos": "पहले कदम",
+      "recurso": "संसाधन",
+      "unidades-geradores": "जनरेटर यूनिट",
+      "gerador-especifico": "विशिष्ट जनरेटर",
+      "producao-total": "कुल उत्पादन",
+      "tempo-jogo": "गेम समय",
+      "compras-manuais": "मैनुअल खरीद",
+      "melhorias-producao": "उत्पादन सुधार",
+      "melhorias-velocidade": "स्पीड सुधार"
+    },
+    "primeiro-gerador": {
+      "name": "पहला जनरेटर",
+      "description": "जनरेटर 1 अनलॉक करें"
+    },
+    "primeira-melhoria": {
+      "name": "पहला सुधार",
+      "description": "एक उत्पादन सुधार खरीदें"
+    },
+    "primeira-velocidade": {
+      "name": "तेज़",
+      "description": "एक स्पीड सुधार खरीदें"
+    },
+    "rec-100": {
+      "name": "एक सौ संसाधन",
+      "description": "100 संसाधन जमा करें"
+    },
+    "rec-1e3": {
+      "name": "एक हज़ार संसाधन",
+      "description": "1,000 संसाधन जमा करें"
+    },
+    "rec-1e4": {
+      "name": "दस हज़ार",
+      "description": "10,000 संसाधन जमा करें"
+    },
+    "rec-1e5": {
+      "name": "एक लाख",
+      "description": "100,000 संसाधन जमा करें"
+    },
+    "rec-1e6": {
+      "name": "दस लाख",
+      "description": "10 लाख संसाधन जमा करें"
+    },
+    "rec-1e7": {
+      "name": "एक करोड़",
+      "description": "एक करोड़ संसाधन जमा करें"
+    },
+    "rec-1e8": {
+      "name": "दस करोड़",
+      "description": "दस करोड़ संसाधन जमा करें"
+    },
+    "rec-1e9": {
+      "name": "अरब",
+      "description": "एक अरब संसाधन जमा करें"
+    },
+    "rec-1e10": {
+      "name": "दस अरब",
+      "description": "दस अरब संसाधन जमा करें"
+    },
+    "rec-1e11": {
+      "name": "एक खरब",
+      "description": "एक खरब संसाधन जमा करें"
+    },
+    "rec-1e12": {
+      "name": "दस खरब",
+      "description": "दस खरब संसाधन जमा करें"
+    },
+    "unid-10": {
+      "name": "दस यूनिट",
+      "description": "कुल 10 जनरेटर यूनिट रखें"
+    },
+    "unid-50": {
+      "name": "पचास यूनिट",
+      "description": "कुल 50 जनरेटर यूनिट रखें"
+    },
+    "unid-100": {
+      "name": "एक सौ यूनिट",
+      "description": "कुल 100 जनरेटर यूनिट रखें"
+    },
+    "g10": {
+      "name": "जनरेटर 10",
+      "description": "जनरेटर 10 अनलॉक करें"
+    },
+    "g20": {
+      "name": "जनरेटर 20",
+      "description": "जनरेटर 20 अनलॉक करें"
+    },
+    "g100": {
+      "name": "आखिरी जनरेटर",
+      "description": "जनरेटर 100 अनलॉक करें"
+    },
+    "prod-1e6": {
+      "name": "उत्पादन: 1M",
+      "description": "कुल 10 लाख उत्पादन करें (जीवनभर)"
+    },
+    "prod-1e9": {
+      "name": "उत्पादन: 1B",
+      "description": "कुल एक अरब उत्पादन करें (जीवनभर)"
+    },
+    "tempo-1h": {
+      "name": "एक घंटा",
+      "description": "कुल 1 घंटा खेलें"
+    },
+    "tempo-24h": {
+      "name": "एक दिन",
+      "description": "कुल 24 घंटे खेलें"
+    },
+    "comp-10": {
+      "name": "समर्पित खरीदार",
+      "description": "मैनुअल (क्लिक) से 10 जनरेटर खरीदें"
+    },
+    "comp-1k": {
+      "name": "क्लिक मास्टर",
+      "description": "मैनुअल (क्लिक) से 1,000 जनरेटर खरीदें"
+    },
+    "melh-10": {
+      "name": "दस सुधार",
+      "description": "कुल 10 उत्पादन सुधार खरीदें"
+    },
+    "vel-10": {
+      "name": "दस स्पीड",
+      "description": "कुल 10 स्पीड सुधार खरीदें"
+    }
+  },
+  "notifications": {
+    "title": "सूचनाएं",
+    "empty": "कोई सूचना नहीं",
+    "markAllRead": "सभी पढ़ा हुआ मार्क करें",
+    "clearHistory": "इतिहास साफ़ करें"
+  },
+  "stats": {
+    "summary": "आपका गेम सारांश",
+    "summaryDesc": "कुल प्रगति संख्याएं (रीसेट पर रीसेट)।",
+    "currentResource": "वर्तमान संसाधन",
+    "totalProduced": "कुल उत्पादित",
+    "playTime": "खेल का समय",
+    "firstSession": "पहला सत्र",
+    "manualPurchases": "खरीदे गए जनरेटर (मैनुअल)",
+    "autoProduced": "उत्पादित जनरेटर (ऑटो)",
+    "productionUpgrades": "उत्पादन सुधार",
+    "speedUpgrades": "स्पीड सुधार",
+    "timesPerGenerator": "प्रति जनरेटर समय",
+    "timesPerGeneratorDesc": "प्रत्येक जनरेटर अनलॉक होने तक शुरू से समय और प्रत्येक टियर में बिताया समय। अब से अनलॉक रिकॉर्ड होंगे।",
+    "timeToUnlock": "अनलॉक तक समय",
+    "timeInPreviousTier": "पिछले टियर में ही समय (जनरेटर {{n}})",
+    "bonusHits": "बोनस संसाधन हिट (लक)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "आपका खाता दूसरे डिवाइस पर लॉग इन हुआ।",
+    "upgradePointsTitle": "अपग्रेड पॉइंट्स मिले!",
+    "upgradePointsDesc": "आपने नए माइलस्टोन पूरे किए और {{count}} अपग्रेड पॉइंट्स कमाए!"
+  }
+}

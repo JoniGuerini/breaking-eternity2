@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "Tervetuloa Breaking Eternity -peliin",
+    "welcomeP1": "Tämä on <strong>inkrementaalinen</strong> (idle) peli: keräät resursseja, ostat generaattoreita jotka tuottavat lisää resursseja ja avaat parannuksia. Luvut voivat kasvaa valtaviksi — miljoonat, miljardit ja yli.",
+    "welcomeP2": "Näin suurten lukujen käsittelyyn peli käyttää <strong>break_eternity.js</strong> -kirjastoa, joka mahdollistaa laskutoimitukset arvoilla kaukana JavaScriptin natiivin tuen ulkopuolella (tieteellinen merkintä, suffiksit kuten M, B, T, Q ja kirjaimet).",
+    "welcomeP3": "<strong>Tavoite</strong> on tavoittaa tämän kirjaston raja — suurin luku jonka se voi esittää. Nouta ensimmäinen resurssisi alla ja aloita generaattoreiden ostaminen. Hauskaa peliä!",
+    "firstResource": "Nouta ensimmäinen resurssi",
+    "offlineTitle": "Poissaolopalkinto",
+    "offlineGain": "Ansaitsit {{amount}} ollessasi pois päältä.",
+    "offlineTime": "Poissaoloaika"
+  },
+  "nav": {
+    "geradores": "Generaattorit",
+    "melhorias": "Parannukset",
+    "conquistas": "Saavutukset",
+    "estatisticas": "Tilastot",
+    "configuracoes": "Asetukset"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "Yleinen",
+      "temas": "Teemat",
+      "atalhos": "Pikakuvakkeet",
+      "conta": "Tili",
+      "avancado": "Lisäasetukset"
+    },
+    "language": "Kieli",
+    "languageDesc": "Vaihtaa pelin käyttöliittymän kielen.",
+    "clickSound": "Klikkausääni",
+    "clickSoundDesc": "Toistaa klikkauksen ostettaessa generaattoreita/parannuksia ja vaihdettaessa valikoimia.",
+    "clickVolume": "Klikkausäänen voimakkuus",
+    "clickVolumeLabel": "Klikkausäänen voimakkuus",
+    "fpsCounter": "Näytä FPS-laskuri",
+    "fpsCounterDesc": "Näyttää kuvia sekunnissa pelin oikeassa yläkulmassa.",
+    "fullscreen": "Koko näyttö",
+    "fullscreenDesc": "Asettaa pelin koko näytölle selaimessa. Käytä Esc tai painiketta poistuaksesi.",
+    "saveProgress": "Tallenna edistyminen",
+    "saveProgressDescBefore": "Peli tallentaa automaattisesti joka",
+    "saveProgressDescAfter": "sekunti. Voit pakottaa tallennuksen täältä.",
+    "cloudSaveInterval": "Pilvitallennusväli",
+    "cloudSaveHint": "Pienempi = Useammin tallennus. Suurempi = Vähemmän verkkokäyttöä.",
+    "lastSave": "Viimeisin tallennus",
+    "saveNow": "Tallenna nyt",
+    "never": "Ei koskaan",
+    "downloadDesktop": "Lataa työpöydälle",
+    "downloadDesktopDesc": "Asenna peli PC:lle tai Macille ja pelaa ilman selaimen avaamista.",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "Palauta oletusasetukset",
+    "restoreDefaultsDesc": "Palauttaa Yleinen-, Teemat- ja Pikakuvakkeet-asetukset pelin oletuksiin.",
+    "exitGame": "Lopeta peli",
+    "exitGameDesc": "Tallentaa edistymisen ja sulkee pelin.",
+    "exit": "Lopeta",
+    "themeTitle": "Visuaalinen teema",
+    "themeDesc": "Valitse käyttöliittymän ulkoasu. Kaikki vaihtoehdot ovat käytettävissä.",
+    "themes": {
+      "light": "Vaalea",
+      "dark": "Tumma",
+      "high-contrast": "Korkea kontrasti (tumma)",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "Vintage",
+      "terminal": "Terminaali",
+      "nord": "Nord",
+      "dracula": "Dracula",
+      "sepia": "Seepia",
+      "ocean": "Meri",
+      "forest": "Metsä",
+      "sunset": "Auringonlasku",
+      "rose": "Ruusu",
+      "coffee": "Kahvi",
+      "midnight": "Keskiyö",
+      "synthwave": "Synthwave",
+      "lavender": "Laventeli",
+      "mint": "Minttu",
+      "candy": "Karkki",
+      "crimson": "Karmiini",
+      "peacock": "Riikinkukko",
+      "desert": "Aavikko",
+      "berry": "Marja",
+      "sage": "Salvia",
+      "ink": "Muste",
+      "honey": "Hunaja"
+    },
+    "shortcutsTitle": "Pikanäppäimet",
+    "shortcutsDesc": "Napsauta painiketta ja paina haluamaasi näppäintä (tai hiiren painiketta). Pikanäppäimet toimivat kaikilla näytöillä.",
+    "pressKey": "Paina näppäintä…",
+    "accountTitle": "Tilisi",
+    "accountDesc": "Kirjaudu sisään tai luo tili päästäksesi tallennuksiisi millä tahansa laitteella ja osallistuaksesi tulostauluun.",
+    "connectedAs": "Yhdistetty tunnuksella",
+    "goToLogin": "Siirry kirjautumissivulle",
+    "useLoginPage": "Käytä kirjautumissivua kirjautuaksesi tai luodaksesi tilin.",
+    "advancedUnlock": "Avaa seuraava generaattori automaattisesti",
+    "advancedUnlockDesc": "Kun käytössä, seuraava generaattori (edelleen 0 yksikköä) avautuu heti kun sinulla on tarpeeksi resursseja. Ei osta ylimääräisiä yksiköitä.",
+    "resetProgress": "Nollaa edistyminen",
+    "resetProgressDesc": "Palauttaa pelin alkuperäiseen tilaan: laskuri nollassa, ei generaattoreita eikä parannuksia. Tallennus poistetaan.",
+    "resetDialogTitle": "Nollataanko edistyminen?",
+    "resetDialogDesc": "Haluatko varmasti nollata kaiken edistymisen? Laskuri, generaattorit ja parannukset palautuvat nollaan."
+  },
+  "auth": {
+    "loading": "Ladataan…",
+    "connectedAs": "Yhdistetty tunnuksella",
+    "signOut": "Kirjaudu ulos",
+    "goToGame": "Siirry peliin",
+    "forceLoginTitle": "Tili on jo kirjautuneena toisella laitteella",
+    "forceLoginDesc": "Tätä tiliä käytetään toisella laitteella. Jos kirjaudut tänne, toinen laite kirjataan ulos ja näkee viestin että tili kirjattiin sisään muualla.",
+    "cancel": "Peruuta",
+    "forceLogin": "Pakota kirjautuminen",
+    "email": "Sähköposti",
+    "emailPlaceholder": "nimi@esimerkki.com",
+    "password": "Salasana",
+    "login": "Kirjaudu sisään",
+    "signUp": "Luo tili",
+    "wait": "Odota…",
+    "noAccount": "Eikö sinulla ole tiliä? Luo tili",
+    "hasAccount": "Onko sinulla jo tili? Kirjaudu sisään"
+  },
+  "common": {
+    "cancel": "Peruuta",
+    "confirm": "Vahvista",
+    "ok": "OK"
+  },
+  "shortcuts": {
+    "nextMenu": "Seuraava valikko",
+    "prevMenu": "Edellinen valikko",
+    "menuGeradores": "Siirry Generaattoreihin",
+    "menuMelhorias": "Siirry Parannuksiin",
+    "menuConquistas": "Siirry Saavutuksiin",
+    "menuEstatisticas": "Siirry Tilastoihin",
+    "menuConfiguracoes": "Siirry Asetuksiin",
+    "scrollTop": "Vieritä ylös",
+    "scrollBottom": "Vieritä alas"
+  },
+  "generators": {
+    "generatorN": "Generaattori {{n}}",
+    "unlockToProduce": "Avaa aloittaaksesi tuotannon",
+    "costToUnlock": "Avauskustannus",
+    "fragments": "Fragmentit",
+    "quantity": "Määrä",
+    "milestone": "Välitavoite",
+    "milestoneProgress": "Välitavoitteen edistyminen",
+    "totalGenerators": "Generaattoreita yhteensä",
+    "time": "Aika",
+    "cycle": "Sykli",
+    "continuous": "Jatkuva",
+    "resource": "Resurssi",
+    "price": "Hinta",
+    "generatedAutomatically": "Tuotetaan automaattisesti",
+    "automatic": "Automaattinen",
+    "buy": "Osta"
+  },
+  "improvements": {
+    "upgradePoints": "Päivityspisteet",
+    "perGenerator": "Per generaattori",
+    "global": "Globaali",
+    "production": "Tuotanto",
+    "level": "Taso",
+    "multiplier": "Kerroin",
+    "next": "Seuraava",
+    "buy": "Osta",
+    "frag": "frag",
+    "speed": "Nopeus",
+    "currentCycle": "Nykyinen sykli",
+    "luck": "Onni",
+    "currentChance": "Nykyinen todennäköisyys",
+    "nextChance": "Seuraava todennäköisyys",
+    "luckEffect": "Onni-vaikutus",
+    "multOnCrit": "Kerroin kriitillä",
+    "globalProduction": "Globaali tuotanto",
+    "globalProductionDesc": "x2 kaikille per taso",
+    "globalSpeed": "Globaali nopeus",
+    "globalSpeedDesc": "−10% per taso",
+    "cycleFactor": "Nykyinen syklikerroin",
+    "generatorPrice": "Generaattorin hinta",
+    "generatorPriceDesc": "−5% per taso",
+    "currentReduction": "Nykyinen alennus",
+    "nextReduction": "Seuraava",
+    "unlockGeneratorsHint": "Avaa generaattorit Generaattorit-sivulla nähdäksesi parannukset täällä."
+  },
+  "achievements": {
+    "totalPoints": "Pisteitä yhteensä",
+    "ofAchievements": "/ {{total}} saavutusta",
+    "emptyCategory": "Ei saavutuksia tässä kategoriassa.",
+    "unlocked": "Avattu",
+    "locked": "Lukittu",
+    "categories": {
+      "primeiros-passos": "Ensimmäiset askeleet",
+      "recurso": "Resurssi",
+      "unidades-geradores": "Generaattoriyksiköt",
+      "gerador-especifico": "Tietyt generaattorit",
+      "producao-total": "Kokonaistuotanto",
+      "tempo-jogo": "Peliaika",
+      "compras-manuais": "Manuaaliset ostot",
+      "melhorias-producao": "Tuotantoparannukset",
+      "melhorias-velocidade": "Nopeusparannukset"
+    },
+    "primeiro-gerador": {
+      "name": "Ensimmäinen generaattori",
+      "description": "Avaa Generaattori 1"
+    },
+    "primeira-melhoria": {
+      "name": "Ensimmäinen parannus",
+      "description": "Osta tuotantoparannus"
+    },
+    "primeira-velocidade": {
+      "name": "Nopeampi",
+      "description": "Osta nopeusparannus"
+    },
+    "rec-100": {
+      "name": "Sata resurssia",
+      "description": "Kerää 100 resurssia"
+    },
+    "rec-1e3": {
+      "name": "Tuhat resurssia",
+      "description": "Kerää 1 000 resurssia"
+    },
+    "rec-1e4": {
+      "name": "Kymmenen tuhatta",
+      "description": "Kerää 10 000 resurssia"
+    },
+    "rec-1e5": {
+      "name": "Sata tuhatta",
+      "description": "Kerää 100 000 resurssia"
+    },
+    "rec-1e6": {
+      "name": "Miljoona",
+      "description": "Kerää 1 miljoona resurssia"
+    },
+    "rec-1e7": {
+      "name": "Kymmenen miljoonaa",
+      "description": "Kerää 10 miljoonaa resurssia"
+    },
+    "rec-1e8": {
+      "name": "Sata miljoonaa",
+      "description": "Kerää 100 miljoonaa resurssia"
+    },
+    "rec-1e9": {
+      "name": "Miljardi",
+      "description": "Kerää 1 miljardi resurssia"
+    },
+    "rec-1e10": {
+      "name": "Kymmenen miljardia",
+      "description": "Kerää 10 miljardia resurssia"
+    },
+    "rec-1e11": {
+      "name": "Sata miljardia",
+      "description": "Kerää 100 miljardia resurssia"
+    },
+    "rec-1e12": {
+      "name": "Biljoona",
+      "description": "Kerää 1 biljoona resurssia"
+    },
+    "unid-10": {
+      "name": "Kymmenen yksikköä",
+      "description": "Omista 10 generaattoriyksikköä yhteensä"
+    },
+    "unid-50": {
+      "name": "Viisikymmentä yksikköä",
+      "description": "Omista 50 generaattoriyksikköä yhteensä"
+    },
+    "unid-100": {
+      "name": "Sata yksikköä",
+      "description": "Omista 100 generaattoriyksikköä yhteensä"
+    },
+    "g10": {
+      "name": "Generaattori 10",
+      "description": "Avaa Generaattori 10"
+    },
+    "g20": {
+      "name": "Generaattori 20",
+      "description": "Avaa Generaattori 20"
+    },
+    "g100": {
+      "name": "Viimeinen generaattori",
+      "description": "Avaa Generaattori 100"
+    },
+    "prod-1e6": {
+      "name": "Tuotanto: 1M",
+      "description": "Tuota 1 miljoona yhteensä (elinaikana)"
+    },
+    "prod-1e9": {
+      "name": "Tuotanto: 1B",
+      "description": "Tuota 1 miljardi yhteensä (elinaikana)"
+    },
+    "tempo-1h": {
+      "name": "Tunti",
+      "description": "Pelaat yhteensä 1 tunti"
+    },
+    "tempo-24h": {
+      "name": "Päivä",
+      "description": "Pelaat yhteensä 24 tuntia"
+    },
+    "comp-10": {
+      "name": "Omistautunut ostaja",
+      "description": "Osta 10 generaattoria manuaalisesti (klikkaus)"
+    },
+    "comp-1k": {
+      "name": "Klikkausmestari",
+      "description": "Osta 1 000 generaattoria manuaalisesti (klikkaus)"
+    },
+    "melh-10": {
+      "name": "Kymmenen parannusta",
+      "description": "Osta 10 tuotantoparannusta yhteensä"
+    },
+    "vel-10": {
+      "name": "Kymmenen nopeutta",
+      "description": "Osta 10 nopeusparannusta yhteensä"
+    }
+  },
+  "notifications": {
+    "title": "Ilmoitukset",
+    "empty": "Ei ilmoituksia",
+    "markAllRead": "Merkitse kaikki luetuiksi",
+    "clearHistory": "Tyhjennä historia"
+  },
+  "stats": {
+    "summary": "Pelisi yhteenveto",
+    "summaryDesc": "Kokonaisedistymisluvut (nollataan kun nollaat).",
+    "currentResource": "Nykyinen resurssi",
+    "totalProduced": "Tuotettu yhteensä",
+    "playTime": "Peliaika",
+    "firstSession": "Ensimmäinen istunto",
+    "manualPurchases": "Generaattoreita ostettu (manuaalisesti)",
+    "autoProduced": "Generaattoreita tuotettu (auto)",
+    "productionUpgrades": "Tuotantoparannukset",
+    "speedUpgrades": "Nopeusparannukset",
+    "timesPerGenerator": "Ajat per generaattori",
+    "timesPerGeneratorDesc": "Aika aloituksesta kunnes jokainen generaattori avattiin ja aika kussakin tasossa. Tulevat avaukset tallennetaan.",
+    "timeToUnlock": "aika avaukseen",
+    "timeInPreviousTier": "Aika vain edellisessä tasossa (Generaattori {{n}})",
+    "bonusHits": "Bonusresurssiosumat (onni)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "Tilisi kirjattiin sisään toisella laitteella.",
+    "upgradePointsTitle": "Päivityspisteet ansaittu!",
+    "upgradePointsDesc": "Saavutit uusia välitavoitteita ja ansaitsit {{count}} Päivityspistettä!"
+  }
+}

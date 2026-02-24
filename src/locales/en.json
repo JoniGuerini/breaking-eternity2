@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "Welcome to Breaking Eternity",
+    "welcomeP1": "This is an <strong>incremental</strong> (idle) game: you collect resource, buy generators that produce more resource, and unlock improvements. Numbers can get huge — millions, billions and beyond.",
+    "welcomeP2": "To handle such large numbers, the game uses the <strong>break_eternity.js</strong> library, which allows operating with values far beyond what native JavaScript supports (scientific notation, suffixes like M, B, T, Q and letters).",
+    "welcomeP3": "The <strong>goal</strong> is to reach the limit of this library — the largest number it can represent. Claim your first resource below and start buying generators. Have fun!",
+    "firstResource": "Claim first resource",
+    "offlineTitle": "Offline gain",
+    "offlineGain": "You earned {{amount}} while offline.",
+    "offlineTime": "Time away"
+  },
+  "nav": {
+    "geradores": "Generators",
+    "melhorias": "Improvements",
+    "conquistas": "Achievements",
+    "estatisticas": "Statistics",
+    "configuracoes": "Settings"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "General",
+      "temas": "Themes",
+      "atalhos": "Shortcuts",
+      "conta": "Account",
+      "avancado": "Advanced options"
+    },
+    "language": "Language",
+    "languageDesc": "Changes the game interface language.",
+    "clickSound": "Click sound",
+    "clickSoundDesc": "Plays a click when buying generators/improvements and switching menus.",
+    "clickVolume": "Click volume",
+    "clickVolumeLabel": "Click sound volume",
+    "fpsCounter": "Show FPS counter",
+    "fpsCounterDesc": "Displays frames per second in the top-right corner of the game.",
+    "fullscreen": "Fullscreen",
+    "fullscreenDesc": "Puts the game in fullscreen in the browser. Use Esc or the button to exit.",
+    "saveProgress": "Save progress",
+    "saveProgressDescBefore": "The game saves automatically every",
+    "saveProgressDescAfter": "seconds. You can force a save here.",
+    "cloudSaveInterval": "Cloud save interval",
+    "cloudSaveHint": "Lower = More frequent saves. Higher = Less network usage.",
+    "lastSave": "Last save",
+    "saveNow": "Save now",
+    "never": "Never",
+    "downloadDesktop": "Download for desktop",
+    "downloadDesktopDesc": "Install the game on your PC or Mac and play without opening the browser.",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "Restore default settings",
+    "restoreDefaultsDesc": "Reverts General, Themes and Shortcuts options to game defaults.",
+    "exitGame": "Exit game",
+    "exitGameDesc": "Saves progress and closes the game.",
+    "exit": "Exit",
+    "themeTitle": "Visual theme",
+    "themeDesc": "Choose the interface appearance. All options are available.",
+    "themes": {
+      "light": "Light",
+      "dark": "Dark",
+      "high-contrast": "High Contrast (Dark)",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "Vintage",
+      "terminal": "Terminal",
+      "nord": "Nord",
+      "dracula": "Dracula",
+      "sepia": "Sepia",
+      "ocean": "Ocean",
+      "forest": "Forest",
+      "sunset": "Sunset",
+      "rose": "Rose",
+      "coffee": "Coffee",
+      "midnight": "Midnight",
+      "synthwave": "Synthwave",
+      "lavender": "Lavender",
+      "mint": "Mint",
+      "candy": "Candy",
+      "crimson": "Crimson",
+      "peacock": "Peacock",
+      "desert": "Desert",
+      "berry": "Berry",
+      "sage": "Sage",
+      "ink": "Ink",
+      "honey": "Honey"
+    },
+    "shortcutsTitle": "Shortcut keys",
+    "shortcutsDesc": "Click the button and press the key (or mouse button) you want to use. Shortcuts work on any screen.",
+    "pressKey": "Press a key...",
+    "accountTitle": "Your account",
+    "accountDesc": "Sign in or create an account to access your saves on any device and join the leaderboard.",
+    "connectedAs": "Connected as",
+    "goToLogin": "Go to login page",
+    "useLoginPage": "Use the login page to sign in or create an account.",
+    "advancedUnlock": "Auto-unlock next generator",
+    "advancedUnlockDesc": "When enabled, the next generator (still at 0 units) is unlocked as soon as you have enough resource. Does not buy extra units.",
+    "resetProgress": "Reset progress",
+    "resetProgressDesc": "Reverts the game to initial state: counter at 0, no generators and no improvements. Save will be erased.",
+    "resetDialogTitle": "Reset progress?",
+    "resetDialogDesc": "Are you sure you want to reset all progress? Counter, generators and improvements will go back to zero."
+  },
+  "auth": {
+    "loading": "Loading…",
+    "connectedAs": "Connected as",
+    "signOut": "Sign out",
+    "goToGame": "Go to game",
+    "forceLoginTitle": "Account already logged in on another device",
+    "forceLoginDesc": "This account is in use on another device. If you log in here, the other device will be signed out and will see a message that the account was logged in elsewhere.",
+    "cancel": "Cancel",
+    "forceLogin": "Force login",
+    "email": "Email",
+    "emailPlaceholder": "name@example.com",
+    "password": "Password",
+    "login": "Sign in",
+    "signUp": "Create account",
+    "wait": "Please wait…",
+    "noAccount": "Don't have an account? Create account",
+    "hasAccount": "Already have an account? Sign in"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "ok": "OK"
+  },
+  "shortcuts": {
+    "nextMenu": "Next menu",
+    "prevMenu": "Previous menu",
+    "menuGeradores": "Go to Generators",
+    "menuMelhorias": "Go to Improvements",
+    "menuConquistas": "Go to Achievements",
+    "menuEstatisticas": "Go to Statistics",
+    "menuConfiguracoes": "Go to Settings",
+    "scrollTop": "Scroll to top",
+    "scrollBottom": "Scroll to bottom"
+  },
+  "generators": {
+    "generatorN": "Generator {{n}}",
+    "unlockToProduce": "Unlock to start producing",
+    "costToUnlock": "Cost to unlock",
+    "fragments": "Fragments",
+    "quantity": "Quantity",
+    "milestone": "Milestone",
+    "milestoneProgress": "Milestone progress",
+    "totalGenerators": "Total generators",
+    "time": "Time",
+    "cycle": "Cycle",
+    "continuous": "Continuous",
+    "resource": "Resource",
+    "price": "Price",
+    "generatedAutomatically": "Generated automatically",
+    "automatic": "Automatic",
+    "buy": "Buy"
+  },
+  "improvements": {
+    "upgradePoints": "Upgrade Points",
+    "perGenerator": "Per generator",
+    "global": "Global",
+    "production": "Production",
+    "level": "Level",
+    "multiplier": "Multiplier",
+    "next": "Next",
+    "buy": "Buy",
+    "frag": "frag",
+    "speed": "Speed",
+    "currentCycle": "Current cycle",
+    "luck": "Luck",
+    "currentChance": "Current chance",
+    "nextChance": "Next chance",
+    "luckEffect": "Luck effect",
+    "multOnCrit": "Mult. on crit",
+    "globalProduction": "Global production",
+    "globalProductionDesc": "x2 for all per level",
+    "globalSpeed": "Global speed",
+    "globalSpeedDesc": "−10% per level",
+    "cycleFactor": "Current cycle factor",
+    "generatorPrice": "Generator price",
+    "generatorPriceDesc": "−5% per level",
+    "currentReduction": "Current reduction",
+    "nextReduction": "Next",
+    "unlockGeneratorsHint": "Unlock generators on the Generators page to see improvements here."
+  },
+  "achievements": {
+    "totalPoints": "Total points",
+    "ofAchievements": "of {{total}} achievements",
+    "emptyCategory": "No achievements in this category.",
+    "unlocked": "Unlocked",
+    "locked": "Locked",
+    "categories": {
+      "primeiros-passos": "First steps",
+      "recurso": "Resource",
+      "unidades-geradores": "Generator units",
+      "gerador-especifico": "Specific generators",
+      "producao-total": "Total production",
+      "tempo-jogo": "Game time",
+      "compras-manuais": "Manual purchases",
+      "melhorias-producao": "Production improvements",
+      "melhorias-velocidade": "Speed improvements"
+    },
+    "primeiro-gerador": {
+      "name": "First generator",
+      "description": "Unlock Generator 1"
+    },
+    "primeira-melhoria": {
+      "name": "First improvement",
+      "description": "Buy a production improvement"
+    },
+    "primeira-velocidade": {
+      "name": "Faster",
+      "description": "Buy a speed improvement"
+    },
+    "rec-100": {
+      "name": "One hundred resource",
+      "description": "Accumulate 100 resource"
+    },
+    "rec-1e3": {
+      "name": "One thousand resource",
+      "description": "Accumulate 1,000 resource"
+    },
+    "rec-1e4": {
+      "name": "Ten thousand",
+      "description": "Accumulate 10,000 resource"
+    },
+    "rec-1e5": {
+      "name": "One hundred thousand",
+      "description": "Accumulate 100,000 resource"
+    },
+    "rec-1e6": {
+      "name": "Million",
+      "description": "Accumulate 1 million resource"
+    },
+    "rec-1e7": {
+      "name": "Ten million",
+      "description": "Accumulate 10 million resource"
+    },
+    "rec-1e8": {
+      "name": "One hundred million",
+      "description": "Accumulate 100 million resource"
+    },
+    "rec-1e9": {
+      "name": "Billion",
+      "description": "Accumulate 1 billion resource"
+    },
+    "rec-1e10": {
+      "name": "Ten billion",
+      "description": "Accumulate 10 billion resource"
+    },
+    "rec-1e11": {
+      "name": "One hundred billion",
+      "description": "Accumulate 100 billion resource"
+    },
+    "rec-1e12": {
+      "name": "Trillion",
+      "description": "Accumulate 1 trillion resource"
+    },
+    "unid-10": {
+      "name": "Ten units",
+      "description": "Have 10 total generator units"
+    },
+    "unid-50": {
+      "name": "Fifty units",
+      "description": "Have 50 total generator units"
+    },
+    "unid-100": {
+      "name": "One hundred units",
+      "description": "Have 100 total generator units"
+    },
+    "g10": {
+      "name": "Generator 10",
+      "description": "Unlock Generator 10"
+    },
+    "g20": {
+      "name": "Generator 20",
+      "description": "Unlock Generator 20"
+    },
+    "g100": {
+      "name": "Last generator",
+      "description": "Unlock Generator 100"
+    },
+    "prod-1e6": {
+      "name": "Production: 1M",
+      "description": "Produce 1 million total (lifetime)"
+    },
+    "prod-1e9": {
+      "name": "Production: 1B",
+      "description": "Produce 1 billion total (lifetime)"
+    },
+    "tempo-1h": {
+      "name": "One hour",
+      "description": "Play for 1 hour total"
+    },
+    "tempo-24h": {
+      "name": "One day",
+      "description": "Play for 24 hours total"
+    },
+    "comp-10": {
+      "name": "Dedicated buyer",
+      "description": "Buy 10 generators manually (click)"
+    },
+    "comp-1k": {
+      "name": "Click master",
+      "description": "Buy 1,000 generators manually (click)"
+    },
+    "melh-10": {
+      "name": "Ten improvements",
+      "description": "Buy 10 production improvements total"
+    },
+    "vel-10": {
+      "name": "Ten speeds",
+      "description": "Buy 10 speed improvements total"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications",
+    "markAllRead": "Mark all as read",
+    "clearHistory": "Clear history"
+  },
+  "stats": {
+    "summary": "Your game summary",
+    "summaryDesc": "Overall progress numbers (reset when you reset).",
+    "currentResource": "Current resource",
+    "totalProduced": "Total produced",
+    "playTime": "Play time",
+    "firstSession": "First session",
+    "manualPurchases": "Generators bought (manual)",
+    "autoProduced": "Generators produced (auto)",
+    "productionUpgrades": "Production improvements",
+    "speedUpgrades": "Speed improvements",
+    "timesPerGenerator": "Times per generator",
+    "timesPerGeneratorDesc": "Time from start until each generator was unlocked and time spent in each tier. Unlocks from now on will be recorded.",
+    "timeToUnlock": "time to unlock",
+    "timeInPreviousTier": "Time in previous tier only (Generator {{n}})",
+    "bonusHits": "Bonus resource hits (luck)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "Your account was logged in on another device.",
+    "upgradePointsTitle": "Upgrade Points Earned!",
+    "upgradePointsDesc": "You reached new milestones and earned {{count}} Upgrade Points!"
+  }
+}

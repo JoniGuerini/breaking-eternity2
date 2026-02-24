@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "Üdvözöljük a Breaking Eternity-ben",
+    "welcomeP1": "Ez egy <strong>növekményes</strong> (idle) játék: erőforrást gyűjtesz, generátorokat vásárolsz, amelyek többet termelnek, és fejlesztéseket nyitsz ki. A számok hatalmasak lehetnek — milliók, milliárdok és tovább.",
+    "welcomeP2": "Az ilyen nagy számok kezeléséhez a játék a <strong>break_eternity.js</strong> könyvtárat használja, amely a natív JavaScript által támogatottnál sokkal nagyobb értékekkel dolgozhat (tudományos jelölés, M, B, T, Q és betűk utótagok).",
+    "welcomeP3": "A <strong>cél</strong> elérni a könyvtár határát — a legnagyobb ábrázolható számot. Szerezd meg az első erőforrást lent, és kezdj el generátorokat vásárolni. Jó szórakozást!",
+    "firstResource": "Első erőforrás megszerzése",
+    "offlineTitle": "Offline nyereség",
+    "offlineGain": "{{amount}}-t szerzett, miközben offline voltál.",
+    "offlineTime": "Távolmaradás ideje"
+  },
+  "nav": {
+    "geradores": "Generátorok",
+    "melhorias": "Fejlesztések",
+    "conquistas": "Teljesítmények",
+    "estatisticas": "Statisztikák",
+    "configuracoes": "Beállítások"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "Általános",
+      "temas": "Témák",
+      "atalhos": "Gyorsbillentyűk",
+      "conta": "Fiók",
+      "avancado": "Haladó beállítások"
+    },
+    "language": "Nyelv",
+    "languageDesc": "Megváltoztatja a játék felületének nyelvét.",
+    "clickSound": "Kattintás hangja",
+    "clickSoundDesc": "Kattintást játszik le generátorok/fejlesztések vásárlásakor és menük váltásakor.",
+    "clickVolume": "Kattintás hangerő",
+    "clickVolumeLabel": "Kattintás hang hangerő",
+    "fpsCounter": "FPS számláló megjelenítése",
+    "fpsCounterDesc": "Megjeleníti a másodpercenkénti képkockákat a játék jobb felső sarkában.",
+    "fullscreen": "Teljes képernyő",
+    "fullscreenDesc": "Teljes képernyős mód a böngészőben. Kilépés: Esc vagy a gomb.",
+    "saveProgress": "Előrehaladás mentése",
+    "saveProgressDescBefore": "A játék automatikusan ment minden",
+    "saveProgressDescAfter": "másodpercben. Itt kényszerítheted a mentést.",
+    "cloudSaveInterval": "Felhő mentési időköz",
+    "cloudSaveHint": "Alacsonyabb = gyakoribb mentés. Magasabb = kevesebb hálózat használat.",
+    "lastSave": "Utolsó mentés",
+    "saveNow": "Mentés most",
+    "never": "Soha",
+    "downloadDesktop": "Letöltés asztalra",
+    "downloadDesktopDesc": "Telepítsd a játékot PC-re vagy Mac-re, és játssz böngésző nélkül.",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "Alapértelmezések visszaállítása",
+    "restoreDefaultsDesc": "Visszaállítja az Általános, Témák és Gyorsbillentyűk beállításait a játék alapértelmezettjeire.",
+    "exitGame": "Kilépés a játékból",
+    "exitGameDesc": "Menti az előrehaladást és bezárja a játékot.",
+    "exit": "Kilépés",
+    "themeTitle": "Vizuális téma",
+    "themeDesc": "Válaszd ki a felület megjelenését. Minden opció elérhető.",
+    "themes": {
+      "light": "Világos",
+      "dark": "Sötét",
+      "high-contrast": "Magas kontraszt (sötét)",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "Vintage",
+      "terminal": "Terminál",
+      "nord": "Nord",
+      "dracula": "Dracula",
+      "sepia": "Szépia",
+      "ocean": "Óceán",
+      "forest": "Erdő",
+      "sunset": "Napnyugta",
+      "rose": "Rózsaszín",
+      "coffee": "Kávé",
+      "midnight": "Éjfél",
+      "synthwave": "Synthwave",
+      "lavender": "Levendula",
+      "mint": "Menta",
+      "candy": "Cukorka",
+      "crimson": "Karmazsin",
+      "peacock": "Páva",
+      "desert": "Sivatag",
+      "berry": "Bogyó",
+      "sage": "Zsálya",
+      "ink": "Tinta",
+      "honey": "Méz"
+    },
+    "shortcutsTitle": "Gyorsbillentyűk",
+    "shortcutsDesc": "Kattints a gombra, majd nyomd meg a kívánt billentyűt (vagy egérgombot). A gyorsbillentyűk minden képernyőn működnek.",
+    "pressKey": "Nyomj meg egy billentyűt...",
+    "accountTitle": "A fiókod",
+    "accountDesc": "Jelentkezz be vagy hozz létre fiókot a mentésekhez bármely eszközről és a rangsorhoz.",
+    "connectedAs": "Bejelentkezve mint",
+    "goToLogin": "Bejelentkezési oldal",
+    "useLoginPage": "A bejelentkezési oldalon jelentkezz be vagy hozz létre fiókot.",
+    "advancedUnlock": "Következő generátor automatikus kinyitása",
+    "advancedUnlockDesc": "Bekapcsolva a következő generátor (még 0 egységgel) kinyílik, amint elég erőforrásod van. Nem vásárol extra egységeket.",
+    "resetProgress": "Előrehaladás törlése",
+    "resetProgressDesc": "Visszaállítja a játékot kezdeti állapotba: számláló 0, nincs generátor és fejlesztés. A mentés törlődik.",
+    "resetDialogTitle": "Előrehaladás törlése?",
+    "resetDialogDesc": "Biztosan törölni szeretnéd az összes előrehaladást? A számláló, generátorok és fejlesztések nullára állnak."
+  },
+  "auth": {
+    "loading": "Betöltés…",
+    "connectedAs": "Bejelentkezve mint",
+    "signOut": "Kijelentkezés",
+    "goToGame": "Ugrás a játékhoz",
+    "forceLoginTitle": "A fiók már be van jelentkezve másik eszközön",
+    "forceLoginDesc": "Ez a fiók másik eszközön van használatban. Ha itt jelentkezel be, a másik eszköz kijelentkezik és üzenetet kap, hogy a fiók máshol lett bejelentkezve.",
+    "cancel": "Mégse",
+    "forceLogin": "Bejelentkezés kényszerítése",
+    "email": "E-mail",
+    "emailPlaceholder": "name@example.com",
+    "password": "Jelszó",
+    "login": "Bejelentkezés",
+    "signUp": "Fiók létrehozása",
+    "wait": "Kérjük várj…",
+    "noAccount": "Nincs fiókod? Fiók létrehozása",
+    "hasAccount": "Már van fiókod? Bejelentkezés"
+  },
+  "common": {
+    "cancel": "Mégse",
+    "confirm": "Megerősítés",
+    "ok": "OK"
+  },
+  "shortcuts": {
+    "nextMenu": "Következő menü",
+    "prevMenu": "Előző menü",
+    "menuGeradores": "Ugrás a Generátorokhoz",
+    "menuMelhorias": "Ugrás a Fejlesztésekhez",
+    "menuConquistas": "Ugrás a Teljesítményekhez",
+    "menuEstatisticas": "Ugrás a Statisztikákhoz",
+    "menuConfiguracoes": "Ugrás a Beállításokhoz",
+    "scrollTop": "Görgetés tetejére",
+    "scrollBottom": "Görgetés aljára"
+  },
+  "generators": {
+    "generatorN": "Generátor {{n}}",
+    "unlockToProduce": "Nyisd ki a termelés megkezdéséhez",
+    "costToUnlock": "Kinyitás költsége",
+    "fragments": "Töredékek",
+    "quantity": "Mennyiség",
+    "milestone": "Mérföldkő",
+    "milestoneProgress": "Mérföldkő előrehaladás",
+    "totalGenerators": "Összes generátor",
+    "time": "Idő",
+    "cycle": "Ciklus",
+    "continuous": "Folyamatos",
+    "resource": "Erőforrás",
+    "price": "Ár",
+    "generatedAutomatically": "Automatikusan generálva",
+    "automatic": "Automatikus",
+    "buy": "Vásárlás"
+  },
+  "improvements": {
+    "upgradePoints": "Fejlesztési pontok",
+    "perGenerator": "Generátoronként",
+    "global": "Globális",
+    "production": "Termelés",
+    "level": "Szint",
+    "multiplier": "Szorzó",
+    "next": "Következő",
+    "buy": "Vásárlás",
+    "frag": "töred",
+    "speed": "Sebesség",
+    "currentCycle": "Aktuális ciklus",
+    "luck": "Szerencse",
+    "currentChance": "Aktuális esély",
+    "nextChance": "Következő esély",
+    "luckEffect": "Szerencse hatás",
+    "multOnCrit": "Szorzó kritikusnál",
+    "globalProduction": "Globális termelés",
+    "globalProductionDesc": "x2 szintenként",
+    "globalSpeed": "Globális sebesség",
+    "globalSpeedDesc": "−10% szintenként",
+    "cycleFactor": "Aktuális ciklus tényező",
+    "generatorPrice": "Generátor ára",
+    "generatorPriceDesc": "−5% szintenként",
+    "currentReduction": "Aktuális csökkentés",
+    "nextReduction": "Következő",
+    "unlockGeneratorsHint": "Nyisd ki a generátorokat a Generátorok oldalon, hogy itt lásd a fejlesztéseket."
+  },
+  "achievements": {
+    "totalPoints": "Összes pont",
+    "ofAchievements": "a {{total}} teljesítményből",
+    "emptyCategory": "Nincs teljesítmény ebben a kategóriában.",
+    "unlocked": "Kinyitva",
+    "locked": "Zárva",
+    "categories": {
+      "primeiros-passos": "Első lépések",
+      "recurso": "Erőforrás",
+      "unidades-geradores": "Generátor egységek",
+      "gerador-especifico": "Konkrét generátorok",
+      "producao-total": "Összes termelés",
+      "tempo-jogo": "Játékidő",
+      "compras-manuais": "Kézi vásárlások",
+      "melhorias-producao": "Termelési fejlesztések",
+      "melhorias-velocidade": "Sebesség fejlesztések"
+    },
+    "primeiro-gerador": {
+      "name": "Első generátor",
+      "description": "Nyisd ki az 1. generátort"
+    },
+    "primeira-melhoria": {
+      "name": "Első fejlesztés",
+      "description": "Vásárolj termelési fejlesztést"
+    },
+    "primeira-velocidade": {
+      "name": "Gyorsabb",
+      "description": "Vásárolj sebesség fejlesztést"
+    },
+    "rec-100": {
+      "name": "Száz erőforrás",
+      "description": "Gyűjts 100 erőforrást"
+    },
+    "rec-1e3": {
+      "name": "Ezer erőforrás",
+      "description": "Gyűjts 1 000 erőforrást"
+    },
+    "rec-1e4": {
+      "name": "Tízezer",
+      "description": "Gyűjts 10 000 erőforrást"
+    },
+    "rec-1e5": {
+      "name": "Száz ezer",
+      "description": "Gyűjts 100 000 erőforrást"
+    },
+    "rec-1e6": {
+      "name": "Millió",
+      "description": "Gyűjts 1 millió erőforrást"
+    },
+    "rec-1e7": {
+      "name": "Tíz millió",
+      "description": "Gyűjts 10 millió erőforrást"
+    },
+    "rec-1e8": {
+      "name": "Száz millió",
+      "description": "Gyűjts 100 millió erőforrást"
+    },
+    "rec-1e9": {
+      "name": "Milliárd",
+      "description": "Gyűjts 1 milliárd erőforrást"
+    },
+    "rec-1e10": {
+      "name": "Tíz milliárd",
+      "description": "Gyűjts 10 milliárd erőforrást"
+    },
+    "rec-1e11": {
+      "name": "Száz milliárd",
+      "description": "Gyűjts 100 milliárd erőforrást"
+    },
+    "rec-1e12": {
+      "name": "Trillió",
+      "description": "Gyűjts 1 trillió erőforrást"
+    },
+    "unid-10": {
+      "name": "Tíz egység",
+      "description": "Legyen összesen 10 generátor egységed"
+    },
+    "unid-50": {
+      "name": "Ötven egység",
+      "description": "Legyen összesen 50 generátor egységed"
+    },
+    "unid-100": {
+      "name": "Száz egység",
+      "description": "Legyen összesen 100 generátor egységed"
+    },
+    "g10": {
+      "name": "10. generátor",
+      "description": "Nyisd ki a 10. generátort"
+    },
+    "g20": {
+      "name": "20. generátor",
+      "description": "Nyisd ki a 20. generátort"
+    },
+    "g100": {
+      "name": "Utolsó generátor",
+      "description": "Nyisd ki a 100. generátort"
+    },
+    "prod-1e6": {
+      "name": "Termelés: 1M",
+      "description": "Termelj összesen 1 milliót (életidő)"
+    },
+    "prod-1e9": {
+      "name": "Termelés: 1B",
+      "description": "Termelj összesen 1 milliárdot (életidő)"
+    },
+    "tempo-1h": {
+      "name": "Egy óra",
+      "description": "Játssz összesen 1 órát"
+    },
+    "tempo-24h": {
+      "name": "Egy nap",
+      "description": "Játssz összesen 24 órát"
+    },
+    "comp-10": {
+      "name": "Elkötelezett vásárló",
+      "description": "Vásárolj 10 generátort kézzel (kattintással)"
+    },
+    "comp-1k": {
+      "name": "Kattintás mester",
+      "description": "Vásárolj 1 000 generátort kézzel (kattintással)"
+    },
+    "melh-10": {
+      "name": "Tíz fejlesztés",
+      "description": "Vásárolj összesen 10 termelési fejlesztést"
+    },
+    "vel-10": {
+      "name": "Tíz sebesség",
+      "description": "Vásárolj összesen 10 sebesség fejlesztést"
+    }
+  },
+  "notifications": {
+    "title": "Értesítések",
+    "empty": "Nincs értesítés",
+    "markAllRead": "Összes olvasottnak jelölése",
+    "clearHistory": "Előzmények törlése"
+  },
+  "stats": {
+    "summary": "Játék összefoglaló",
+    "summaryDesc": "Általános előrehaladási számok (törlődnek resetnél).",
+    "currentResource": "Aktuális erőforrás",
+    "totalProduced": "Összesen termelt",
+    "playTime": "Játékidő",
+    "firstSession": "Első munkamenet",
+    "manualPurchases": "Kézzel vásárolt generátorok",
+    "autoProduced": "Automatikusan termelt generátorok",
+    "productionUpgrades": "Termelési fejlesztések",
+    "speedUpgrades": "Sebesség fejlesztések",
+    "timesPerGenerator": "Idők generátoronként",
+    "timesPerGeneratorDesc": "Idő a kezdetektől minden generátor kinyitásáig és idő szintenként. A mostantól történő kinyitások rögzítésre kerülnek.",
+    "timeToUnlock": "idő a kinyitásig",
+    "timeInPreviousTier": "Csak az előző szinten töltött idő (Generátor {{n}})",
+    "bonusHits": "Bónusz erőforrás találatok (szerencse)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "A fiókod másik eszközön lett bejelentkezve.",
+    "upgradePointsTitle": "Fejlesztési pontok szerezve!",
+    "upgradePointsDesc": "Új mérföldköveket értél el és {{count}} Fejlesztési pontot szerezél!"
+  }
+}

@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "ברוך הבא ל-Breaking Eternity",
+    "welcomeP1": "זה משחק <strong>אינקרמנטלי</strong> (idle): אוספים משאב, קונים גנרטורים שמייצרים עוד משאב ומשחררים שדרוגים. המספרים יכולים להיות ענקיים — מיליונים, מיליארדים ומעבר.",
+    "welcomeP2": "כדי להתמודד עם מספרים כה גדולים, המשחק משתמש בספריית <strong>break_eternity.js</strong>, המאפשרת פעולות עם ערכים הרבה מעבר למה ש-JavaScript מובנה תומך (סימון מדעי, סיומות כמו M, B, T, Q ואותיות).",
+    "welcomeP3": "ה<strong>מטרה</strong> היא להגיע לגבול הספרייה — המספר הגדול ביותר שהיא יכולה לייצג. תבע את המשאב הראשון למטה והתחל לקנות גנרטורים. בהצלחה!",
+    "firstResource": "תבע משאב ראשון",
+    "offlineTitle": "ריווחון במצב לא מקוון",
+    "offlineGain": "הרווחת {{amount}} בזמן שלא היית מחובר.",
+    "offlineTime": "זמן היעדרות"
+  },
+  "nav": {
+    "geradores": "גנרטורים",
+    "melhorias": "שדרוגים",
+    "conquistas": "הישגים",
+    "estatisticas": "סטטיסטיקות",
+    "configuracoes": "הגדרות"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "כללי",
+      "temas": "ערכות נושא",
+      "atalhos": "קיצורי מקלדת",
+      "conta": "חשבון",
+      "avancado": "אפשרויות מתקדמות"
+    },
+    "language": "שפה",
+    "languageDesc": "משנה את שפת ממשק המשחק.",
+    "clickSound": "צליל לחיצה",
+    "clickSoundDesc": "משמיע צליל לחיצה בעת קניית גנרטורים/שדרוגים והחלפת תפריטים.",
+    "clickVolume": "עוצמת צליל הלחיצה",
+    "clickVolumeLabel": "עוצמת צליל הלחיצה",
+    "fpsCounter": "הצג מונה FPS",
+    "fpsCounterDesc": "מציג פריימים לשנייה בפינה הימנית העליונה של המשחק.",
+    "fullscreen": "מסך מלא",
+    "fullscreenDesc": "מציג את המשחק במסך מלא בדפדפן. השתמש ב-Esc או בכפתור כדי לצאת.",
+    "saveProgress": "שמור התקדמות",
+    "saveProgressDescBefore": "המשחק שומר אוטומטית כל",
+    "saveProgressDescAfter": "שניות. אפשר לכפות שמירה כאן.",
+    "cloudSaveInterval": "מרווח שמירה בענן",
+    "cloudSaveHint": "נמוך יותר = שמירות תכופות יותר. גבוה יותר = פחות שימוש ברשת.",
+    "lastSave": "שמירה אחרונה",
+    "saveNow": "שמור עכשיו",
+    "never": "אף פעם",
+    "downloadDesktop": "הורדה לשולחן העבודה",
+    "downloadDesktopDesc": "התקן את המשחק ב-PC או Mac ושחק בלי לפתוח את הדפדפן.",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "שחזר הגדרות ברירת מחדל",
+    "restoreDefaultsDesc": "מחזיר את אפשרויות כללי, ערכות נושא וקיצורי מקלדת לברירת המחדל של המשחק.",
+    "exitGame": "צא מהמשחק",
+    "exitGameDesc": "שומר התקדמות וסוגר את המשחק.",
+    "exit": "יציאה",
+    "themeTitle": "ערכת נושא ויזואלית",
+    "themeDesc": "בחר את מראה הממשק. כל האפשרויות זמינות.",
+    "themes": {
+      "light": "בהיר",
+      "dark": "כהה",
+      "high-contrast": "ניגודיות גבוהה (כהה)",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "וינטג'",
+      "terminal": "טרמינל",
+      "nord": "Nord",
+      "dracula": "דרקולה",
+      "sepia": "סֶפְּיָה",
+      "ocean": "אוקיינוס",
+      "forest": "יער",
+      "sunset": "שקיעה",
+      "rose": "ורוד",
+      "coffee": "קפה",
+      "midnight": "חצות",
+      "synthwave": "Synthwave",
+      "lavender": "לבנדר",
+      "mint": "מנטה",
+      "candy": "ממתק",
+      "crimson": "ארגמן",
+      "peacock": "טווס",
+      "desert": "מדבר",
+      "berry": "פירות יער",
+      "sage": "מרווה",
+      "ink": "דיו",
+      "honey": "דבש"
+    },
+    "shortcutsTitle": "מקשי קיצור",
+    "shortcutsDesc": "לחץ על הכפתור ולחץ על המקש (או כפתור העכבר) שברצונך להשתמש. קיצורים פועלים בכל מסך.",
+    "pressKey": "לחץ על מקש...",
+    "accountTitle": "החשבון שלך",
+    "accountDesc": "התחבר או צור חשבון כדי לגשת לשמירות שלך בכל מכשיר ולהצטרף ללוח המובילים.",
+    "connectedAs": "מחובר כ",
+    "goToLogin": "עבור לדף ההתחברות",
+    "useLoginPage": "השתמש בדף ההתחברות כדי להתחבר או ליצור חשבון.",
+    "advancedUnlock": "שחרור אוטומטי של הגנרטור הבא",
+    "advancedUnlockDesc": "כשמופעל, הגנרטור הבא (עדיין עם 0 יחידות) משוחרר ברגע שיש לך מספיק משאב. לא קונה יחידות נוספות.",
+    "resetProgress": "איפוס התקדמות",
+    "resetProgressDesc": "מחזיר את המשחק למצב ההתחלתי: מונה ב-0, בלי גנרטורים ושדרוגים. השמירה תימחק.",
+    "resetDialogTitle": "לאפס התקדמות?",
+    "resetDialogDesc": "האם אתה בטוח שברצונך לאפס את כל ההתקדמות? המונה, הגנרטורים והשדרוגים יחזרו לאפס."
+  },
+  "auth": {
+    "loading": "טוען…",
+    "connectedAs": "מחובר כ",
+    "signOut": "התנתק",
+    "goToGame": "עבור למשחק",
+    "forceLoginTitle": "החשבון כבר מחובר במכשיר אחר",
+    "forceLoginDesc": "חשבון זה בשימוש במכשיר אחר. אם תתחבר כאן, המכשיר האחר יתנתק ויראה הודעה שהחשבון התחבר במקום אחר.",
+    "cancel": "ביטול",
+    "forceLogin": "כפה התחברות",
+    "email": "אימייל",
+    "emailPlaceholder": "name@example.com",
+    "password": "סיסמה",
+    "login": "התחבר",
+    "signUp": "צור חשבון",
+    "wait": "אנא המתן…",
+    "noAccount": "אין לך חשבון? צור חשבון",
+    "hasAccount": "כבר יש לך חשבון? התחבר"
+  },
+  "common": {
+    "cancel": "ביטול",
+    "confirm": "אישור",
+    "ok": "אישור"
+  },
+  "shortcuts": {
+    "nextMenu": "תפריט הבא",
+    "prevMenu": "תפריט הקודם",
+    "menuGeradores": "עבור לגנרטורים",
+    "menuMelhorias": "עבור לשדרוגים",
+    "menuConquistas": "עבור להישגים",
+    "menuEstatisticas": "עבור לסטטיסטיקות",
+    "menuConfiguracoes": "עבור להגדרות",
+    "scrollTop": "גלול למעלה",
+    "scrollBottom": "גלול למטה"
+  },
+  "generators": {
+    "generatorN": "גנרטור {{n}}",
+    "unlockToProduce": "שחרר כדי להתחיל לייצר",
+    "costToUnlock": "עלות לשחרור",
+    "fragments": "שברים",
+    "quantity": "כמות",
+    "milestone": "אבן דרך",
+    "milestoneProgress": "התקדמות אבן דרך",
+    "totalGenerators": "סה\"כ גנרטורים",
+    "time": "זמן",
+    "cycle": "מחזור",
+    "continuous": "רציף",
+    "resource": "משאב",
+    "price": "מחיר",
+    "generatedAutomatically": "נוצר אוטומטית",
+    "automatic": "אוטומטי",
+    "buy": "קנה"
+  },
+  "improvements": {
+    "upgradePoints": "נקודות שדרוג",
+    "perGenerator": "לכל גנרטור",
+    "global": "גלובלי",
+    "production": "ייצור",
+    "level": "רמה",
+    "multiplier": "מכפיל",
+    "next": "הבא",
+    "buy": "קנה",
+    "frag": "שבר",
+    "speed": "מהירות",
+    "currentCycle": "מחזור נוכחי",
+    "luck": "מזל",
+    "currentChance": "סיכוי נוכחי",
+    "nextChance": "סיכוי הבא",
+    "luckEffect": "אפקט המזל",
+    "multOnCrit": "מכפיל בביקורת",
+    "globalProduction": "ייצור גלובלי",
+    "globalProductionDesc": "x2 לכל רמה",
+    "globalSpeed": "מהירות גלובלית",
+    "globalSpeedDesc": "−10% לכל רמה",
+    "cycleFactor": "גורם מחזור נוכחי",
+    "generatorPrice": "מחיר גנרטור",
+    "generatorPriceDesc": "−5% לכל רמה",
+    "currentReduction": "הפחתה נוכחית",
+    "nextReduction": "הבא",
+    "unlockGeneratorsHint": "שחרר גנרטורים בדף הגנרטורים כדי לראות שדרוגים כאן."
+  },
+  "achievements": {
+    "totalPoints": "סה\"כ נקודות",
+    "ofAchievements": "מתוך {{total}} הישגים",
+    "emptyCategory": "אין הישגים בקטגוריה זו.",
+    "unlocked": "משוחרר",
+    "locked": "נעול",
+    "categories": {
+      "primeiros-passos": "צעדים ראשונים",
+      "recurso": "משאב",
+      "unidades-geradores": "יחידות גנרטורים",
+      "gerador-especifico": "גנרטורים ספציפיים",
+      "producao-total": "ייצור כולל",
+      "tempo-jogo": "זמן משחק",
+      "compras-manuais": "רכישות ידניות",
+      "melhorias-producao": "שדרוגי ייצור",
+      "melhorias-velocidade": "שדרוגי מהירות"
+    },
+    "primeiro-gerador": {
+      "name": "גנרטור ראשון",
+      "description": "שחרר גנרטור 1"
+    },
+    "primeira-melhoria": {
+      "name": "שדרוג ראשון",
+      "description": "קנה שדרוג ייצור"
+    },
+    "primeira-velocidade": {
+      "name": "מהיר יותר",
+      "description": "קנה שדרוג מהירות"
+    },
+    "rec-100": {
+      "name": "מאה משאב",
+      "description": "צבור 100 משאב"
+    },
+    "rec-1e3": {
+      "name": "אלף משאב",
+      "description": "צבור 1,000 משאב"
+    },
+    "rec-1e4": {
+      "name": "עשרת אלפים",
+      "description": "צבור 10,000 משאב"
+    },
+    "rec-1e5": {
+      "name": "מאה אלף",
+      "description": "צבור 100,000 משאב"
+    },
+    "rec-1e6": {
+      "name": "מיליון",
+      "description": "צבור מיליון משאב"
+    },
+    "rec-1e7": {
+      "name": "עשרה מיליונים",
+      "description": "צבור 10 מיליון משאב"
+    },
+    "rec-1e8": {
+      "name": "מאה מיליונים",
+      "description": "צבור 100 מיליון משאב"
+    },
+    "rec-1e9": {
+      "name": "מיליארד",
+      "description": "צבור מיליארד משאב"
+    },
+    "rec-1e10": {
+      "name": "עשרה מיליארדים",
+      "description": "צבור 10 מיליארד משאב"
+    },
+    "rec-1e11": {
+      "name": "מאה מיליארדים",
+      "description": "צבור 100 מיליארד משאב"
+    },
+    "rec-1e12": {
+      "name": "טריליון",
+      "description": "צבור טריליון משאב"
+    },
+    "unid-10": {
+      "name": "עשר יחידות",
+      "description": "החזק 10 יחידות גנרטור סה\"כ"
+    },
+    "unid-50": {
+      "name": "חמישים יחידות",
+      "description": "החזק 50 יחידות גנרטור סה\"כ"
+    },
+    "unid-100": {
+      "name": "מאה יחידות",
+      "description": "החזק 100 יחידות גנרטור סה\"כ"
+    },
+    "g10": {
+      "name": "גנרטור 10",
+      "description": "שחרר גנרטור 10"
+    },
+    "g20": {
+      "name": "גנרטור 20",
+      "description": "שחרר גנרטור 20"
+    },
+    "g100": {
+      "name": "גנרטור אחרון",
+      "description": "שחרר גנרטור 100"
+    },
+    "prod-1e6": {
+      "name": "ייצור: 1M",
+      "description": "ייצר מיליון סה\"כ (לאורך חיים)"
+    },
+    "prod-1e9": {
+      "name": "ייצור: 1B",
+      "description": "ייצר מיליארד סה\"כ (לאורך חיים)"
+    },
+    "tempo-1h": {
+      "name": "שעה אחת",
+      "description": "שחק שעה סה\"כ"
+    },
+    "tempo-24h": {
+      "name": "יום אחד",
+      "description": "שחק 24 שעות סה\"כ"
+    },
+    "comp-10": {
+      "name": "קונה מסור",
+      "description": "קנה 10 גנרטורים ידנית (לחיצה)"
+    },
+    "comp-1k": {
+      "name": "אמן הלחיצות",
+      "description": "קנה 1,000 גנרטורים ידנית (לחיצה)"
+    },
+    "melh-10": {
+      "name": "עשרה שדרוגים",
+      "description": "קנה 10 שדרוגי ייצור סה\"כ"
+    },
+    "vel-10": {
+      "name": "עשר מהירויות",
+      "description": "קנה 10 שדרוגי מהירות סה\"כ"
+    }
+  },
+  "notifications": {
+    "title": "התראות",
+    "empty": "אין התראות",
+    "markAllRead": "סמן הכל כנקרא",
+    "clearHistory": "נקה היסטוריה"
+  },
+  "stats": {
+    "summary": "סיכום המשחק שלך",
+    "summaryDesc": "מספרי התקדמות כלליים (מאופסים כשאתה מאפס).",
+    "currentResource": "משאב נוכחי",
+    "totalProduced": "סה\"כ מיוצר",
+    "playTime": "זמן משחק",
+    "firstSession": "מפגש ראשון",
+    "manualPurchases": "גנרטורים שנקנו (ידני)",
+    "autoProduced": "גנרטורים שנוצרו (אוטו)",
+    "productionUpgrades": "שדרוגי ייצור",
+    "speedUpgrades": "שדרוגי מהירות",
+    "timesPerGenerator": "זמנים לכל גנרטור",
+    "timesPerGeneratorDesc": "זמן מההתחלה עד שכל גנרטור שוחרר והזמן בכל דרגה. שחרורים מעכשיו יירשמו.",
+    "timeToUnlock": "זמן לשחרור",
+    "timeInPreviousTier": "זמן רק בדרגה הקודמת (גנרטור {{n}})",
+    "bonusHits": "פגיעות משאב בונוס (מזל)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "החשבון שלך התחבר במכשיר אחר.",
+    "upgradePointsTitle": "נקודות שדרוג הושגו!",
+    "upgradePointsDesc": "הגעת לאבני דרך חדשות והשגת {{count}} נקודות שדרוג!"
+  }
+}

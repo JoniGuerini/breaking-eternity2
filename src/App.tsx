@@ -26,6 +26,7 @@ import { EstatisticasPage } from "@/pages/EstatisticasPage"
 import { LoginPage } from "@/pages/LoginPage"
 import { SettingsPage } from "@/pages/SettingsPage"
 import { Toaster } from "@/components/ui/sonner"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import { NotificationProvider, useNotification } from "@/context/NotificationContext"
 import { NotificationCenter } from "@/components/NotificationCenter"
@@ -209,7 +210,16 @@ function indexToLetters(localIndex: number, numLetters: number): string {
   return s
 }
 
-/** Formata número: 1.000, 1 M, 1 B, 1 T, 1 Q, depois 1 AAAAA ... 999 ZZZZZ, além disso notação científica */
+/**
+ * Formata valores Decimal (break_eternity.js) para exibição, em toda a faixa suportada:
+ * - 0 a 999: inteiro
+ * - 1.000 a 999.999: inteiro com separador de milhar (.)
+ * - 1 = M (milhões), 2 = B (bilhões), 3 = T (trilhões), 4 = Q (quatrilhões)
+ * - 5 = Qi (quintilhão), 6 = Sx (sextilhão), 7 = Sp (septilhão), 8 = Oc (octilhão), 9 = No (nonilhão), 10 = Dc (decilhão)
+ * - A partir de 1e36: sufixos de letras AA, AB … ZZ, depois AAA…ZZZ, AAAA…ZZZZ, AAAAA…ZZZZZ (até 999 ZZZZZ)
+ * - Acima de 999 ZZZZZ: notação científica via break_eternity (toStringWithDecimalPlaces).
+ * Todos os números exibidos no jogo passam por esta função (recurso, custos, multiplicadores, estatísticas).
+ */
 function formatDecimal(d: Decimal): string {
   if (d.lt(0)) return "-" + formatDecimal(d.neg())
   if (d.eq(0)) return "0"
@@ -224,21 +234,18 @@ function formatDecimal(d: Decimal): string {
     return d.floor().toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
   }
 
-  // Se o expoente for monstruoso (> 10^35 milhões), o cálculo de array de letras não faz mais sentido.
-  // Vamos delegar direto pra notação científica de break_eternity. 
-  const index = Math.floor((dExp - 18) / 3)
-  if (index >= LIMIT_5) {
+  // Índice para letras: só a partir de 1e36 (depois de Qi, Sx, Sp, Oc, No, Dc). Acima de 999 ZZZZZ → científica
+  const letterIndex = Math.floor((dExp - 36) / 3)
+  if (letterIndex >= LIMIT_5) {
     return d.toStringWithDecimalPlaces(2)
   }
 
-  // Extract mantissa and exp cleanly via break_eternity logic to avoid JS Math.pow(10, 308+) overflows
   const exp = dExp
   const remainder = exp % 3
 
-  // Extrai a mantissa diretamente da estrutura de dados do banco interno da instância do break_eternity
-  // Break_eternity mantém 'mantissa' (1-10) e 'e' (expoente inteiro) de forma segura em Numbers internos
-  // Isso impede que qualquer Math.pow intermediário toque no teto de 10^308
-  const baseMantissa = (d as any).mantissa !== undefined ? (d as any).mantissa : Math.pow(10, d.log10().toNumber() - exp)
+  // Mantissa e expoente vêm do break_eternity (layer 0: mantissa 1–10, exponent inteiro); evita Math.pow com expoentes gigantes
+  const baseMantissa =
+    d.layer === 0 ? Math.abs(d.mantissa) : Math.pow(10, d.log10().toNumber() - exp)
 
   const displayMantissa = baseMantissa * Math.pow(10, remainder)
 
@@ -248,24 +255,33 @@ function formatDecimal(d: Decimal): string {
       ? rounded.toString()
       : rounded.toFixed(2).replace(/\.?0+$/, "")
 
+  // 1 = M, 2 = B, 3 = T, 4 = Q (até 1e18)
   if (exp < 9) return mantissaStr + " M"
   if (exp < 12) return mantissaStr + " B"
   if (exp < 15) return mantissaStr + " T"
   if (exp < 18) return mantissaStr + " Q"
+  // 5 = Qi, 6 = Sx, 7 = Sp, 8 = Oc, 9 = No, 10 = Dc (1e18 até antes de 1e36)
+  if (exp < 21) return mantissaStr + " Qi"
+  if (exp < 24) return mantissaStr + " Sx"
+  if (exp < 27) return mantissaStr + " Sp"
+  if (exp < 30) return mantissaStr + " Oc"
+  if (exp < 33) return mantissaStr + " No"
+  if (exp < 36) return mantissaStr + " Dc"
+  // A partir de 1e36: AA, AB … 999 ZZZZZ
   let numLetters: number
   let localIndex: number
-  if (index < LIMIT_2) {
+  if (letterIndex < LIMIT_2) {
     numLetters = 2
-    localIndex = index
-  } else if (index < LIMIT_3) {
+    localIndex = letterIndex
+  } else if (letterIndex < LIMIT_3) {
     numLetters = 3
-    localIndex = index - LIMIT_2
-  } else if (index < LIMIT_4) {
+    localIndex = letterIndex - LIMIT_2
+  } else if (letterIndex < LIMIT_4) {
     numLetters = 4
-    localIndex = index - LIMIT_3
+    localIndex = letterIndex - LIMIT_3
   } else {
     numLetters = 5
-    localIndex = index - LIMIT_4
+    localIndex = letterIndex - LIMIT_4
   }
   const letters = indexToLetters(localIndex, numLetters)
   return mantissaStr + " " + letters
@@ -284,6 +300,7 @@ function loadSavedState(): SavedState | null {
 }
 
 const MemoizedHeader = React.memo(({ fps, showFpsCounter }: { fps: number, showFpsCounter: boolean }) => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const gameCtx = React.useContext(GameContext)
@@ -293,7 +310,7 @@ const MemoizedHeader = React.memo(({ fps, showFpsCounter }: { fps: number, showF
       {/* Esquerda: nome do jogo */}
       <div className="flex items-center gap-4 flex-1 min-w-0 justify-start">
         <h1 className="text-lg font-semibold tracking-tight truncate shrink-0">
-          Breaking Eternity
+          {t("app.title")}
         </h1>
       </div>
       {/* Centro: contador do recurso principal */}
@@ -327,11 +344,11 @@ const MemoizedHeader = React.memo(({ fps, showFpsCounter }: { fps: number, showF
                 className={cn("transition-colors", location.pathname === "/" ? "text-foreground bg-muted hover:text-foreground hover:bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}
               >
                 <Cpu className="h-5 w-5" />
-                <span className="sr-only">Geradores</span>
+                <span className="sr-only">{t("nav.geradores")}</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="flex items-center gap-2">
-              <span>Geradores</span>
+              <span>{t("nav.geradores")}</span>
               <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                 {getShortcutDisplayKey(getShortcut("menuGeradores"))}
               </kbd>
@@ -350,11 +367,11 @@ const MemoizedHeader = React.memo(({ fps, showFpsCounter }: { fps: number, showF
                 className={cn("transition-colors", location.pathname === "/melhorias" ? "text-foreground bg-muted hover:text-foreground hover:bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}
               >
                 <Zap className="h-5 w-5" />
-                <span className="sr-only">Melhorias</span>
+                <span className="sr-only">{t("nav.melhorias")}</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="flex items-center gap-2">
-              <span>Melhorias</span>
+              <span>{t("nav.melhorias")}</span>
               <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                 {getShortcutDisplayKey(getShortcut("menuMelhorias"))}
               </kbd>
@@ -375,11 +392,11 @@ const MemoizedHeader = React.memo(({ fps, showFpsCounter }: { fps: number, showF
                 className="relative"
               >
                 <Trophy className="h-5 w-5" />
-                <span className="sr-only">Conquistas</span>
+                <span className="sr-only">{t("nav.conquistas")}</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="flex items-center gap-2">
-              <span>Conquistas</span>
+              <span>{t("nav.conquistas")}</span>
               <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                 {getShortcutDisplayKey(getShortcut("menuConquistas"))}
               </kbd>
@@ -398,11 +415,11 @@ const MemoizedHeader = React.memo(({ fps, showFpsCounter }: { fps: number, showF
                 className="relative"
               >
                 <BarChart3 className="h-5 w-5" />
-                <span className="sr-only">Estatísticas</span>
+                <span className="sr-only">{t("nav.estatisticas")}</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="flex items-center gap-2">
-              <span>Estatísticas</span>
+              <span>{t("nav.estatisticas")}</span>
               <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                 {getShortcutDisplayKey(getShortcut("menuEstatisticas"))}
               </kbd>
@@ -424,11 +441,11 @@ const MemoizedHeader = React.memo(({ fps, showFpsCounter }: { fps: number, showF
                 className="relative"
               >
                 <Settings className="h-5 w-5" />
-                <span className="sr-only">Configurações</span>
+                <span className="sr-only">{t("nav.configuracoes")}</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="flex items-center gap-2">
-              <span>Configurações</span>
+              <span>{t("nav.configuracoes")}</span>
               <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                 {getShortcutDisplayKey(getShortcut("menuConfiguracoes"))}
               </kbd>
@@ -475,6 +492,7 @@ function MainWithScrollBehavior({ children }: { children: React.ReactNode }) {
 }
 
 function AppContent() {
+  const { t } = useTranslation()
   const auth = useAuth()
   const location = useLocation()
 
@@ -803,7 +821,7 @@ function AppContent() {
         // Se estamos na página de login, o modal "Forçar login" vai tratar; não deslogar aqui.
         if (location.pathname === "/entrar") return
         auth?.signOut()
-        toast.info("Sua conta foi logada em outro dispositivo.")
+        toast.info(t("toasts.sessionOtherDevice"))
         return
       }
       return claimSession(userId, deviceId)
@@ -811,7 +829,7 @@ function AppContent() {
       if (cancelled) return
       unsub = subscribeSessionDevice(userId, deviceId, () => {
         auth?.signOut()
-        toast.info("Sua conta foi logada em outro dispositivo.")
+        toast.info(t("toasts.sessionOtherDevice"))
       })
     })
     return () => {
@@ -917,8 +935,10 @@ function AppContent() {
       newly.forEach((id) => {
         const achievement = ACHIEVEMENTS.find((a) => a.id === id)
         if (achievement) {
-          toast.success(achievement.name, {
-            description: `${achievement.description}\n${achievement.points} pts`,
+          const name = t(`achievements.${achievement.id}.name`, { defaultValue: achievement.name })
+          const desc = t(`achievements.${achievement.id}.description`, { defaultValue: achievement.description })
+          toast.success(name, {
+            description: `${desc}\n${achievement.points} pts`,
             position: "bottom-right",
           })
         }
@@ -1219,8 +1239,8 @@ function AppContent() {
         milestonesReachedRef.current = nextMilestones
         setMilestonesReached(nextMilestones)
 
-        toast.success("Pontos de Melhoria Ganhos!", {
-          description: `Você atingiu novos marcos e ganhou ${gainedUpgradePoints} Pontos de Melhoria!`,
+        toast.success(t("toasts.upgradePointsTitle"), {
+          description: t("toasts.upgradePointsDesc", { count: gainedUpgradePoints }),
           position: "bottom-right",
         })
       }
@@ -1246,15 +1266,17 @@ function AppContent() {
         newly.forEach((id) => {
           const achievement = ACHIEVEMENTS.find((a) => a.id === id)
           if (achievement) {
-            toast.success(`Conquista: ${achievement.name}`, {
+            const name = t(`achievements.${achievement.id}.name`, { defaultValue: achievement.name })
+            const desc = t(`achievements.${achievement.id}.description`, { defaultValue: achievement.description })
+            toast.success(name, {
               id: achievement.id,
               className: `toast-${achievement.id}`,
-              description: `${achievement.description}\n${achievement.points} pts`,
+              description: `${desc}\n${achievement.points} pts`,
               position: "bottom-right",
             })
             addNotification(
-              `Conquista: ${achievement.name}`,
-              `${achievement.description} (+${achievement.points} pontos)`,
+              name,
+              `${desc} (+${achievement.points} pts)`,
               "achievement"
             )
           }
@@ -1585,29 +1607,23 @@ function AppContent() {
           {total.lt(1) && !jaColetouManual && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog" aria-labelledby="welcome-dialog-title">
               <Card className="max-w-md w-full p-6 space-y-5 shadow-lg">
-                <h2 id="welcome-dialog-title" className="font-semibold text-xl">Boas-vindas ao Breaking Eternity</h2>
+                <h2 id="welcome-dialog-title" className="font-semibold text-xl">{t("app.welcomeTitle")}</h2>
                 <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
-                  <p>
-                    Este é um jogo <strong className="text-foreground">incremental</strong> (idle): você coleta recurso, compra geradores que produzem mais recurso e desbloqueia melhorias. Os números podem ficar enormes — milhões, bilhões e além.
-                  </p>
-                  <p>
-                    Para lidar com números tão grandes, o jogo usa a biblioteca <strong className="text-foreground">break_eternity.js</strong>, que permite operar com valores muito além do que o JavaScript nativo suporta (notação científica, sufixos como M, B, T, Q e letras).
-                  </p>
-                  <p>
-                    O <strong className="text-foreground">objetivo</strong> é chegar ao limite dessa biblioteca — o maior número que ela consegue representar. Resgate seu primeiro recurso abaixo e comece a comprar geradores. Bom jogo!
-                  </p>
+                  <p dangerouslySetInnerHTML={{ __html: t("app.welcomeP1") }} />
+                  <p dangerouslySetInnerHTML={{ __html: t("app.welcomeP2") }} />
+                  <p dangerouslySetInnerHTML={{ __html: t("app.welcomeP3") }} />
                 </div>
                 <Button
                   className="w-full"
                   onClick={() => {
                     playClickSound()
-                    setTotal((t) => Decimal.add(t, 1))
+                    setTotal((prev) => Decimal.add(prev, 1))
                     setJaColetouManual(true)
                     setTotalProducedLifetime((prev) => prev.add(1))
                     totalProducedLifetimeRef.current = totalProducedLifetimeRef.current.add(1)
                   }}
                 >
-                  Resgatar primeiro recurso
+                  {t("app.firstResource")}
                 </Button>
               </Card>
             </div>
@@ -1615,12 +1631,12 @@ function AppContent() {
           {offlineCard && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog">
               <Card className="max-w-sm w-full p-6 space-y-4">
-                <h2 className="font-semibold text-lg">Ganho offline</h2>
+                <h2 className="font-semibold text-lg">{t("app.offlineTitle")}</h2>
                 <p className="text-muted-foreground text-sm">
-                  Você ganhou <span className="font-mono font-semibold text-foreground">{formatDecimal(offlineCard.totalGain)}</span> enquanto estava offline.
+                  {t("app.offlineGain", { amount: formatDecimal(offlineCard.totalGain) })}
                 </p>
                 <p className="text-muted-foreground text-xs">
-                  Tempo ausente: {formatOfflineTime(offlineCard.seconds)}
+                  {t("app.offlineTime")}: {formatOfflineTime(offlineCard.seconds)}
                 </p>
                 <Button
                   className="w-full"
@@ -1629,7 +1645,7 @@ function AppContent() {
                     setOfflineCard(null)
                   }}
                 >
-                  OK
+                  {t("common.ok")}
                 </Button>
               </Card>
             </div>

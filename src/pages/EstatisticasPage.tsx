@@ -1,9 +1,11 @@
 import { useContext } from "react"
+import { useTranslation } from "react-i18next"
 import Decimal from "break_eternity.js"
 import { Card } from "@/components/ui/card"
 import { GameContext } from "@/context/GameContext"
 
 export function EstatisticasPage() {
+  const { t, i18n } = useTranslation()
   const ctx = useContext(GameContext)
   if (!ctx) return null
   const {
@@ -31,7 +33,8 @@ export function EstatisticasPage() {
 
   function formatFirstPlayDate(ts: number | null): string {
     if (!ts) return "—"
-    return new Date(ts).toLocaleDateString("pt-BR", {
+    const locale = i18n.language === "en" ? "en-US" : "pt-BR"
+    return new Date(ts).toLocaleDateString(locale, {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
@@ -48,42 +51,42 @@ export function EstatisticasPage() {
         {/* ── Resumo ── */}
         <Card className="p-6 space-y-5 h-fit">
           <div>
-            <p className="font-medium">Resumo da sua partida</p>
+            <p className="font-medium">{t("stats.summary")}</p>
             <p className="text-muted-foreground text-sm mt-1">
-              Números gerais do progresso (zeram ao resetar).
+              {t("stats.summaryDesc")}
             </p>
           </div>
           <dl className="space-y-4">
             <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Recurso atual</dt>
+              <dt className="text-muted-foreground text-sm">{t("stats.currentResource")}</dt>
               <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(total)}</dd>
             </div>
             <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Total já produzido</dt>
+              <dt className="text-muted-foreground text-sm">{t("stats.totalProduced")}</dt>
               <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(totalProducedLifetime)}</dd>
             </div>
             <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Tempo de jogo</dt>
+              <dt className="text-muted-foreground text-sm">{t("stats.playTime")}</dt>
               <dd className="font-mono text-sm font-semibold tabular-nums">{formatPlayTime(totalPlayTimeSeconds)}</dd>
             </div>
             <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Primeira partida</dt>
+              <dt className="text-muted-foreground text-sm">{t("stats.firstSession")}</dt>
               <dd className="font-mono text-sm tabular-nums">{formatFirstPlayDate(firstPlayTime)}</dd>
             </div>
             <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Geradores comprados (manual)</dt>
+              <dt className="text-muted-foreground text-sm">{t("stats.manualPurchases")}</dt>
               <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(new Decimal(geradoresCompradosManual))}</dd>
             </div>
             <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Geradores produzidos (automático)</dt>
+              <dt className="text-muted-foreground text-sm">{t("stats.autoProduced")}</dt>
               <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(Decimal.max(new Decimal(0), geradores.reduce((acc, g) => acc.add(g), new Decimal(0)).sub(geradoresCompradosManual)))}</dd>
             </div>
             <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Melhorias de produção</dt>
+              <dt className="text-muted-foreground text-sm">{t("stats.productionUpgrades")}</dt>
               <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(new Decimal(upgrades.reduce((a, b) => a + b, 0)))}</dd>
             </div>
             <div className="flex justify-between items-baseline gap-2">
-              <dt className="text-muted-foreground text-sm">Melhorias de velocidade</dt>
+              <dt className="text-muted-foreground text-sm">{t("stats.speedUpgrades")}</dt>
               <dd className="font-mono text-sm font-semibold tabular-nums">{formatDecimal(new Decimal(speedUpgrades.reduce((a, b) => a + b, 0)))}</dd>
             </div>
           </dl>
@@ -93,9 +96,9 @@ export function EstatisticasPage() {
         {temGeradores && (
           <Card className="p-6 space-y-5 h-fit">
             <div>
-              <p className="font-medium">Tempos por gerador</p>
+              <p className="font-medium">{t("stats.timesPerGenerator")}</p>
               <p className="text-muted-foreground text-sm mt-1">
-                Quanto tempo desde o início até desbloquear cada gerador e quanto tempo você passou em cada tier. Desbloqueios a partir de agora passam a ser registrados.
+                {t("stats.timesPerGeneratorDesc")}
               </p>
             </div>
             <dl className="space-y-3">
@@ -113,23 +116,23 @@ export function EstatisticasPage() {
                 return (
                   <div key={i} className="flex flex-col gap-0.5 py-2 px-3 rounded-md bg-muted/50">
                     <div className="flex justify-between items-baseline gap-2">
-                      <dt className="text-muted-foreground text-sm">Gerador {i + 1} — tempo até desbloquear</dt>
+                      <dt className="text-muted-foreground text-sm">{t("generators.generatorN", { n: i + 1 })} — {t("stats.timeToUnlock")}</dt>
                       <dd className="font-mono text-sm font-semibold tabular-nums">
                         {temDado ? formatPlayTime(segundosDesdeInicio) : "—"}
                       </dd>
                     </div>
                     {i > 0 && (
                       <div className="flex justify-between items-baseline gap-2">
-                        <dt className="text-muted-foreground text-xs">Tempo só no tier anterior (Gerador {i})</dt>
+                        <dt className="text-muted-foreground text-xs">{t("stats.timeInPreviousTier", { n: i })}</dt>
                         <dd className="font-mono text-xs tabular-nums">
                           {temDadoTierAnterior ? formatPlayTime(segundosNoTierAnterior) : "—"}
                         </dd>
                       </div>
                     )}
                     <div className="flex justify-between items-baseline gap-2">
-                      <dt className="text-muted-foreground text-xs">Vezes que gerou recurso bônus (sorte)</dt>
+                      <dt className="text-muted-foreground text-xs">{t("stats.bonusHits")}</dt>
                       <dd className="font-mono text-xs tabular-nums">
-                        {(generatorBonusCount[i] ?? 0).toLocaleString("pt-BR")}
+                        {(generatorBonusCount[i] ?? 0).toLocaleString(i18n.language === "en" ? "en-US" : "pt-BR")}
                       </dd>
                     </div>
                   </div>

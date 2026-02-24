@@ -1,8 +1,9 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { applyTheme, getTheme } from '@/lib/theme'
-import './index.css'
-import App from './App.tsx'
+import "@/i18n"
+import { StrictMode } from "react"
+import { createRoot } from "react-dom/client"
+import { applyTheme, getTheme } from "@/lib/theme"
+import "./index.css"
+import App from "./App.tsx"
 
 applyTheme(getTheme())
 

@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "Vítejte v Breaking Eternity",
+    "welcomeP1": "Toto je <strong>inkrementální</strong> (idle) hra: sbíráte zdroj, kupujete generátory, které vyrábějí více zdrojů, a odemykáte vylepšení. Čísla mohou být obrovská — miliony, miliardy a dál.",
+    "welcomeP2": "Pro práci s tak velkými čísly hra používá knihovnu <strong>break_eternity.js</strong>, která umožňuje operace s hodnotami daleko za hranicemi nativního JavaScriptu (vědecká notace, přípony jako M, B, T, Q a písmena).",
+    "welcomeP3": "<strong>Cíl</strong> je dosáhnout limitu této knihovny — největšího čísla, které dokáže reprezentovat. Získejte první zdroj níže a začněte kupovat generátory. Hodně zábavy!",
+    "firstResource": "Získat první zdroj",
+    "offlineTitle": "Zisk offline",
+    "offlineGain": "Získal jste {{amount}}, když jste byl offline.",
+    "offlineTime": "Čas nepřítomnosti"
+  },
+  "nav": {
+    "geradores": "Generátory",
+    "melhorias": "Vylepšení",
+    "conquistas": "Úspěchy",
+    "estatisticas": "Statistiky",
+    "configuracoes": "Nastavení"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "Obecné",
+      "temas": "Motivy",
+      "atalhos": "Zkratky",
+      "conta": "Účet",
+      "avancado": "Pokročilé možnosti"
+    },
+    "language": "Jazyk",
+    "languageDesc": "Změní jazyk rozhraní hry.",
+    "clickSound": "Zvuk kliknutí",
+    "clickSoundDesc": "Přehrává kliknutí při nákupu generátorů/vylepšení a přepínání menu.",
+    "clickVolume": "Hlasitost kliknutí",
+    "clickVolumeLabel": "Hlasitost zvuku kliknutí",
+    "fpsCounter": "Zobrazit FPS",
+    "fpsCounterDesc": "Zobrazuje snímky za sekundu v pravém horním rohu hry.",
+    "fullscreen": "Celá obrazovka",
+    "fullscreenDesc": "Spustí hru na celou obrazovku v prohlížeči. Pro ukončení použijte Esc nebo tlačítko.",
+    "saveProgress": "Uložit postup",
+    "saveProgressDescBefore": "Hra ukládá automaticky každých",
+    "saveProgressDescAfter": "sekund. Zde můžete vynutit uložení.",
+    "cloudSaveInterval": "Interval cloudového ukládání",
+    "cloudSaveHint": "Nižší = častější ukládání. Vyšší = méně síťové zátěže.",
+    "lastSave": "Poslední uložení",
+    "saveNow": "Uložit nyní",
+    "never": "Nikdy",
+    "downloadDesktop": "Stáhnout pro počítač",
+    "downloadDesktopDesc": "Nainstalujte hru na PC nebo Mac a hrajte bez otevírání prohlížeče.",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "Obnovit výchozí nastavení",
+    "restoreDefaultsDesc": "Vrátí možnosti Obecné, Motivy a Zkratky na výchozí hodnoty hry.",
+    "exitGame": "Ukončit hru",
+    "exitGameDesc": "Uloží postup a zavře hru.",
+    "exit": "Ukončit",
+    "themeTitle": "Vizuální motiv",
+    "themeDesc": "Vyberte vzhled rozhraní. Všechny možnosti jsou k dispozici.",
+    "themes": {
+      "light": "Světlý",
+      "dark": "Tmavý",
+      "high-contrast": "Vysoký kontrast (tmavý)",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "Vintage",
+      "terminal": "Terminál",
+      "nord": "Nord",
+      "dracula": "Dracula",
+      "sepia": "Sépie",
+      "ocean": "Oceán",
+      "forest": "Les",
+      "sunset": "Západ slunce",
+      "rose": "Růžová",
+      "coffee": "Káva",
+      "midnight": "Půlnoc",
+      "synthwave": "Synthwave",
+      "lavender": "Levandule",
+      "mint": "Máta",
+      "candy": "Bonbón",
+      "crimson": "Karmínová",
+      "peacock": "Páv",
+      "desert": "Poušť",
+      "berry": "Bobule",
+      "sage": "Šalvěj",
+      "ink": "Inkoust",
+      "honey": "Med"
+    },
+    "shortcutsTitle": "Klávesové zkratky",
+    "shortcutsDesc": "Klikněte na tlačítko a stiskněte klávesu (nebo tlačítko myši), kterou chcete použít. Zkratky fungují na jakékoli obrazovce.",
+    "pressKey": "Stiskněte klávesu...",
+    "accountTitle": "Váš účet",
+    "accountDesc": "Přihlaste se nebo vytvořte účet pro přístup k uloženým hrám na jakémkoli zařízení a připojte se k žebříčku.",
+    "connectedAs": "Připojeno jako",
+    "goToLogin": "Přejít na přihlášení",
+    "useLoginPage": "Použijte stránku přihlášení pro přihlášení nebo vytvoření účtu.",
+    "advancedUnlock": "Automatické odemčení dalšího generátoru",
+    "advancedUnlockDesc": "Když je zapnuto, další generátor (stále s 0 jednotkami) se odemkne, jakmile máte dostatek zdrojů. Nekupuje další jednotky.",
+    "resetProgress": "Resetovat postup",
+    "resetProgressDesc": "Vrátí hru do počátečního stavu: počítadlo na 0, bez generátorů a vylepšení. Uložení bude smazáno.",
+    "resetDialogTitle": "Resetovat postup?",
+    "resetDialogDesc": "Opravdu chcete resetovat veškerý postup? Počítadlo, generátory a vylepšení se vrátí na nulu."
+  },
+  "auth": {
+    "loading": "Načítání…",
+    "connectedAs": "Připojeno jako",
+    "signOut": "Odhlásit se",
+    "goToGame": "Přejít do hry",
+    "forceLoginTitle": "Účet je již přihlášen na jiném zařízení",
+    "forceLoginDesc": "Tento účet je používán na jiném zařízení. Pokud se zde přihlásíte, druhé zařízení bude odhlášeno a zobrazí zprávu, že účet byl přihlášen jinde.",
+    "cancel": "Zrušit",
+    "forceLogin": "Vynutit přihlášení",
+    "email": "E-mail",
+    "emailPlaceholder": "name@example.com",
+    "password": "Heslo",
+    "login": "Přihlásit se",
+    "signUp": "Vytvořit účet",
+    "wait": "Prosím čekejte…",
+    "noAccount": "Nemáte účet? Vytvořit účet",
+    "hasAccount": "Už máte účet? Přihlásit se"
+  },
+  "common": {
+    "cancel": "Zrušit",
+    "confirm": "Potvrdit",
+    "ok": "OK"
+  },
+  "shortcuts": {
+    "nextMenu": "Další menu",
+    "prevMenu": "Předchozí menu",
+    "menuGeradores": "Přejít na Generátory",
+    "menuMelhorias": "Přejít na Vylepšení",
+    "menuConquistas": "Přejít na Úspěchy",
+    "menuEstatisticas": "Přejít na Statistiky",
+    "menuConfiguracoes": "Přejít na Nastavení",
+    "scrollTop": "Posunout nahoru",
+    "scrollBottom": "Posunout dolů"
+  },
+  "generators": {
+    "generatorN": "Generátor {{n}}",
+    "unlockToProduce": "Odemkněte pro zahájení výroby",
+    "costToUnlock": "Náklady na odemčení",
+    "fragments": "Fragmenty",
+    "quantity": "Množství",
+    "milestone": "Milník",
+    "milestoneProgress": "Postup milníku",
+    "totalGenerators": "Celkem generátorů",
+    "time": "Čas",
+    "cycle": "Cyklus",
+    "continuous": "Nepřetržitý",
+    "resource": "Zdroj",
+    "price": "Cena",
+    "generatedAutomatically": "Generováno automaticky",
+    "automatic": "Automatický",
+    "buy": "Koupit"
+  },
+  "improvements": {
+    "upgradePoints": "Body vylepšení",
+    "perGenerator": "Na generátor",
+    "global": "Globální",
+    "production": "Výroba",
+    "level": "Úroveň",
+    "multiplier": "Násobitel",
+    "next": "Další",
+    "buy": "Koupit",
+    "frag": "frag",
+    "speed": "Rychlost",
+    "currentCycle": "Aktuální cyklus",
+    "luck": "Štěstí",
+    "currentChance": "Aktuální šance",
+    "nextChance": "Další šance",
+    "luckEffect": "Efekt štěstí",
+    "multOnCrit": "Násobitel při kritu",
+    "globalProduction": "Globální výroba",
+    "globalProductionDesc": "x2 za úroveň",
+    "globalSpeed": "Globální rychlost",
+    "globalSpeedDesc": "−10% za úroveň",
+    "cycleFactor": "Aktuální faktor cyklu",
+    "generatorPrice": "Cena generátoru",
+    "generatorPriceDesc": "−5% za úroveň",
+    "currentReduction": "Aktuální snížení",
+    "nextReduction": "Další",
+    "unlockGeneratorsHint": "Odemkněte generátory na stránce Generátory, abyste zde viděli vylepšení."
+  },
+  "achievements": {
+    "totalPoints": "Celkem bodů",
+    "ofAchievements": "z {{total}} úspěchů",
+    "emptyCategory": "V této kategorii nejsou žádné úspěchy.",
+    "unlocked": "Odemčeno",
+    "locked": "Zamčeno",
+    "categories": {
+      "primeiros-passos": "První kroky",
+      "recurso": "Zdroj",
+      "unidades-geradores": "Jednotky generátorů",
+      "gerador-especifico": "Konkrétní generátory",
+      "producao-total": "Celková výroba",
+      "tempo-jogo": "Čas hry",
+      "compras-manuais": "Manuální nákupy",
+      "melhorias-producao": "Vylepšení výroby",
+      "melhorias-velocidade": "Vylepšení rychlosti"
+    },
+    "primeiro-gerador": {
+      "name": "První generátor",
+      "description": "Odemkněte generátor 1"
+    },
+    "primeira-melhoria": {
+      "name": "První vylepšení",
+      "description": "Kupte vylepšení výroby"
+    },
+    "primeira-velocidade": {
+      "name": "Rychlejší",
+      "description": "Kupte vylepšení rychlosti"
+    },
+    "rec-100": {
+      "name": "Sto zdrojů",
+      "description": "Nashromážděte 100 zdrojů"
+    },
+    "rec-1e3": {
+      "name": "Tisíc zdrojů",
+      "description": "Nashromážděte 1 000 zdrojů"
+    },
+    "rec-1e4": {
+      "name": "Deset tisíc",
+      "description": "Nashromážděte 10 000 zdrojů"
+    },
+    "rec-1e5": {
+      "name": "Sto tisíc",
+      "description": "Nashromážděte 100 000 zdrojů"
+    },
+    "rec-1e6": {
+      "name": "Milion",
+      "description": "Nashromážděte 1 milion zdrojů"
+    },
+    "rec-1e7": {
+      "name": "Deset milionů",
+      "description": "Nashromážděte 10 milionů zdrojů"
+    },
+    "rec-1e8": {
+      "name": "Sto milionů",
+      "description": "Nashromážděte 100 milionů zdrojů"
+    },
+    "rec-1e9": {
+      "name": "Miliarda",
+      "description": "Nashromážděte 1 miliardu zdrojů"
+    },
+    "rec-1e10": {
+      "name": "Deset miliard",
+      "description": "Nashromážděte 10 miliard zdrojů"
+    },
+    "rec-1e11": {
+      "name": "Sto miliard",
+      "description": "Nashromážděte 100 miliard zdrojů"
+    },
+    "rec-1e12": {
+      "name": "Bilion",
+      "description": "Nashromážděte 1 bilion zdrojů"
+    },
+    "unid-10": {
+      "name": "Deset jednotek",
+      "description": "Mějte celkem 10 jednotek generátorů"
+    },
+    "unid-50": {
+      "name": "Padesát jednotek",
+      "description": "Mějte celkem 50 jednotek generátorů"
+    },
+    "unid-100": {
+      "name": "Sto jednotek",
+      "description": "Mějte celkem 100 jednotek generátorů"
+    },
+    "g10": {
+      "name": "Generátor 10",
+      "description": "Odemkněte generátor 10"
+    },
+    "g20": {
+      "name": "Generátor 20",
+      "description": "Odemkněte generátor 20"
+    },
+    "g100": {
+      "name": "Poslední generátor",
+      "description": "Odemkněte generátor 100"
+    },
+    "prod-1e6": {
+      "name": "Výroba: 1M",
+      "description": "Vyrobte celkem 1 milion (za celou dobu)"
+    },
+    "prod-1e9": {
+      "name": "Výroba: 1B",
+      "description": "Vyrobte celkem 1 miliardu (za celou dobu)"
+    },
+    "tempo-1h": {
+      "name": "Jedna hodina",
+      "description": "Hrajte celkem 1 hodinu"
+    },
+    "tempo-24h": {
+      "name": "Jeden den",
+      "description": "Hrajte celkem 24 hodin"
+    },
+    "comp-10": {
+      "name": "Zasvěcený kupující",
+      "description": "Kupte 10 generátorů ručně (kliknutím)"
+    },
+    "comp-1k": {
+      "name": "Mistr klikání",
+      "description": "Kupte 1 000 generátorů ručně (kliknutím)"
+    },
+    "melh-10": {
+      "name": "Deset vylepšení",
+      "description": "Kupte celkem 10 vylepšení výroby"
+    },
+    "vel-10": {
+      "name": "Deset rychlostí",
+      "description": "Kupte celkem 10 vylepšení rychlosti"
+    }
+  },
+  "notifications": {
+    "title": "Oznámení",
+    "empty": "Žádná oznámení",
+    "markAllRead": "Označit vše jako přečtené",
+    "clearHistory": "Vymazat historii"
+  },
+  "stats": {
+    "summary": "Shrnutí vaší hry",
+    "summaryDesc": "Celková čísla postupu (resetují se při resetu).",
+    "currentResource": "Aktuální zdroj",
+    "totalProduced": "Celkem vyrobeno",
+    "playTime": "Čas hry",
+    "firstSession": "První relace",
+    "manualPurchases": "Generátory zakoupené (ručně)",
+    "autoProduced": "Generátory vyrobené (auto)",
+    "productionUpgrades": "Vylepšení výroby",
+    "speedUpgrades": "Vylepšení rychlosti",
+    "timesPerGenerator": "Časy na generátor",
+    "timesPerGeneratorDesc": "Čas od začátku do odemčení každého generátoru a čas strávený v každé úrovni. Odemčení od nynějška budou zaznamenána.",
+    "timeToUnlock": "čas do odemčení",
+    "timeInPreviousTier": "Čas pouze v předchozí úrovni (Generátor {{n}})",
+    "bonusHits": "Bonusové zásahy zdroje (štěstí)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "Váš účet byl přihlášen na jiném zařízení.",
+    "upgradePointsTitle": "Získány body vylepšení!",
+    "upgradePointsDesc": "Dosáhli jste nových milníků a získali {{count}} bodů vylepšení!"
+  }
+}

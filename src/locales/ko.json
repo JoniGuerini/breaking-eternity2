@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "Breaking Eternity에 오신 것을 환영합니다",
+    "welcomeP1": "이것은 <strong>증분</strong>(아이들) 게임입니다: 자원을 모으고, 더 많은 자원을 생산하는 생성기를 구매하며, 개선을 해제합니다. 숫자는 수백만, 수십억을 넘어 매우 커질 수 있습니다.",
+    "welcomeP2": "이렇게 큰 숫자를 다루기 위해 게임은 <strong>break_eternity.js</strong> 라이브러리를 사용하며, JavaScript 기본 지원을 훨씬 넘는 값(과학적 표기법, M, B, T, Q 및 문자 접미사)을 사용할 수 있습니다.",
+    "welcomeP3": "<strong>목표</strong>는 이 라이브러리의 한계—표현할 수 있는 가장 큰 숫자—에 도달하는 것입니다. 아래에서 첫 자원을 받고 생성기를 구매하세요. 즐기세요!",
+    "firstResource": "첫 자원 받기",
+    "offlineTitle": "오프라인 획득",
+    "offlineGain": "오프라인 동안 {{amount}}을(를) 획득했습니다.",
+    "offlineTime": "부재 시간"
+  },
+  "nav": {
+    "geradores": "생성기",
+    "melhorias": "개선",
+    "conquistas": "업적",
+    "estatisticas": "통계",
+    "configuracoes": "설정"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "일반",
+      "temas": "테마",
+      "atalhos": "단축키",
+      "conta": "계정",
+      "avancado": "고급 옵션"
+    },
+    "language": "언어",
+    "languageDesc": "게임 인터페이스 언어를 변경합니다.",
+    "clickSound": "클릭 소리",
+    "clickSoundDesc": "생성기/개선 구매 및 메뉴 전환 시 클릭 소리를 재생합니다.",
+    "clickVolume": "클릭 볼륨",
+    "clickVolumeLabel": "클릭 소리 볼륨",
+    "fpsCounter": "FPS 카운터 표시",
+    "fpsCounterDesc": "게임 화면 오른쪽 상단에 초당 프레임 수를 표시합니다.",
+    "fullscreen": "전체 화면",
+    "fullscreenDesc": "브라우저에서 게임을 전체 화면으로 표시합니다. Esc 또는 버튼으로 종료하세요.",
+    "saveProgress": "진행 저장",
+    "saveProgressDescBefore": "게임은 자동으로",
+    "saveProgressDescAfter": "초마다 저장됩니다. 여기서 강제 저장할 수 있습니다.",
+    "cloudSaveInterval": "클라우드 저장 간격",
+    "cloudSaveHint": "낮음 = 더 자주 저장. 높음 = 네트워크 사용 감소.",
+    "lastSave": "마지막 저장",
+    "saveNow": "지금 저장",
+    "never": "없음",
+    "downloadDesktop": "데스크톱용 다운로드",
+    "downloadDesktopDesc": "PC 또는 Mac에 게임을 설치하고 브라우저 없이 플레이하세요.",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "기본 설정 복원",
+    "restoreDefaultsDesc": "일반, 테마, 단축키 옵션을 게임 기본값으로 되돌립니다.",
+    "exitGame": "게임 종료",
+    "exitGameDesc": "진행을 저장하고 게임을 닫습니다.",
+    "exit": "종료",
+    "themeTitle": "시각 테마",
+    "themeDesc": "인터페이스 모양을 선택하세요. 모든 옵션을 사용할 수 있습니다.",
+    "themes": {
+      "light": "라이트",
+      "dark": "다크",
+      "high-contrast": "고대비 (다크)",
+      "wow": "월드 오브 워크래프트",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "빈티지",
+      "terminal": "터미널",
+      "nord": "노르드",
+      "dracula": "드라큘라",
+      "sepia": "세피아",
+      "ocean": "오션",
+      "forest": "포레스트",
+      "sunset": "선셋",
+      "rose": "로즈",
+      "coffee": "커피",
+      "midnight": "미드나잇",
+      "synthwave": "신스웨이브",
+      "lavender": "라벤더",
+      "mint": "민트",
+      "candy": "캔디",
+      "crimson": "크림슨",
+      "peacock": "피콕",
+      "desert": "데저트",
+      "berry": "베리",
+      "sage": "세이지",
+      "ink": "잉크",
+      "honey": "허니"
+    },
+    "shortcutsTitle": "단축키",
+    "shortcutsDesc": "버튼을 클릭한 후 사용할 키(또는 마우스 버튼)를 누르세요. 단축키는 모든 화면에서 작동합니다.",
+    "pressKey": "키를 누르세요...",
+    "accountTitle": "계정",
+    "accountDesc": "로그인하거나 계정을 만들어 어떤 기기에서나 저장에 접근하고 리더보드에 참여하세요.",
+    "connectedAs": "다음으로 연결됨",
+    "goToLogin": "로그인 페이지로 이동",
+    "useLoginPage": "로그인 페이지에서 로그인하거나 계정을 만드세요.",
+    "advancedUnlock": "다음 생성기 자동 해제",
+    "advancedUnlockDesc": "활성화하면 다음 생성기(아직 0단위)는 자원이 충분해지면 자동으로 해제됩니다. 추가 단위를 구매하지 않습니다.",
+    "resetProgress": "진행 초기화",
+    "resetProgressDesc": "게임을 초기 상태로 되돌립니다: 카운터 0, 생성기 및 개선 없음. 저장이 삭제됩니다.",
+    "resetDialogTitle": "진행을 초기화하시겠습니까?",
+    "resetDialogDesc": "모든 진행을 초기화하시겠습니까? 카운터, 생성기 및 개선이 0으로 돌아갑니다."
+  },
+  "auth": {
+    "loading": "로딩 중…",
+    "connectedAs": "다음으로 연결됨",
+    "signOut": "로그아웃",
+    "goToGame": "게임으로 이동",
+    "forceLoginTitle": "다른 기기에서 이미 로그인된 계정",
+    "forceLoginDesc": "이 계정은 다른 기기에서 사용 중입니다. 여기서 로그인하면 다른 기기에서 로그아웃되고 계정이 다른 곳에서 로그인되었다는 메시지가 표시됩니다.",
+    "cancel": "취소",
+    "forceLogin": "강제 로그인",
+    "email": "이메일",
+    "emailPlaceholder": "name@example.com",
+    "password": "비밀번호",
+    "login": "로그인",
+    "signUp": "계정 만들기",
+    "wait": "잠시 기다려 주세요…",
+    "noAccount": "계정이 없으신가요? 계정 만들기",
+    "hasAccount": "이미 계정이 있으신가요? 로그인"
+  },
+  "common": {
+    "cancel": "취소",
+    "confirm": "확인",
+    "ok": "확인"
+  },
+  "shortcuts": {
+    "nextMenu": "다음 메뉴",
+    "prevMenu": "이전 메뉴",
+    "menuGeradores": "생성기로 이동",
+    "menuMelhorias": "개선으로 이동",
+    "menuConquistas": "업적으로 이동",
+    "menuEstatisticas": "통계로 이동",
+    "menuConfiguracoes": "설정으로 이동",
+    "scrollTop": "맨 위로 스크롤",
+    "scrollBottom": "맨 아래로 스크롤"
+  },
+  "generators": {
+    "generatorN": "생성기 {{n}}",
+    "unlockToProduce": "생산을 시작하려면 해제하세요",
+    "costToUnlock": "해제 비용",
+    "fragments": "조각",
+    "quantity": "수량",
+    "milestone": "마일스톤",
+    "milestoneProgress": "마일스톤 진행",
+    "totalGenerators": "총 생성기",
+    "time": "시간",
+    "cycle": "사이클",
+    "continuous": "연속",
+    "resource": "자원",
+    "price": "가격",
+    "generatedAutomatically": "자동 생성됨",
+    "automatic": "자동",
+    "buy": "구매"
+  },
+  "improvements": {
+    "upgradePoints": "업그레이드 포인트",
+    "perGenerator": "생성기당",
+    "global": "전역",
+    "production": "생산",
+    "level": "레벨",
+    "multiplier": "배율",
+    "next": "다음",
+    "buy": "구매",
+    "frag": "조각",
+    "speed": "속도",
+    "currentCycle": "현재 사이클",
+    "luck": "행운",
+    "currentChance": "현재 확률",
+    "nextChance": "다음 확률",
+    "luckEffect": "행운 효과",
+    "multOnCrit": "치명타 시 배율",
+    "globalProduction": "전역 생산",
+    "globalProductionDesc": "레벨당 x2",
+    "globalSpeed": "전역 속도",
+    "globalSpeedDesc": "레벨당 −10%",
+    "cycleFactor": "현재 사이클 계수",
+    "generatorPrice": "생성기 가격",
+    "generatorPriceDesc": "레벨당 −5%",
+    "currentReduction": "현재 감소",
+    "nextReduction": "다음",
+    "unlockGeneratorsHint": "생성기 페이지에서 생성기를 해제하면 여기서 개선을 볼 수 있습니다."
+  },
+  "achievements": {
+    "totalPoints": "총 포인트",
+    "ofAchievements": "/ {{total}}개 업적",
+    "emptyCategory": "이 카테고리에 업적이 없습니다.",
+    "unlocked": "해제됨",
+    "locked": "잠김",
+    "categories": {
+      "primeiros-passos": "첫걸음",
+      "recurso": "자원",
+      "unidades-geradores": "생성기 단위",
+      "gerador-especifico": "특정 생성기",
+      "producao-total": "총 생산",
+      "tempo-jogo": "플레이 시간",
+      "compras-manuais": "수동 구매",
+      "melhorias-producao": "생산 개선",
+      "melhorias-velocidade": "속도 개선"
+    },
+    "primeiro-gerador": {
+      "name": "첫 번째 생성기",
+      "description": "생성기 1 해제"
+    },
+    "primeira-melhoria": {
+      "name": "첫 번째 개선",
+      "description": "생산 개선 구매"
+    },
+    "primeira-velocidade": {
+      "name": "더 빠르게",
+      "description": "속도 개선 구매"
+    },
+    "rec-100": {
+      "name": "백 자원",
+      "description": "자원 100 누적"
+    },
+    "rec-1e3": {
+      "name": "천 자원",
+      "description": "자원 1,000 누적"
+    },
+    "rec-1e4": {
+      "name": "만",
+      "description": "자원 10,000 누적"
+    },
+    "rec-1e5": {
+      "name": "십만",
+      "description": "자원 100,000 누적"
+    },
+    "rec-1e6": {
+      "name": "백만",
+      "description": "자원 100만 누적"
+    },
+    "rec-1e7": {
+      "name": "천만",
+      "description": "자원 1,000만 누적"
+    },
+    "rec-1e8": {
+      "name": "일억",
+      "description": "자원 1억 누적"
+    },
+    "rec-1e9": {
+      "name": "십억",
+      "description": "자원 10억 누적"
+    },
+    "rec-1e10": {
+      "name": "백억",
+      "description": "자원 100억 누적"
+    },
+    "rec-1e11": {
+      "name": "천억",
+      "description": "자원 1,000억 누적"
+    },
+    "rec-1e12": {
+      "name": "조",
+      "description": "자원 1조 누적"
+    },
+    "unid-10": {
+      "name": "열 단위",
+      "description": "총 생성기 단위 10개 보유"
+    },
+    "unid-50": {
+      "name": "오십 단위",
+      "description": "총 생성기 단위 50개 보유"
+    },
+    "unid-100": {
+      "name": "백 단위",
+      "description": "총 생성기 단위 100개 보유"
+    },
+    "g10": {
+      "name": "생성기 10",
+      "description": "생성기 10 해제"
+    },
+    "g20": {
+      "name": "생성기 20",
+      "description": "생성기 20 해제"
+    },
+    "g100": {
+      "name": "마지막 생성기",
+      "description": "생성기 100 해제"
+    },
+    "prod-1e6": {
+      "name": "생산: 100만",
+      "description": "총 100만 생산 (누적)"
+    },
+    "prod-1e9": {
+      "name": "생산: 10억",
+      "description": "총 10억 생산 (누적)"
+    },
+    "tempo-1h": {
+      "name": "한 시간",
+      "description": "총 1시간 플레이"
+    },
+    "tempo-24h": {
+      "name": "하루",
+      "description": "총 24시간 플레이"
+    },
+    "comp-10": {
+      "name": "열성 구매자",
+      "description": "수동으로 생성기 10개 구매 (클릭)"
+    },
+    "comp-1k": {
+      "name": "클릭 마스터",
+      "description": "수동으로 생성기 1,000개 구매 (클릭)"
+    },
+    "melh-10": {
+      "name": "열 개선",
+      "description": "총 생산 개선 10개 구매"
+    },
+    "vel-10": {
+      "name": "열 속도",
+      "description": "총 속도 개선 10개 구매"
+    }
+  },
+  "notifications": {
+    "title": "알림",
+    "empty": "알림 없음",
+    "markAllRead": "모두 읽음으로 표시",
+    "clearHistory": "기록 지우기"
+  },
+  "stats": {
+    "summary": "게임 요약",
+    "summaryDesc": "전체 진행 수치 (초기화 시 리셋됨).",
+    "currentResource": "현재 자원",
+    "totalProduced": "총 생산량",
+    "playTime": "플레이 시간",
+    "firstSession": "첫 세션",
+    "manualPurchases": "수동 구매한 생성기",
+    "autoProduced": "자동 생산된 생성기",
+    "productionUpgrades": "생산 개선",
+    "speedUpgrades": "속도 개선",
+    "timesPerGenerator": "생성기별 시간",
+    "timesPerGeneratorDesc": "각 생성기가 해제될 때까지의 시간과 각 단계에서 보낸 시간. 이후 해제가 기록됩니다.",
+    "timeToUnlock": "해제까지 시간",
+    "timeInPreviousTier": "이전 단계만 (생성기 {{n}})",
+    "bonusHits": "보너스 자원 적중 (행운)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "다른 기기에서 계정이 로그인되었습니다.",
+    "upgradePointsTitle": "업그레이드 포인트 획득!",
+    "upgradePointsDesc": "새 마일스톤에 도달하여 {{count}}개의 업그레이드 포인트를 획득했습니다!"
+  }
+}

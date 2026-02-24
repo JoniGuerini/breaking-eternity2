@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "Chào mừng đến Breaking Eternity",
+    "welcomeP1": "Đây là game <strong>tăng dần</strong> (nhàn rỗi): bạn thu thập tài nguyên, mua máy phát tạo thêm tài nguyên và mở khóa cải tiến. Số có thể rất lớn — triệu, tỷ và hơn nữa.",
+    "welcomeP2": "Để xử lý số lớn như vậy, game dùng thư viện <strong>break_eternity.js</strong>, cho phép tính với giá trị vượt xa JavaScript gốc (ký hiệu khoa học, hậu tố như M, B, T, Q và chữ cái).",
+    "welcomeP3": "<strong>Mục tiêu</strong> là đạt giới hạn của thư viện này — số lớn nhất nó có thể biểu diễn. Nhận tài nguyên đầu tiên bên dưới và bắt đầu mua máy phát. Chúc chơi vui!",
+    "firstResource": "Nhận tài nguyên đầu tiên",
+    "offlineTitle": "Thu nhập ngoại tuyến",
+    "offlineGain": "Bạn kiếm được {{amount}} khi ngoại tuyến.",
+    "offlineTime": "Thời gian vắng mặt"
+  },
+  "nav": {
+    "geradores": "Máy phát",
+    "melhorias": "Cải tiến",
+    "conquistas": "Thành tựu",
+    "estatisticas": "Thống kê",
+    "configuracoes": "Cài đặt"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "Chung",
+      "temas": "Giao diện",
+      "atalhos": "Phím tắt",
+      "conta": "Tài khoản",
+      "avancado": "Tùy chọn nâng cao"
+    },
+    "language": "Ngôn ngữ",
+    "languageDesc": "Thay đổi ngôn ngữ giao diện game.",
+    "clickSound": "Âm thanh nhấp",
+    "clickSoundDesc": "Phát tiếng nhấp khi mua máy phát/cải tiến và chuyển menu.",
+    "clickVolume": "Âm lượng nhấp",
+    "clickVolumeLabel": "Âm lượng âm thanh nhấp",
+    "fpsCounter": "Hiện bộ đếm FPS",
+    "fpsCounterDesc": "Hiển thị khung hình mỗi giây ở góc trên bên phải game.",
+    "fullscreen": "Toàn màn hình",
+    "fullscreenDesc": "Mở game toàn màn hình trong trình duyệt. Dùng Esc hoặc nút để thoát.",
+    "saveProgress": "Lưu tiến trình",
+    "saveProgressDescBefore": "Game tự lưu mỗi",
+    "saveProgressDescAfter": "giây. Bạn có thể buộc lưu tại đây.",
+    "cloudSaveInterval": "Khoảng lưu đám mây",
+    "cloudSaveHint": "Thấp = Lưu thường xuyên hơn. Cao = Ít dùng mạng hơn.",
+    "lastSave": "Lần lưu cuối",
+    "saveNow": "Lưu ngay",
+    "never": "Chưa bao giờ",
+    "downloadDesktop": "Tải cho máy tính",
+    "downloadDesktopDesc": "Cài game trên PC hoặc Mac và chơi không cần mở trình duyệt.",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "Khôi phục cài đặt mặc định",
+    "restoreDefaultsDesc": "Đưa tùy chọn Chung, Giao diện và Phím tắt về mặc định game.",
+    "exitGame": "Thoát game",
+    "exitGameDesc": "Lưu tiến trình và đóng game.",
+    "exit": "Thoát",
+    "themeTitle": "Giao diện hình ảnh",
+    "themeDesc": "Chọn giao diện. Tất cả tùy chọn đều có.",
+    "themes": {
+      "light": "Sáng",
+      "dark": "Tối",
+      "high-contrast": "Tương phản cao (Tối)",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "Cổ điển",
+      "terminal": "Terminal",
+      "nord": "Nord",
+      "dracula": "Dracula",
+      "sepia": "Sepia",
+      "ocean": "Đại dương",
+      "forest": "Rừng",
+      "sunset": "Hoàng hôn",
+      "rose": "Hồng",
+      "coffee": "Cà phê",
+      "midnight": "Nửa đêm",
+      "synthwave": "Synthwave",
+      "lavender": "Oải hương",
+      "mint": "Bạc hà",
+      "candy": "Kẹo",
+      "crimson": "Đỏ thẫm",
+      "peacock": "Công",
+      "desert": "Sa mạc",
+      "berry": "Quả mọng",
+      "sage": "Xô thơm",
+      "ink": "Mực",
+      "honey": "Mật ong"
+    },
+    "shortcutsTitle": "Phím tắt",
+    "shortcutsDesc": "Nhấn nút rồi nhấn phím (hoặc nút chuột) bạn muốn dùng. Phím tắt hoạt động trên mọi màn hình.",
+    "pressKey": "Nhấn phím…",
+    "accountTitle": "Tài khoản của bạn",
+    "accountDesc": "Đăng nhập hoặc tạo tài khoản để truy cập lưu trên mọi thiết bị và tham gia bảng xếp hạng.",
+    "connectedAs": "Đã kết nối với",
+    "goToLogin": "Đến trang đăng nhập",
+    "useLoginPage": "Dùng trang đăng nhập để đăng nhập hoặc tạo tài khoản.",
+    "advancedUnlock": "Tự mở khóa máy phát tiếp theo",
+    "advancedUnlockDesc": "Khi bật, máy phát tiếp theo (vẫn 0 đơn vị) sẽ mở khóa ngay khi bạn đủ tài nguyên. Không mua thêm đơn vị.",
+    "resetProgress": "Đặt lại tiến trình",
+    "resetProgressDesc": "Đưa game về trạng thái ban đầu: bộ đếm 0, không máy phát và cải tiến. Lưu sẽ bị xóa.",
+    "resetDialogTitle": "Đặt lại tiến trình?",
+    "resetDialogDesc": "Bạn có chắc muốn đặt lại toàn bộ tiến trình? Bộ đếm, máy phát và cải tiến sẽ về không."
+  },
+  "auth": {
+    "loading": "Đang tải…",
+    "connectedAs": "Đã kết nối với",
+    "signOut": "Đăng xuất",
+    "goToGame": "Vào game",
+    "forceLoginTitle": "Tài khoản đã đăng nhập trên thiết bị khác",
+    "forceLoginDesc": "Tài khoản này đang dùng trên thiết bị khác. Nếu đăng nhập tại đây, thiết bị kia sẽ bị đăng xuất và thấy thông báo tài khoản đã đăng nhập ở nơi khác.",
+    "cancel": "Hủy",
+    "forceLogin": "Buộc đăng nhập",
+    "email": "Email",
+    "emailPlaceholder": "name@example.com",
+    "password": "Mật khẩu",
+    "login": "Đăng nhập",
+    "signUp": "Tạo tài khoản",
+    "wait": "Vui lòng đợi…",
+    "noAccount": "Chưa có tài khoản? Tạo tài khoản",
+    "hasAccount": "Đã có tài khoản? Đăng nhập"
+  },
+  "common": {
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "ok": "OK"
+  },
+  "shortcuts": {
+    "nextMenu": "Menu tiếp theo",
+    "prevMenu": "Menu trước",
+    "menuGeradores": "Đến Máy phát",
+    "menuMelhorias": "Đến Cải tiến",
+    "menuConquistas": "Đến Thành tựu",
+    "menuEstatisticas": "Đến Thống kê",
+    "menuConfiguracoes": "Đến Cài đặt",
+    "scrollTop": "Cuộn lên đầu",
+    "scrollBottom": "Cuộn xuống cuối"
+  },
+  "generators": {
+    "generatorN": "Máy phát {{n}}",
+    "unlockToProduce": "Mở khóa để bắt đầu sản xuất",
+    "costToUnlock": "Chi phí mở khóa",
+    "fragments": "Mảnh",
+    "quantity": "Số lượng",
+    "milestone": "Cột mốc",
+    "milestoneProgress": "Tiến độ cột mốc",
+    "totalGenerators": "Tổng máy phát",
+    "time": "Thời gian",
+    "cycle": "Chu kỳ",
+    "continuous": "Liên tục",
+    "resource": "Tài nguyên",
+    "price": "Giá",
+    "generatedAutomatically": "Tự động tạo",
+    "automatic": "Tự động",
+    "buy": "Mua"
+  },
+  "improvements": {
+    "upgradePoints": "Điểm nâng cấp",
+    "perGenerator": "Mỗi máy phát",
+    "global": "Toàn cục",
+    "production": "Sản xuất",
+    "level": "Cấp",
+    "multiplier": "Hệ số",
+    "next": "Tiếp theo",
+    "buy": "Mua",
+    "frag": "mảnh",
+    "speed": "Tốc độ",
+    "currentCycle": "Chu kỳ hiện tại",
+    "luck": "May mắn",
+    "currentChance": "Tỷ lệ hiện tại",
+    "nextChance": "Tỷ lệ lần sau",
+    "luckEffect": "Hiệu ứng may mắn",
+    "multOnCrit": "Hệ số khi chí mạng",
+    "globalProduction": "Sản xuất toàn cục",
+    "globalProductionDesc": "x2 mỗi cấp",
+    "globalSpeed": "Tốc độ toàn cục",
+    "globalSpeedDesc": "−10% mỗi cấp",
+    "cycleFactor": "Hệ số chu kỳ hiện tại",
+    "generatorPrice": "Giá máy phát",
+    "generatorPriceDesc": "−5% mỗi cấp",
+    "currentReduction": "Giảm hiện tại",
+    "nextReduction": "Tiếp theo",
+    "unlockGeneratorsHint": "Mở khóa máy phát ở trang Máy phát để thấy cải tiến tại đây."
+  },
+  "achievements": {
+    "totalPoints": "Tổng điểm",
+    "ofAchievements": "trên {{total}} thành tựu",
+    "emptyCategory": "Chưa có thành tựu trong danh mục này.",
+    "unlocked": "Đã mở",
+    "locked": "Chưa mở",
+    "categories": {
+      "primeiros-passos": "Bước đầu",
+      "recurso": "Tài nguyên",
+      "unidades-geradores": "Đơn vị máy phát",
+      "gerador-especifico": "Máy phát cụ thể",
+      "producao-total": "Tổng sản xuất",
+      "tempo-jogo": "Thời gian chơi",
+      "compras-manuais": "Mua thủ công",
+      "melhorias-producao": "Cải tiến sản xuất",
+      "melhorias-velocidade": "Cải tiến tốc độ"
+    },
+    "primeiro-gerador": {
+      "name": "Máy phát đầu tiên",
+      "description": "Mở khóa Máy phát 1"
+    },
+    "primeira-melhoria": {
+      "name": "Cải tiến đầu tiên",
+      "description": "Mua một cải tiến sản xuất"
+    },
+    "primeira-velocidade": {
+      "name": "Nhanh hơn",
+      "description": "Mua một cải tiến tốc độ"
+    },
+    "rec-100": {
+      "name": "Một trăm tài nguyên",
+      "description": "Tích lũy 100 tài nguyên"
+    },
+    "rec-1e3": {
+      "name": "Một nghìn tài nguyên",
+      "description": "Tích lũy 1.000 tài nguyên"
+    },
+    "rec-1e4": {
+      "name": "Mười nghìn",
+      "description": "Tích lũy 10.000 tài nguyên"
+    },
+    "rec-1e5": {
+      "name": "Một trăm nghìn",
+      "description": "Tích lũy 100.000 tài nguyên"
+    },
+    "rec-1e6": {
+      "name": "Triệu",
+      "description": "Tích lũy 1 triệu tài nguyên"
+    },
+    "rec-1e7": {
+      "name": "Mười triệu",
+      "description": "Tích lũy 10 triệu tài nguyên"
+    },
+    "rec-1e8": {
+      "name": "Một trăm triệu",
+      "description": "Tích lũy 100 triệu tài nguyên"
+    },
+    "rec-1e9": {
+      "name": "Tỷ",
+      "description": "Tích lũy 1 tỷ tài nguyên"
+    },
+    "rec-1e10": {
+      "name": "Mười tỷ",
+      "description": "Tích lũy 10 tỷ tài nguyên"
+    },
+    "rec-1e11": {
+      "name": "Một trăm tỷ",
+      "description": "Tích lũy 100 tỷ tài nguyên"
+    },
+    "rec-1e12": {
+      "name": "Nghìn tỷ",
+      "description": "Tích lũy 1 nghìn tỷ tài nguyên"
+    },
+    "unid-10": {
+      "name": "Mười đơn vị",
+      "description": "Có 10 đơn vị máy phát tổng cộng"
+    },
+    "unid-50": {
+      "name": "Năm mươi đơn vị",
+      "description": "Có 50 đơn vị máy phát tổng cộng"
+    },
+    "unid-100": {
+      "name": "Một trăm đơn vị",
+      "description": "Có 100 đơn vị máy phát tổng cộng"
+    },
+    "g10": {
+      "name": "Máy phát 10",
+      "description": "Mở khóa Máy phát 10"
+    },
+    "g20": {
+      "name": "Máy phát 20",
+      "description": "Mở khóa Máy phát 20"
+    },
+    "g100": {
+      "name": "Máy phát cuối",
+      "description": "Mở khóa Máy phát 100"
+    },
+    "prod-1e6": {
+      "name": "Sản xuất: 1M",
+      "description": "Sản xuất 1 triệu tổng (trọn đời)"
+    },
+    "prod-1e9": {
+      "name": "Sản xuất: 1B",
+      "description": "Sản xuất 1 tỷ tổng (trọn đời)"
+    },
+    "tempo-1h": {
+      "name": "Một giờ",
+      "description": "Chơi tổng 1 giờ"
+    },
+    "tempo-24h": {
+      "name": "Một ngày",
+      "description": "Chơi tổng 24 giờ"
+    },
+    "comp-10": {
+      "name": "Người mua chuyên cần",
+      "description": "Mua 10 máy phát thủ công (nhấp)"
+    },
+    "comp-1k": {
+      "name": "Bậc thầy nhấp",
+      "description": "Mua 1.000 máy phát thủ công (nhấp)"
+    },
+    "melh-10": {
+      "name": "Mười cải tiến",
+      "description": "Mua tổng 10 cải tiến sản xuất"
+    },
+    "vel-10": {
+      "name": "Mười tốc độ",
+      "description": "Mua tổng 10 cải tiến tốc độ"
+    }
+  },
+  "notifications": {
+    "title": "Thông báo",
+    "empty": "Không có thông báo",
+    "markAllRead": "Đánh dấu tất cả đã đọc",
+    "clearHistory": "Xóa lịch sử"
+  },
+  "stats": {
+    "summary": "Tóm tắt game của bạn",
+    "summaryDesc": "Số liệu tiến độ tổng thể (đặt lại khi bạn đặt lại).",
+    "currentResource": "Tài nguyên hiện tại",
+    "totalProduced": "Tổng đã sản xuất",
+    "playTime": "Thời gian chơi",
+    "firstSession": "Phiên đầu tiên",
+    "manualPurchases": "Máy phát mua (thủ công)",
+    "autoProduced": "Máy phát sản xuất (tự động)",
+    "productionUpgrades": "Cải tiến sản xuất",
+    "speedUpgrades": "Cải tiến tốc độ",
+    "timesPerGenerator": "Thời gian mỗi máy phát",
+    "timesPerGeneratorDesc": "Thời gian từ đầu đến khi mỗi máy phát được mở khóa và thời gian ở mỗi tầng. Các lần mở khóa từ giờ sẽ được ghi.",
+    "timeToUnlock": "thời gian mở khóa",
+    "timeInPreviousTier": "Chỉ thời gian tầng trước (Máy phát {{n}})",
+    "bonusHits": "Lượt tài nguyên thưởng (may mắn)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "Tài khoản của bạn đã đăng nhập trên thiết bị khác.",
+    "upgradePointsTitle": "Nhận Điểm nâng cấp!",
+    "upgradePointsDesc": "Bạn đạt cột mốc mới và nhận {{count}} Điểm nâng cấp!"
+  }
+}

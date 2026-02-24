@@ -1,4 +1,5 @@
 import { useContext, useMemo } from "react"
+import { useTranslation } from "react-i18next"
 import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { GameContext } from "@/context/GameContext"
@@ -10,6 +11,7 @@ import {
 } from "@/lib/achievements"
 
 export function AchievementsPage() {
+  const { t } = useTranslation()
   const ctx = useContext(GameContext)
   if (!ctx) return null
   const { achievementsUnlocked } = ctx
@@ -30,10 +32,10 @@ export function AchievementsPage() {
       {/* Cabeçalho fixo: totais e abas — não rola */}
       <Card className="shrink-0 flex flex-wrap items-baseline gap-4 p-4 flex-none border-0 shadow-none bg-transparent sm:bg-card sm:border-2 sm:shadow-sm sm:rounded-lg">
         <span className="text-muted-foreground text-sm">
-          Total de pontos: <span className="font-mono font-semibold tabular-nums text-foreground">{totalAchievementPoints(achievementsUnlocked)}</span>
+          {t("achievements.totalPoints")}: <span className="font-mono font-semibold tabular-nums text-foreground">{totalAchievementPoints(achievementsUnlocked)}</span>
         </span>
         <span className="text-muted-foreground text-sm">
-          <span className="font-medium text-foreground">{achievementsUnlocked.length}</span> de {ACHIEVEMENTS.length} conquistas
+          <span className="font-medium text-foreground">{achievementsUnlocked.length}</span> {t("achievements.ofAchievements", { total: ACHIEVEMENTS.length })}
         </span>
       </Card>
 
@@ -53,7 +55,7 @@ export function AchievementsPage() {
                 value={cat.id}
                 className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
               >
-                {cat.label}
+                {t(`achievements.categories.${cat.id}`)}
                 <span className="ml-1.5 text-xs opacity-70 tabular-nums">
                   {unlockedInCat}/{count}
                 </span>
@@ -79,10 +81,12 @@ export function AchievementsPage() {
             >
               <div className="space-y-3 pb-4">
                 {sorted.length === 0 ? (
-                  <p className="text-muted-foreground text-sm py-4">Nenhuma conquista nesta categoria.</p>
+                  <p className="text-muted-foreground text-sm py-4">{t("achievements.emptyCategory")}</p>
                 ) : (
                   sorted.map((a) => {
                     const unlocked = achievementsUnlocked.includes(a.id)
+                    const name = t(`achievements.${a.id}.name`, { defaultValue: a.name })
+                    const description = t(`achievements.${a.id}.description`, { defaultValue: a.description })
                     return (
                       <Card
                         key={a.id}
@@ -94,15 +98,15 @@ export function AchievementsPage() {
                         <span
                           className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold"
                           aria-hidden
-                          title={unlocked ? "Desbloqueada" : "Bloqueada"}
+                          title={unlocked ? t("achievements.unlocked") : t("achievements.locked")}
                         >
                           {unlocked ? "✓" : "?"}
                         </span>
                         <div className="min-w-0 flex-1">
                           <p className={`font-medium ${unlocked ? "text-foreground" : "text-muted-foreground"}`}>
-                            {a.name}
+                            {name}
                           </p>
-                          <p className="text-muted-foreground text-sm mt-0.5">{a.description}</p>
+                          <p className="text-muted-foreground text-sm mt-0.5">{description}</p>
                         </div>
                         <span className="shrink-0 font-mono text-sm tabular-nums text-muted-foreground">
                           {a.points} pts

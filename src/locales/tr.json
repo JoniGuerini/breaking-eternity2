@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "Breaking Eternity'ye Hoş Geldiniz",
+    "welcomeP1": "Bu bir <strong>artımlı</strong> (idle) oyundur: kaynak toplarsınız, daha fazla kaynak üreten jeneratörler satın alırsınız ve iyileştirmelerin kilidini açarsınız. Sayılar çok büyüyebilir — milyonlar, milyarlar ve ötesi.",
+    "welcomeP2": "Bu kadar büyük sayılarla başa çıkmak için oyun <strong>break_eternity.js</strong> kütüphanesini kullanır; bu kütüphane JavaScript'in desteklediğinin çok ötesinde değerlerle (bilimsel gösterim, M, B, T, Q gibi sonekler ve harfler) işlem yapmanıza olanak tanır.",
+    "welcomeP3": "<strong>Hedef</strong>, bu kütüphanenin sınırına — temsil edebildiği en büyük sayıya — ulaşmaktır. Aşağıdan ilk kaynağınızı alın ve jeneratör satın almaya başlayın. İyi eğlenceler!",
+    "firstResource": "İlk kaynağı al",
+    "offlineTitle": "Çevrimdışı kazanç",
+    "offlineGain": "Çevrimdışıyken {{amount}} kazandınız.",
+    "offlineTime": "Uzak kalma süresi"
+  },
+  "nav": {
+    "geradores": "Jeneratörler",
+    "melhorias": "İyileştirmeler",
+    "conquistas": "Başarılar",
+    "estatisticas": "İstatistikler",
+    "configuracoes": "Ayarlar"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "Genel",
+      "temas": "Temalar",
+      "atalhos": "Kısayollar",
+      "conta": "Hesap",
+      "avancado": "Gelişmiş seçenekler"
+    },
+    "language": "Dil",
+    "languageDesc": "Oyun arayüz dilini değiştirir.",
+    "clickSound": "Tıklama sesi",
+    "clickSoundDesc": "Jeneratör/iyileştirme satın alırken ve menüleri değiştirirken tıklama sesi çalar.",
+    "clickVolume": "Tıklama sesi düzeyi",
+    "clickVolumeLabel": "Tıklama sesi hacmi",
+    "fpsCounter": "FPS sayacını göster",
+    "fpsCounterDesc": "Oyunun sağ üst köşesinde saniyedeki kare sayısını gösterir.",
+    "fullscreen": "Tam ekran",
+    "fullscreenDesc": "Oyunu tarayıcıda tam ekran yapar. Çıkmak için Esc veya düğmeyi kullanın.",
+    "saveProgress": "İlerlemeyi kaydet",
+    "saveProgressDescBefore": "Oyun her",
+    "saveProgressDescAfter": "saniyede otomatik kaydeder. Buradan zorunlu kayıt yapabilirsiniz.",
+    "cloudSaveInterval": "Bulut kayıt aralığı",
+    "cloudSaveHint": "Düşük = Daha sık kayıt. Yüksek = Daha az ağ kullanımı.",
+    "lastSave": "Son kayıt",
+    "saveNow": "Şimdi kaydet",
+    "never": "Hiç",
+    "downloadDesktop": "Masaüstü için indir",
+    "downloadDesktopDesc": "Oyunu PC veya Mac'e kurun ve tarayıcı açmadan oynayın.",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "Varsayılan ayarları geri yükle",
+    "restoreDefaultsDesc": "Genel, Temalar ve Kısayollar seçeneklerini oyun varsayılanlarına döndürür.",
+    "exitGame": "Oyundan çık",
+    "exitGameDesc": "İlerlemeyi kaydeder ve oyunu kapatır.",
+    "exit": "Çıkış",
+    "themeTitle": "Görsel tema",
+    "themeDesc": "Arayüz görünümünü seçin. Tüm seçenekler mevcuttur.",
+    "themes": {
+      "light": "Açık",
+      "dark": "Koyu",
+      "high-contrast": "Yüksek kontrast (koyu)",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "Vintage",
+      "terminal": "Terminal",
+      "nord": "Nord",
+      "dracula": "Dracula",
+      "sepia": "Sepya",
+      "ocean": "Okyanus",
+      "forest": "Orman",
+      "sunset": "Gün batımı",
+      "rose": "Gül",
+      "coffee": "Kahve",
+      "midnight": "Gece yarısı",
+      "synthwave": "Synthwave",
+      "lavender": "Lavanta",
+      "mint": "Nane",
+      "candy": "Şeker",
+      "crimson": "Al",
+      "peacock": "Tavus kuşu",
+      "desert": "Çöl",
+      "berry": "Böğürtlen",
+      "sage": "Adaçayı",
+      "ink": "Mürekkep",
+      "honey": "Bal"
+    },
+    "shortcutsTitle": "Kısayol tuşları",
+    "shortcutsDesc": "Düğmeye tıklayın ve kullanmak istediğiniz tuşu (veya fare düğmesini) basın. Kısayollar her ekranda çalışır.",
+    "pressKey": "Bir tuşa basın...",
+    "accountTitle": "Hesabınız",
+    "accountDesc": "Giriş yapın veya hesap oluşturun; kayıtlarınıza her cihazdan erişin ve lider tablosuna katılın.",
+    "connectedAs": "Şu olarak bağlı",
+    "goToLogin": "Giriş sayfasına git",
+    "useLoginPage": "Giriş yapmak veya hesap oluşturmak için giriş sayfasını kullanın.",
+    "advancedUnlock": "Sonraki jeneratörü otomatik aç",
+    "advancedUnlockDesc": "Açıkken, sonraki jeneratör (hâlâ 0 birim) yeterli kaynağa sahip olur olmaz açılır. Ekstra birim satın almaz.",
+    "resetProgress": "İlerlemeyi sıfırla",
+    "resetProgressDesc": "Oyunu başlangıç durumuna döndürür: sayaç 0, jeneratör ve iyileştirme yok. Kayıt silinir.",
+    "resetDialogTitle": "İlerleme sıfırlansın mı?",
+    "resetDialogDesc": "Tüm ilerlemeyi sıfırlamak istediğinizden emin misiniz? Sayaç, jeneratörler ve iyileştirmeler sıfıra dönecek."
+  },
+  "auth": {
+    "loading": "Yükleniyor…",
+    "connectedAs": "Şu olarak bağlı",
+    "signOut": "Çıkış yap",
+    "goToGame": "Oyuna git",
+    "forceLoginTitle": "Hesap zaten başka bir cihazda giriş yapmış",
+    "forceLoginDesc": "Bu hesap başka bir cihazda kullanılıyor. Burada giriş yaparsanız diğer cihazdan çıkış yapılır ve hesabın başka yerde giriş yaptığına dair mesaj görülür.",
+    "cancel": "İptal",
+    "forceLogin": "Zorla giriş",
+    "email": "E-posta",
+    "emailPlaceholder": "name@example.com",
+    "password": "Parola",
+    "login": "Giriş yap",
+    "signUp": "Hesap oluştur",
+    "wait": "Lütfen bekleyin…",
+    "noAccount": "Hesabınız yok mu? Hesap oluştur",
+    "hasAccount": "Zaten hesabınız var mı? Giriş yap"
+  },
+  "common": {
+    "cancel": "İptal",
+    "confirm": "Onayla",
+    "ok": "Tamam"
+  },
+  "shortcuts": {
+    "nextMenu": "Sonraki menü",
+    "prevMenu": "Önceki menü",
+    "menuGeradores": "Jeneratörlere git",
+    "menuMelhorias": "İyileştirmelere git",
+    "menuConquistas": "Başarılara git",
+    "menuEstatisticas": "İstatistiklere git",
+    "menuConfiguracoes": "Ayarlara git",
+    "scrollTop": "Yukarı kaydır",
+    "scrollBottom": "Aşağı kaydır"
+  },
+  "generators": {
+    "generatorN": "Jeneratör {{n}}",
+    "unlockToProduce": "Üretmeye başlamak için kilidi aç",
+    "costToUnlock": "Açma maliyeti",
+    "fragments": "Parçalar",
+    "quantity": "Miktar",
+    "milestone": "Kilometre taşı",
+    "milestoneProgress": "Kilometre taşı ilerlemesi",
+    "totalGenerators": "Toplam jeneratör",
+    "time": "Süre",
+    "cycle": "Döngü",
+    "continuous": "Sürekli",
+    "resource": "Kaynak",
+    "price": "Fiyat",
+    "generatedAutomatically": "Otomatik üretildi",
+    "automatic": "Otomatik",
+    "buy": "Satın al"
+  },
+  "improvements": {
+    "upgradePoints": "Yükseltme Puanları",
+    "perGenerator": "Jeneratör başına",
+    "global": "Genel",
+    "production": "Üretim",
+    "level": "Seviye",
+    "multiplier": "Çarpan",
+    "next": "Sonraki",
+    "buy": "Satın al",
+    "frag": "parça",
+    "speed": "Hız",
+    "currentCycle": "Mevcut döngü",
+    "luck": "Şans",
+    "currentChance": "Mevcut şans",
+    "nextChance": "Sonraki şans",
+    "luckEffect": "Şans etkisi",
+    "multOnCrit": "Kritikte çarpan",
+    "globalProduction": "Genel üretim",
+    "globalProductionDesc": "Seviye başına x2",
+    "globalSpeed": "Genel hız",
+    "globalSpeedDesc": "Seviye başına −10%",
+    "cycleFactor": "Mevcut döngü çarpanı",
+    "generatorPrice": "Jeneratör fiyatı",
+    "generatorPriceDesc": "Seviye başına −5%",
+    "currentReduction": "Mevcut indirim",
+    "nextReduction": "Sonraki",
+    "unlockGeneratorsHint": "Burada iyileştirmeleri görmek için Jeneratörler sayfasında jeneratörleri açın."
+  },
+  "achievements": {
+    "totalPoints": "Toplam puan",
+    "ofAchievements": "/ {{total}} başarı",
+    "emptyCategory": "Bu kategoride başarı yok.",
+    "unlocked": "Açıldı",
+    "locked": "Kilitli",
+    "categories": {
+      "primeiros-passos": "İlk adımlar",
+      "recurso": "Kaynak",
+      "unidades-geradores": "Jeneratör birimleri",
+      "gerador-especifico": "Belirli jeneratörler",
+      "producao-total": "Toplam üretim",
+      "tempo-jogo": "Oyun süresi",
+      "compras-manuais": "Manuel satın almalar",
+      "melhorias-producao": "Üretim iyileştirmeleri",
+      "melhorias-velocidade": "Hız iyileştirmeleri"
+    },
+    "primeiro-gerador": {
+      "name": "İlk jeneratör",
+      "description": "Jeneratör 1'i aç"
+    },
+    "primeira-melhoria": {
+      "name": "İlk iyileştirme",
+      "description": "Bir üretim iyileştirmesi satın al"
+    },
+    "primeira-velocidade": {
+      "name": "Daha hızlı",
+      "description": "Bir hız iyileştirmesi satın al"
+    },
+    "rec-100": {
+      "name": "Yüz kaynak",
+      "description": "100 kaynak biriktir"
+    },
+    "rec-1e3": {
+      "name": "Bin kaynak",
+      "description": "1.000 kaynak biriktir"
+    },
+    "rec-1e4": {
+      "name": "On bin",
+      "description": "10.000 kaynak biriktir"
+    },
+    "rec-1e5": {
+      "name": "Yüz bin",
+      "description": "100.000 kaynak biriktir"
+    },
+    "rec-1e6": {
+      "name": "Milyon",
+      "description": "1 milyon kaynak biriktir"
+    },
+    "rec-1e7": {
+      "name": "On milyon",
+      "description": "10 milyon kaynak biriktir"
+    },
+    "rec-1e8": {
+      "name": "Yüz milyon",
+      "description": "100 milyon kaynak biriktir"
+    },
+    "rec-1e9": {
+      "name": "Milyar",
+      "description": "1 milyar kaynak biriktir"
+    },
+    "rec-1e10": {
+      "name": "On milyar",
+      "description": "10 milyar kaynak biriktir"
+    },
+    "rec-1e11": {
+      "name": "Yüz milyar",
+      "description": "100 milyar kaynak biriktir"
+    },
+    "rec-1e12": {
+      "name": "Trilyon",
+      "description": "1 trilyon kaynak biriktir"
+    },
+    "unid-10": {
+      "name": "On birim",
+      "description": "Toplam 10 jeneratör birimine sahip ol"
+    },
+    "unid-50": {
+      "name": "Elli birim",
+      "description": "Toplam 50 jeneratör birimine sahip ol"
+    },
+    "unid-100": {
+      "name": "Yüz birim",
+      "description": "Toplam 100 jeneratör birimine sahip ol"
+    },
+    "g10": {
+      "name": "Jeneratör 10",
+      "description": "Jeneratör 10'u aç"
+    },
+    "g20": {
+      "name": "Jeneratör 20",
+      "description": "Jeneratör 20'yi aç"
+    },
+    "g100": {
+      "name": "Son jeneratör",
+      "description": "Jeneratör 100'ü aç"
+    },
+    "prod-1e6": {
+      "name": "Üretim: 1M",
+      "description": "Toplam 1 milyon üret (tüm zamanlar)"
+    },
+    "prod-1e9": {
+      "name": "Üretim: 1B",
+      "description": "Toplam 1 milyar üret (tüm zamanlar)"
+    },
+    "tempo-1h": {
+      "name": "Bir saat",
+      "description": "Toplam 1 saat oyna"
+    },
+    "tempo-24h": {
+      "name": "Bir gün",
+      "description": "Toplam 24 saat oyna"
+    },
+    "comp-10": {
+      "name": "Özverili alıcı",
+      "description": "Manuel olarak 10 jeneratör satın al (tıklama)"
+    },
+    "comp-1k": {
+      "name": "Tıklama ustası",
+      "description": "Manuel olarak 1.000 jeneratör satın al (tıklama)"
+    },
+    "melh-10": {
+      "name": "On iyileştirme",
+      "description": "Toplam 10 üretim iyileştirmesi satın al"
+    },
+    "vel-10": {
+      "name": "On hız",
+      "description": "Toplam 10 hız iyileştirmesi satın al"
+    }
+  },
+  "notifications": {
+    "title": "Bildirimler",
+    "empty": "Bildirim yok",
+    "markAllRead": "Tümünü okundu işaretle",
+    "clearHistory": "Geçmişi temizle"
+  },
+  "stats": {
+    "summary": "Oyun özetiniz",
+    "summaryDesc": "Genel ilerleme sayıları (sıfırladığınızda sıfırlanır).",
+    "currentResource": "Mevcut kaynak",
+    "totalProduced": "Toplam üretilen",
+    "playTime": "Oyun süresi",
+    "firstSession": "İlk oturum",
+    "manualPurchases": "Manuel satın alınan jeneratörler",
+    "autoProduced": "Otomatik üretilen jeneratörler",
+    "productionUpgrades": "Üretim iyileştirmeleri",
+    "speedUpgrades": "Hız iyileştirmeleri",
+    "timesPerGenerator": "Jeneratör başına süreler",
+    "timesPerGeneratorDesc": "Başlangıçtan her jeneratörün açılmasına kadar geçen süre ve her kademede geçirilen süre. Bundan sonraki açılışlar kaydedilecek.",
+    "timeToUnlock": "açılma süresi",
+    "timeInPreviousTier": "Sadece önceki kademede (Jeneratör {{n}})",
+    "bonusHits": "Bonus kaynak isabetleri (şans)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "Hesabınıza başka bir cihazdan giriş yapıldı.",
+    "upgradePointsTitle": "Yükseltme Puanları Kazanıldı!",
+    "upgradePointsDesc": "Yeni kilometre taşlarına ulaştınız ve {{count}} Yükseltme Puanı kazandınız!"
+  }
+}

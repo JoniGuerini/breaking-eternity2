@@ -1,7 +1,15 @@
 import { useContext, useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useLocation, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { GameContext } from "@/context/GameContext"
 import {
@@ -23,8 +31,10 @@ import {
 } from "@/lib/shortcuts"
 import { applyTheme, getTheme, setTheme, THEMES, THEME_PREVIEW_COLORS, type ThemeId } from "@/lib/theme"
 import { useAuth } from "@/context/AuthContext"
+import { setLanguage, SUPPORTED_LANGUAGES, type SupportedLocale } from "@/i18n"
 
 export function SettingsPage() {
+  const { t, i18n } = useTranslation()
   const ctx = useContext(GameContext)
   const navigate = useNavigate()
   const location = useLocation()
@@ -180,7 +190,7 @@ export function SettingsPage() {
           aria-selected={tab === "geral"}
           role="tab"
         >
-          Geral
+          {t("settings.tabs.geral")}
         </button>
         <button
           type="button"
@@ -195,7 +205,7 @@ export function SettingsPage() {
           aria-selected={tab === "temas"}
           role="tab"
         >
-          Temas
+          {t("settings.tabs.temas")}
         </button>
         <button
           type="button"
@@ -210,7 +220,7 @@ export function SettingsPage() {
           aria-selected={tab === "atalhos"}
           role="tab"
         >
-          Atalhos
+          {t("settings.tabs.atalhos")}
         </button>
         <button
           type="button"
@@ -225,7 +235,7 @@ export function SettingsPage() {
           aria-selected={tab === "conta"}
           role="tab"
         >
-          Conta
+          {t("settings.tabs.conta")}
         </button>
         <button
           type="button"
@@ -240,7 +250,7 @@ export function SettingsPage() {
           aria-selected={tab === "avancado"}
           role="tab"
         >
-          Opções avançadas
+          {t("settings.tabs.avancado")}
         </button>
       </div>
 
@@ -250,9 +260,38 @@ export function SettingsPage() {
             <div className="space-y-6">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="font-medium">Som de clique</p>
+                  <p className="font-medium">{t("settings.language")}</p>
                   <p className="text-muted-foreground text-sm mt-1">
-                    Toca um clique ao comprar geradores/melhorias e ao trocar de menu.
+                    {t("settings.languageDesc")}
+                  </p>
+                </div>
+                <Select
+                  value={i18n.language}
+                  onValueChange={(v) => {
+                    playClickSound()
+                    if (SUPPORTED_LANGUAGES.some((l) => l.code === v)) setLanguage(v as SupportedLocale)
+                  }}
+                >
+                  <SelectTrigger
+                    className="w-[180px]"
+                    aria-label={t("settings.language")}
+                  >
+                    <SelectValue placeholder={t("settings.language")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SUPPORTED_LANGUAGES.map(({ code, label }) => (
+                      <SelectItem key={code} value={code}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="font-medium">{t("settings.clickSound")}</p>
+                  <p className="text-muted-foreground text-sm mt-1">
+                    {t("settings.clickSoundDesc")}
                   </p>
                 </div>
                 <button
@@ -270,7 +309,7 @@ export function SettingsPage() {
               {clickSoundEnabled && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm text-muted-foreground">Volume do clique</span>
+                    <span className="text-sm text-muted-foreground">{t("settings.clickVolume")}</span>
                     <span className="text-sm font-mono tabular-nums">{clickSoundVolume}%</span>
                   </div>
                   <input
@@ -282,15 +321,15 @@ export function SettingsPage() {
                     onMouseUp={() => clickSoundEnabled && playClickSound()}
                     onTouchEnd={() => clickSoundEnabled && playClickSound()}
                     className="w-full h-2 rounded-full appearance-none bg-muted accent-primary cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-0 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
-                    aria-label="Volume do som de clique"
+                    aria-label={t("settings.clickVolumeLabel")}
                   />
                 </div>
               )}
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="font-medium">Mostrar contador de FPS</p>
+                  <p className="font-medium">{t("settings.fpsCounter")}</p>
                   <p className="text-muted-foreground text-sm mt-1">
-                    Exibe os quadros por segundo no canto superior direito do jogo.
+                    {t("settings.fpsCounterDesc")}
                   </p>
                 </div>
                 <button
@@ -310,9 +349,9 @@ export function SettingsPage() {
               </div>
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="font-medium">Tela cheia</p>
+                  <p className="font-medium">{t("settings.fullscreen")}</p>
                   <p className="text-muted-foreground text-sm mt-1">
-                    Coloca o jogo em tela cheia no navegador. Use Esc ou o botão para sair.
+                    {t("settings.fullscreenDesc")}
                   </p>
                 </div>
                 <button
@@ -333,14 +372,14 @@ export function SettingsPage() {
             </div>
             <div className="space-y-6">
               <div>
-                <p className="font-medium">Salvar progresso</p>
+                <p className="font-medium">{t("settings.saveProgress")}</p>
                 <p className="text-muted-foreground text-sm mt-1">
-                  O jogo salva automaticamente a cada <span className="font-mono font-semibold text-foreground">{cloudSaveInterval / 1000}</span> segundos. Você pode forçar um save aqui.
+                  {t("settings.saveProgressDescBefore")} <span className="font-mono font-semibold text-foreground">{cloudSaveInterval / 1000}</span> {t("settings.saveProgressDescAfter")}
                 </p>
                 <div className="flex flex-col gap-2 mt-4">
                   <div className="space-y-4 pt-2 pb-4">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-medium">Intervalo de salvamento na nuvem</span>
+                      <span className="text-sm font-medium">{t("settings.cloudSaveInterval")}</span>
                       <span className="text-sm font-mono tabular-nums">{cloudSaveInterval / 1000}s</span>
                     </div>
                     <input
@@ -356,14 +395,14 @@ export function SettingsPage() {
                       onMouseUp={() => playClickSound()}
                       onTouchEnd={() => playClickSound()}
                       className="w-full h-2 rounded-full appearance-none bg-muted accent-primary cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-0 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
-                      aria-label="Intervalo de salvamento"
+                      aria-label={t("settings.cloudSaveInterval")}
                     />
                     <p className="text-xs text-muted-foreground">
-                      Menor = Saves mais frequentes. Maior = Menos uso de rede.
+                      {t("settings.cloudSaveHint")}
                     </p>
                   </div>
                   <div className="text-sm text-muted-foreground mb-2">
-                    Último save: <span className="font-mono text-foreground">{ctx.lastSaveTime ? new Date(ctx.lastSaveTime).toLocaleString() : "Nunca"}</span>
+                    {t("settings.lastSave")}: <span className="font-mono text-foreground">{ctx.lastSaveTime ? new Date(ctx.lastSaveTime).toLocaleString() : t("settings.never")}</span>
                   </div>
                   <Button
                     variant="outline"
@@ -373,7 +412,7 @@ export function SettingsPage() {
                       persistSave()
                     }}
                   >
-                    Salvar agora
+                    {t("settings.saveNow")}
                   </Button>
                 </div>
               </div>
@@ -381,10 +420,12 @@ export function SettingsPage() {
               <Separator />
 
               <div>
-                <p className="font-medium">Baixar para desktop</p>
-                <p className="text-muted-foreground text-sm mt-1">
-                  Instale o jogo no seu PC ou Mac e jogue sem abrir o navegador.
-                </p>
+                <div>
+                  <p className="font-medium">{t("settings.downloadDesktop")}</p>
+                  <p className="text-muted-foreground text-sm mt-1">
+                    {t("settings.downloadDesktopDesc")}
+                  </p>
+                </div>
                 <div className="flex flex-col sm:flex-row gap-2 mt-4">
                   <Button
                     variant="outline"
@@ -398,7 +439,7 @@ export function SettingsPage() {
                       )
                     }}
                   >
-                    Windows (.exe)
+                    {t("settings.windowsExe")}
                   </Button>
                   <Button
                     variant="outline"
@@ -412,7 +453,7 @@ export function SettingsPage() {
                       )
                     }}
                   >
-                    Mac (.dmg)
+                    {t("settings.macDmg")}
                   </Button>
                 </div>
               </div>
@@ -421,9 +462,9 @@ export function SettingsPage() {
 
               <div>
                 <div>
-                  <p className="font-medium">Restaurar configurações padrão</p>
+                  <p className="font-medium">{t("settings.restoreDefaults")}</p>
                   <p className="text-muted-foreground text-sm mt-1">
-                    Volta as opções de Geral, Temas e Atalhos para o padrão do jogo.
+                    {t("settings.restoreDefaultsDesc")}
                   </p>
                 </div>
                 <Button
@@ -445,7 +486,7 @@ export function SettingsPage() {
                     forceUpdate((n) => n + 1)
                   }}
                 >
-                  Restaurar configurações padrão
+                  {t("settings.restoreDefaults")}
                 </Button>
               </div>
 
@@ -453,9 +494,9 @@ export function SettingsPage() {
 
               <div>
                 <div>
-                  <p className="font-medium">Sair do jogo</p>
+                  <p className="font-medium">{t("settings.exitGame")}</p>
                   <p className="text-muted-foreground text-sm mt-1">
-                    Salva o progresso e fecha o jogo.
+                    {t("settings.exitGameDesc")}
                   </p>
                 </div>
                 <Button
@@ -463,7 +504,7 @@ export function SettingsPage() {
                   className="w-full mt-4"
                   onClick={handleExit}
                 >
-                  Sair
+                  {t("settings.exit")}
                 </Button>
               </div>
             </div>
@@ -474,13 +515,13 @@ export function SettingsPage() {
       {tab === "temas" && (
         <Card className="p-6 space-y-4">
           <div>
-            <p className="font-medium">Tema visual</p>
+            <p className="font-medium">{t("settings.themeTitle")}</p>
             <p className="text-muted-foreground text-sm mt-1">
-              Escolha a aparência da interface. Todas as opções estão liberadas.
+              {t("settings.themeDesc")}
             </p>
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
-            {THEMES.map(({ id, label }) => {
+            {THEMES.map(({ id }) => {
               const colors = THEME_PREVIEW_COLORS[id]
               return (
                 <button
@@ -492,7 +533,7 @@ export function SettingsPage() {
                     : "border-border bg-card hover:bg-accent hover:border-accent text-foreground"
                     }`}
                 >
-                  <span className="text-sm font-medium leading-tight">{label}</span>
+                  <span className="text-sm font-medium leading-tight">{t(`settings.themes.${id}`)}</span>
                   <div className="flex gap-1 flex-wrap" aria-hidden>
                     {colors.map((color, i) => (
                       <span
@@ -514,9 +555,9 @@ export function SettingsPage() {
         <Card className="p-6 space-y-6">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="font-medium">Desbloquear próximo gerador automaticamente</p>
+              <p className="font-medium">{t("settings.advancedUnlock")}</p>
               <p className="text-muted-foreground text-sm mt-1">
-                Quando ativado, o próximo gerador (ainda com 0 unidades) é desbloqueado assim que você tiver recurso suficiente. Não compra unidades extras.
+                {t("settings.advancedUnlockDesc")}
               </p>
             </div>
             <button
@@ -535,9 +576,9 @@ export function SettingsPage() {
             </button>
           </div>
           <div>
-            <p className="font-medium">Resetar progresso</p>
+            <p className="font-medium">{t("settings.resetProgress")}</p>
             <p className="text-muted-foreground text-sm mt-1">
-              Volta o jogo ao estado inicial: contador em 0, nenhum gerador e nenhuma melhoria. O save será apagado.
+              {t("settings.resetProgressDesc")}
             </p>
           </div>
           <Button
@@ -548,7 +589,7 @@ export function SettingsPage() {
               setOpenReset(true)
             }}
           >
-            Resetar progresso
+            {t("settings.resetProgress")}
           </Button>
         </Card>
       )}
@@ -556,15 +597,15 @@ export function SettingsPage() {
       {tab === "atalhos" && (
         <Card className="p-6 space-y-5">
           <div>
-            <p className="font-medium">Teclas de atalho</p>
+            <p className="font-medium">{t("settings.shortcutsTitle")}</p>
             <p className="text-muted-foreground text-sm mt-1">
-              Clique no botão e pressione a tecla (ou botão do mouse) que deseja usar. Atalhos funcionam em qualquer tela.
+              {t("settings.shortcutsDesc")}
             </p>
           </div>
           <div className="space-y-4">
             {(Object.keys(SHORTCUT_LABELS) as ShortcutId[]).map((id) => (
               <div key={id} className="flex items-center justify-between gap-4 flex-wrap">
-                <span className="text-sm font-medium">{SHORTCUT_LABELS[id]}</span>
+                <span className="text-sm font-medium">{t(`shortcuts.${id}`)}</span>
                 <Button
                   type="button"
                   variant="outline"
@@ -576,7 +617,7 @@ export function SettingsPage() {
                   }}
                 >
                   {recordingId === id
-                    ? "Pressione uma tecla..."
+                    ? t("settings.pressKey")
                     : getShortcutDisplayKey(getShortcut(id))}
                 </Button>
               </div>
@@ -588,17 +629,17 @@ export function SettingsPage() {
       {tab === "conta" && (
         <Card className="p-6 space-y-5">
           <div>
-            <p className="font-medium">Sua conta</p>
+            <p className="font-medium">{t("settings.accountTitle")}</p>
             <p className="text-muted-foreground text-sm mt-1">
-              Entre ou crie uma conta para, no futuro, acessar seus saves em qualquer dispositivo e participar do leaderboard.
+              {t("settings.accountDesc")}
             </p>
           </div>
           {auth?.loading ? (
-            <p className="text-muted-foreground text-sm">Carregando…</p>
+            <p className="text-muted-foreground text-sm">{t("auth.loading")}</p>
           ) : auth?.user ? (
             <div className="space-y-4">
               <p className="text-sm">
-                Conectado como <span className="font-medium text-foreground">{auth.user.email}</span>
+                {t("settings.connectedAs")} <span className="font-medium text-foreground">{auth.user.email}</span>
               </p>
               <Button
                 variant="outline"
@@ -607,16 +648,16 @@ export function SettingsPage() {
                   auth.signOut()
                 }}
               >
-                Sair
+                {t("auth.signOut")}
               </Button>
             </div>
           ) : (
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                Use a página de login para entrar ou criar conta.
+                {t("settings.useLoginPage")}
               </p>
               <Button onClick={goToLogin}>
-                Ir para página de login
+                {t("settings.goToLogin")}
               </Button>
             </div>
           )}
@@ -639,10 +680,10 @@ export function SettingsPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <h2 id="reset-dialog-title" className="text-lg font-semibold">
-              Resetar progresso?
+              {t("settings.resetDialogTitle")}
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              Tem certeza que deseja resetar todo o progresso? Contador, geradores e melhorias voltarão ao zero.
+              {t("settings.resetDialogDesc")}
             </p>
             <div className="flex w-full flex-row justify-between gap-3 pt-1">
               <Button
@@ -652,7 +693,7 @@ export function SettingsPage() {
                   setOpenReset(false)
                 }}
               >
-                Cancelar
+                {t("common.cancel")}
               </Button>
               <Button
                 variant="destructive"
@@ -661,7 +702,7 @@ export function SettingsPage() {
                   handleConfirmReset()
                 }}
               >
-                Confirmar
+                {t("common.confirm")}
               </Button>
             </div>
           </Card>

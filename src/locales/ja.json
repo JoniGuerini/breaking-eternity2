@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "Breaking Eternity へようこそ",
+    "welcomeP1": "これは<strong>放置</strong>（idle）ゲームです：リソースを集め、より多くのリソースを生み出すジェネレーターを購入し、アップグレードを解除します。数字は数百万、数十億と巨大になります。",
+    "welcomeP2": "そんな大きな数字を扱うため、ゲームは <strong>break_eternity.js</strong> ライブラリを使用し、JavaScript のネイティブ対応を超えた値（科学的表記、M/B/T/Q などの接尾辞）で計算できます。",
+    "welcomeP3": "<strong>目標</strong>はこのライブラリの限界——表現できる最大の数に到達することです。下で最初のリソースを獲得し、ジェネレーターの購入を始めましょう。楽しんで！",
+    "firstResource": "最初のリソースを獲得",
+    "offlineTitle": "オフライン報酬",
+    "offlineGain": "オフライン中に {{amount}} を獲得しました。",
+    "offlineTime": "離脱時間"
+  },
+  "nav": {
+    "geradores": "ジェネレーター",
+    "melhorias": "アップグレード",
+    "conquistas": "実績",
+    "estatisticas": "統計",
+    "configuracoes": "設定"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "一般",
+      "temas": "テーマ",
+      "atalhos": "ショートカット",
+      "conta": "アカウント",
+      "avancado": "詳細設定"
+    },
+    "language": "言語",
+    "languageDesc": "ゲームの表示言語を変更します。",
+    "clickSound": "クリック音",
+    "clickSoundDesc": "ジェネレーター/アップグレードの購入やメニュー切り替え時にクリック音を再生します。",
+    "clickVolume": "クリック音量",
+    "clickVolumeLabel": "クリック音の音量",
+    "fpsCounter": "FPS カウンターを表示",
+    "fpsCounterDesc": "ゲーム画面右上にフレームレートを表示します。",
+    "fullscreen": "全画面",
+    "fullscreenDesc": "ブラウザで全画面表示にします。Esc またはボタンで終了。",
+    "saveProgress": "進行を保存",
+    "saveProgressDescBefore": "ゲームは",
+    "saveProgressDescAfter": "秒ごとに自動保存します。ここで強制保存できます。",
+    "cloudSaveInterval": "クラウド保存間隔",
+    "cloudSaveHint": "小 = 保存頻度アップ。大 = 通信量削減。",
+    "lastSave": "最終保存",
+    "saveNow": "今すぐ保存",
+    "never": "なし",
+    "downloadDesktop": "デスクトップ用ダウンロード",
+    "downloadDesktopDesc": "PC または Mac にインストールして、ブラウザを開かずにプレイできます。",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "既定に戻す",
+    "restoreDefaultsDesc": "一般・テーマ・ショートカットをゲームの既定値に戻します。",
+    "exitGame": "ゲームを終了",
+    "exitGameDesc": "進行を保存してゲームを閉じます。",
+    "exit": "終了",
+    "themeTitle": "表示テーマ",
+    "themeDesc": "インターフェースの見た目を選べます。すべてのオプションが利用可能です。",
+    "themes": {
+      "light": "ライト",
+      "dark": "ダーク",
+      "high-contrast": "ハイコントラスト（ダーク）",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "ヴィンテージ",
+      "terminal": "ターミナル",
+      "nord": "Nord",
+      "dracula": "ドラキュラ",
+      "sepia": "セピア",
+      "ocean": "オーシャン",
+      "forest": "フォレスト",
+      "sunset": "サンセット",
+      "rose": "ローズ",
+      "coffee": "コーヒー",
+      "midnight": "ミッドナイト",
+      "synthwave": "シンセウェイブ",
+      "lavender": "ラベンダー",
+      "mint": "ミント",
+      "candy": "キャンディ",
+      "crimson": "クリムゾン",
+      "peacock": "ピーコック",
+      "desert": "デザート",
+      "berry": "ベリー",
+      "sage": "セージ",
+      "ink": "インク",
+      "honey": "ハニー"
+    },
+    "shortcutsTitle": "ショートカットキー",
+    "shortcutsDesc": "ボタンをクリックして、使いたいキー（またはマウスボタン）を押してください。ショートカットはどの画面でも有効です。",
+    "pressKey": "キーを押してください…",
+    "accountTitle": "アカウント",
+    "accountDesc": "ログインまたはアカウント作成で、どの端末からでもセーブにアクセスし、ランキングに参加できます。",
+    "connectedAs": "ログイン中：",
+    "goToLogin": "ログインページへ",
+    "useLoginPage": "ログインページでサインインまたはアカウント作成。",
+    "advancedUnlock": "次のジェネレーターを自動解除",
+    "advancedUnlockDesc": "オンにすると、リソースが足りた時点で次のジェネレーター（まだ0台）が解除されます。追加購入はしません。",
+    "resetProgress": "進行をリセット",
+    "resetProgressDesc": "ゲームを初期状態に戻します：カウント0、ジェネレーター・アップグレードなし。セーブは消去されます。",
+    "resetDialogTitle": "進行をリセットしますか？",
+    "resetDialogDesc": "すべての進行をリセットしてよろしいですか？カウント・ジェネレーター・アップグレードがゼロに戻ります。"
+  },
+  "auth": {
+    "loading": "読み込み中…",
+    "connectedAs": "ログイン中：",
+    "signOut": "サインアウト",
+    "goToGame": "ゲームへ",
+    "forceLoginTitle": "このアカウントは別の端末でログイン中です",
+    "forceLoginDesc": "このアカウントは別の端末で使用中です。ここでログインすると、その端末はサインアウトし、「別の場所でログインされました」と表示されます。",
+    "cancel": "キャンセル",
+    "forceLogin": "強制ログイン",
+    "email": "メール",
+    "emailPlaceholder": "nome@exemplo.com",
+    "password": "パスワード",
+    "login": "サインイン",
+    "signUp": "アカウント作成",
+    "wait": "しばらくお待ちください…",
+    "noAccount": "アカウントをお持ちでない？作成",
+    "hasAccount": "すでにアカウントがある？サインイン"
+  },
+  "common": {
+    "cancel": "キャンセル",
+    "confirm": "確認",
+    "ok": "OK"
+  },
+  "shortcuts": {
+    "nextMenu": "次のメニュー",
+    "prevMenu": "前のメニュー",
+    "menuGeradores": "ジェネレーターへ",
+    "menuMelhorias": "アップグレードへ",
+    "menuConquistas": "実績へ",
+    "menuEstatisticas": "統計へ",
+    "menuConfiguracoes": "設定へ",
+    "scrollTop": "上へスクロール",
+    "scrollBottom": "下へスクロール"
+  },
+  "generators": {
+    "generatorN": "ジェネレーター {{n}}",
+    "unlockToProduce": "解除すると生産開始",
+    "costToUnlock": "解除コスト",
+    "fragments": "フラグメント",
+    "quantity": "数量",
+    "milestone": "マイルストーン",
+    "milestoneProgress": "マイルストーン進行",
+    "totalGenerators": "ジェネレーター合計",
+    "time": "時間",
+    "cycle": "サイクル",
+    "continuous": "連続",
+    "resource": "リソース",
+    "price": "価格",
+    "generatedAutomatically": "自動生成",
+    "automatic": "自動",
+    "buy": "購入"
+  },
+  "improvements": {
+    "upgradePoints": "アップグレードポイント",
+    "perGenerator": "ジェネレーターごと",
+    "global": "全体",
+    "production": "生産",
+    "level": "レベル",
+    "multiplier": "倍率",
+    "next": "次",
+    "buy": "購入",
+    "frag": "frag",
+    "speed": "速度",
+    "currentCycle": "現在のサイクル",
+    "luck": "幸運",
+    "currentChance": "現在の確率",
+    "nextChance": "次の確率",
+    "luckEffect": "幸運効果",
+    "multOnCrit": "クリティカル時倍率",
+    "globalProduction": "全体生産",
+    "globalProductionDesc": "レベルごとに全体 x2",
+    "globalSpeed": "全体速度",
+    "globalSpeedDesc": "レベルごとに −10%",
+    "cycleFactor": "現在のサイクル係数",
+    "generatorPrice": "ジェネレーター価格",
+    "generatorPriceDesc": "レベルごとに −5%",
+    "currentReduction": "現在の軽減",
+    "nextReduction": "次",
+    "unlockGeneratorsHint": "ジェネレーターページでジェネレーターを解除すると、ここにアップグレードが表示されます。"
+  },
+  "achievements": {
+    "totalPoints": "合計ポイント",
+    "ofAchievements": "/ {{total}} 実績",
+    "emptyCategory": "このカテゴリに実績はありません。",
+    "unlocked": "解除済み",
+    "locked": "未解除",
+    "categories": {
+      "primeiros-passos": "最初の一歩",
+      "recurso": "リソース",
+      "unidades-geradores": "ジェネレーター台数",
+      "gerador-especifico": "特定ジェネレーター",
+      "producao-total": "総生産",
+      "tempo-jogo": "プレイ時間",
+      "compras-manuais": "手動購入",
+      "melhorias-producao": "生産アップグレード",
+      "melhorias-velocidade": "速度アップグレード"
+    },
+    "primeiro-gerador": {
+      "name": "最初のジェネレーター",
+      "description": "ジェネレーター 1 を解除"
+    },
+    "primeira-melhoria": {
+      "name": "最初のアップグレード",
+      "description": "生産アップグレードを1つ購入"
+    },
+    "primeira-velocidade": {
+      "name": "加速",
+      "description": "速度アップグレードを1つ購入"
+    },
+    "rec-100": {
+      "name": "100リソース",
+      "description": "100 リソースを蓄積"
+    },
+    "rec-1e3": {
+      "name": "1,000リソース",
+      "description": "1,000 リソースを蓄積"
+    },
+    "rec-1e4": {
+      "name": "1万",
+      "description": "10,000 リソースを蓄積"
+    },
+    "rec-1e5": {
+      "name": "10万",
+      "description": "100,000 リソースを蓄積"
+    },
+    "rec-1e6": {
+      "name": "100万",
+      "description": "100万 リソースを蓄積"
+    },
+    "rec-1e7": {
+      "name": "1,000万",
+      "description": "1,000万 リソースを蓄積"
+    },
+    "rec-1e8": {
+      "name": "1億",
+      "description": "1億 リソースを蓄積"
+    },
+    "rec-1e9": {
+      "name": "10億",
+      "description": "10億 リソースを蓄積"
+    },
+    "rec-1e10": {
+      "name": "100億",
+      "description": "100億 リソースを蓄積"
+    },
+    "rec-1e11": {
+      "name": "1,000億",
+      "description": "1,000億 リソースを蓄積"
+    },
+    "rec-1e12": {
+      "name": "1兆",
+      "description": "1兆 リソースを蓄積"
+    },
+    "unid-10": {
+      "name": "10台",
+      "description": "ジェネレーター合計10台を所持"
+    },
+    "unid-50": {
+      "name": "50台",
+      "description": "ジェネレーター合計50台を所持"
+    },
+    "unid-100": {
+      "name": "100台",
+      "description": "ジェネレーター合計100台を所持"
+    },
+    "g10": {
+      "name": "ジェネレーター 10",
+      "description": "ジェネレーター 10 を解除"
+    },
+    "g20": {
+      "name": "ジェネレーター 20",
+      "description": "ジェネレーター 20 を解除"
+    },
+    "g100": {
+      "name": "最後のジェネレーター",
+      "description": "ジェネレーター 100 を解除"
+    },
+    "prod-1e6": {
+      "name": "生産：100万",
+      "description": "累計100万を生産（通算）"
+    },
+    "prod-1e9": {
+      "name": "生産：10億",
+      "description": "累計10億を生産（通算）"
+    },
+    "tempo-1h": {
+      "name": "1時間",
+      "description": "合計1時間プレイ"
+    },
+    "tempo-24h": {
+      "name": "1日",
+      "description": "合計24時間プレイ"
+    },
+    "comp-10": {
+      "name": "熱心な購入者",
+      "description": "手動（クリック）でジェネレーターを10台購入"
+    },
+    "comp-1k": {
+      "name": "クリックマスター",
+      "description": "手動（クリック）でジェネレーターを1,000台購入"
+    },
+    "melh-10": {
+      "name": "10アップグレード",
+      "description": "生産アップグレードを合計10個購入"
+    },
+    "vel-10": {
+      "name": "10速度",
+      "description": "速度アップグレードを合計10個購入"
+    }
+  },
+  "notifications": {
+    "title": "通知",
+    "empty": "通知はありません",
+    "markAllRead": "すべて既読にする",
+    "clearHistory": "履歴をクリア"
+  },
+  "stats": {
+    "summary": "ゲームサマリー",
+    "summaryDesc": "全体の進行状況（リセット時にクリア）。",
+    "currentResource": "現在のリソース",
+    "totalProduced": "総生産量",
+    "playTime": "プレイ時間",
+    "firstSession": "初回プレイ",
+    "manualPurchases": "手動購入したジェネレーター数",
+    "autoProduced": "自動生産されたジェネレーター数",
+    "productionUpgrades": "生産アップグレード",
+    "speedUpgrades": "速度アップグレード",
+    "timesPerGenerator": "ジェネレーターごとの時間",
+    "timesPerGeneratorDesc": "開始から各ジェネレーター解除までと、各段階での経過時間。これ以降の解除が記録されます。",
+    "timeToUnlock": "解除まで",
+    "timeInPreviousTier": "前段階のみ（ジェネレーター {{n}}）",
+    "bonusHits": "幸運ボーナスヒット数"
+  },
+  "toasts": {
+    "sessionOtherDevice": "アカウントが別の端末でログインされました。",
+    "upgradePointsTitle": "アップグレードポイント獲得！",
+    "upgradePointsDesc": "新しいマイルストーンを達成し、{{count}} アップグレードポイントを獲得しました！"
+  }
+}

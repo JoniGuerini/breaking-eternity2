@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "مرحباً بك في Breaking Eternity",
+    "welcomeP1": "هذه لعبة <strong>تراكمية</strong> (تلقائية): تجمع الموارد وتشتري مولّدات تنتج المزيد من الموارد وتفتح التحسينات. الأرقام قد تصبح ضخمة — ملايين ومليارات وأكثر.",
+    "welcomeP2": "للتعامل مع أرقام بهذا الحجم، تستخدم اللعبة مكتبة <strong>break_eternity.js</strong> التي تتيح التعامل مع قيم تفوق ما يدعمه JavaScript الأصلي (الترميز العلمي، لاحقات مثل M وB وT وQ والحروف).",
+    "welcomeP3": "<strong>الهدف</strong> هو الوصول إلى حد هذه المكتبة — أكبر عدد يمكنها تمثيله. استلم مواردك الأولى أدناه وابدأ بشراء المولّدات. استمتع!",
+    "firstResource": "استلم الموارد الأولى",
+    "offlineTitle": "ربح غير متصل",
+    "offlineGain": "حصلت على {{amount}} أثناء عدم الاتصال.",
+    "offlineTime": "وقت الغياب"
+  },
+  "nav": {
+    "geradores": "المولّدات",
+    "melhorias": "التحسينات",
+    "conquistas": "الإنجازات",
+    "estatisticas": "الإحصائيات",
+    "configuracoes": "الإعدادات"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "عام",
+      "temas": "المظهر",
+      "atalhos": "اختصارات",
+      "conta": "الحساب",
+      "avancado": "خيارات متقدمة"
+    },
+    "language": "اللغة",
+    "languageDesc": "تغيير لغة واجهة اللعبة.",
+    "clickSound": "صوت النقر",
+    "clickSoundDesc": "تشغيل نَقرة عند شراء المولّدات/التحسينات والتنقل بين القوائم.",
+    "clickVolume": "مستوى صوت النقر",
+    "clickVolumeLabel": "مستوى صوت النقر",
+    "fpsCounter": "إظهار عداد الإطارات",
+    "fpsCounterDesc": "يعرض الإطارات في الثانية في الزاوية اليمنى العليا للعبة.",
+    "fullscreen": "ملء الشاشة",
+    "fullscreenDesc": "عرض اللعبة بملء الشاشة في المتصفح. استخدم Esc أو الزر للخروج.",
+    "saveProgress": "حفظ التقدّم",
+    "saveProgressDescBefore": "اللعبة تحفظ تلقائياً كل",
+    "saveProgressDescAfter": "ثانية. يمكنك فرض الحفظ هنا.",
+    "cloudSaveInterval": "فترة الحفظ السحابي",
+    "cloudSaveHint": "أقل = حفظ أكثر. أعلى = استهلاك أقل للشبكة.",
+    "lastSave": "آخر حفظ",
+    "saveNow": "احفظ الآن",
+    "never": "أبداً",
+    "downloadDesktop": "تحميل لسطح المكتب",
+    "downloadDesktopDesc": "تثبيت اللعبة على جهازك وتشغيلها دون فتح المتصفح.",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "استعادة الإعدادات الافتراضية",
+    "restoreDefaultsDesc": "إرجاع خيارات العام والمظهر والاختصارات إلى افتراضي اللعبة.",
+    "exitGame": "إنهاء اللعبة",
+    "exitGameDesc": "حفظ التقدّم وإغلاق اللعبة.",
+    "exit": "خروج",
+    "themeTitle": "المظهر المرئي",
+    "themeDesc": "اختر مظهر الواجهة. جميع الخيارات متاحة.",
+    "themes": {
+      "light": "فاتح",
+      "dark": "داكن",
+      "high-contrast": "تباين عالٍ (داكن)",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "كلاسيكي",
+      "terminal": "طرفية",
+      "nord": "Nord",
+      "dracula": "دراكولا",
+      "sepia": "بني قديم",
+      "ocean": "محيط",
+      "forest": "غابة",
+      "sunset": "غروب",
+      "rose": "وردي",
+      "coffee": "قهوة",
+      "midnight": "منتصف الليل",
+      "synthwave": "Synthwave",
+      "lavender": "خزامى",
+      "mint": "نعناع",
+      "candy": "حلوى",
+      "crimson": "قرمزي",
+      "peacock": "طاووس",
+      "desert": "صحراء",
+      "berry": "توت",
+      "sage": "مريمية",
+      "ink": "حبر",
+      "honey": "عسل"
+    },
+    "shortcutsTitle": "مفاتيح الاختصار",
+    "shortcutsDesc": "اضغط الزر ثم المفتاح (أو زر الفأرة) الذي تريد استخدامه. الاختصارات تعمل في أي شاشة.",
+    "pressKey": "اضغط مفتاحاً…",
+    "accountTitle": "حسابك",
+    "accountDesc": "سجّل الدخول أو أنشئ حساباً للوصول إلى حفظاتك على أي جهاز والانضمام للتصنيف.",
+    "connectedAs": "متصل كـ",
+    "goToLogin": "الذهاب لصفحة تسجيل الدخول",
+    "useLoginPage": "استخدم صفحة تسجيل الدخول لتسجيل الدخول أو إنشاء حساب.",
+    "advancedUnlock": "فتح المولّد التالي تلقائياً",
+    "advancedUnlockDesc": "عند التفعيل، يُفتح المولّد التالي (ما زال 0 وحدة) فور امتلاكك موارد كافية. لا يشتري وحدات إضافية.",
+    "resetProgress": "إعادة تعيين التقدّم",
+    "resetProgressDesc": "إرجاع اللعبة للحالة الأولى: العداد 0، بدون مولّدات وتحسينات. سيُمسح الحفظ.",
+    "resetDialogTitle": "إعادة تعيين التقدّم؟",
+    "resetDialogDesc": "هل أنت متأكد من إعادة تعيين كل التقدّم؟ العداد والمولّدات والتحسينات ستعود إلى الصفر."
+  },
+  "auth": {
+    "loading": "جاري التحميل…",
+    "connectedAs": "متصل كـ",
+    "signOut": "تسجيل الخروج",
+    "goToGame": "الذهاب للعبة",
+    "forceLoginTitle": "الحساب مسجّل الدخول على جهاز آخر",
+    "forceLoginDesc": "هذا الحساب قيد الاستخدام على جهاز آخر. إذا سجّلت الدخول هنا، سيُخرَج الجهاز الآخر وستظهر رسالة بأن الحساب دُخِل من مكان آخر.",
+    "cancel": "إلغاء",
+    "forceLogin": "فرض تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "name@example.com",
+    "password": "كلمة المرور",
+    "login": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "wait": "يرجى الانتظار…",
+    "noAccount": "ليس لديك حساب؟ إنشاء حساب",
+    "hasAccount": "لديك حساب؟ تسجيل الدخول"
+  },
+  "common": {
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "ok": "موافق"
+  },
+  "shortcuts": {
+    "nextMenu": "القائمة التالية",
+    "prevMenu": "القائمة السابقة",
+    "menuGeradores": "الذهاب للمولّدات",
+    "menuMelhorias": "الذهاب للتحسينات",
+    "menuConquistas": "الذهاب للإنجازات",
+    "menuEstatisticas": "الذهاب للإحصائيات",
+    "menuConfiguracoes": "الذهاب للإعدادات",
+    "scrollTop": "التمرير للأعلى",
+    "scrollBottom": "التمرير للأسفل"
+  },
+  "generators": {
+    "generatorN": "المولّد {{n}}",
+    "unlockToProduce": "افتح القفل لبدء الإنتاج",
+    "costToUnlock": "تكلفة الفتح",
+    "fragments": "شظايا",
+    "quantity": "الكمية",
+    "milestone": "معلم",
+    "milestoneProgress": "تقدّم المعلم",
+    "totalGenerators": "إجمالي المولّدات",
+    "time": "الوقت",
+    "cycle": "دورة",
+    "continuous": "مستمر",
+    "resource": "الموارد",
+    "price": "السعر",
+    "generatedAutomatically": "يُنتج تلقائياً",
+    "automatic": "تلقائي",
+    "buy": "شراء"
+  },
+  "improvements": {
+    "upgradePoints": "نقاط الترقية",
+    "perGenerator": "لكل مولّد",
+    "global": "عام",
+    "production": "الإنتاج",
+    "level": "المستوى",
+    "multiplier": "المضاعف",
+    "next": "التالي",
+    "buy": "شراء",
+    "frag": "شظ",
+    "speed": "السرعة",
+    "currentCycle": "الدورة الحالية",
+    "luck": "الحظ",
+    "currentChance": "الفرصة الحالية",
+    "nextChance": "الفرصة التالية",
+    "luckEffect": "تأثير الحظ",
+    "multOnCrit": "المضاعف عند الحرجة",
+    "globalProduction": "الإنتاج العام",
+    "globalProductionDesc": "x2 لكل مستوى",
+    "globalSpeed": "السرعة العامة",
+    "globalSpeedDesc": "−10% لكل مستوى",
+    "cycleFactor": "عامل الدورة الحالية",
+    "generatorPrice": "سعر المولّد",
+    "generatorPriceDesc": "−5% لكل مستوى",
+    "currentReduction": "التخفيض الحالي",
+    "nextReduction": "التالي",
+    "unlockGeneratorsHint": "افتح قفل المولّدات في صفحة المولّدات لرؤية التحسينات هنا."
+  },
+  "achievements": {
+    "totalPoints": "إجمالي النقاط",
+    "ofAchievements": "من {{total}} إنجاز",
+    "emptyCategory": "لا توجد إنجازات في هذه الفئة.",
+    "unlocked": "مفتوح",
+    "locked": "مقفل",
+    "categories": {
+      "primeiros-passos": "الخطوات الأولى",
+      "recurso": "الموارد",
+      "unidades-geradores": "وحدات المولّدات",
+      "gerador-especifico": "مولّدات محددة",
+      "producao-total": "إجمالي الإنتاج",
+      "tempo-jogo": "وقت اللعب",
+      "compras-manuais": "المشتريات اليدوية",
+      "melhorias-producao": "تحسينات الإنتاج",
+      "melhorias-velocidade": "تحسينات السرعة"
+    },
+    "primeiro-gerador": {
+      "name": "المولّد الأول",
+      "description": "افتح قفل المولّد 1"
+    },
+    "primeira-melhoria": {
+      "name": "التحسين الأول",
+      "description": "اشترِ تحسين إنتاج واحد"
+    },
+    "primeira-velocidade": {
+      "name": "أسرع",
+      "description": "اشترِ تحسين سرعة واحد"
+    },
+    "rec-100": {
+      "name": "مئة مورد",
+      "description": "اجمع 100 مورد"
+    },
+    "rec-1e3": {
+      "name": "ألف مورد",
+      "description": "اجمع 1,000 مورد"
+    },
+    "rec-1e4": {
+      "name": "عشرة آلاف",
+      "description": "اجمع 10,000 مورد"
+    },
+    "rec-1e5": {
+      "name": "مئة ألف",
+      "description": "اجمع 100,000 مورد"
+    },
+    "rec-1e6": {
+      "name": "مليون",
+      "description": "اجمع مليون مورد"
+    },
+    "rec-1e7": {
+      "name": "عشرة ملايين",
+      "description": "اجمع 10 مليون مورد"
+    },
+    "rec-1e8": {
+      "name": "مئة مليون",
+      "description": "اجمع 100 مليون مورد"
+    },
+    "rec-1e9": {
+      "name": "مليار",
+      "description": "اجمع مليار مورد"
+    },
+    "rec-1e10": {
+      "name": "عشرة مليارات",
+      "description": "اجمع 10 مليار مورد"
+    },
+    "rec-1e11": {
+      "name": "مئة مليار",
+      "description": "اجمع 100 مليار مورد"
+    },
+    "rec-1e12": {
+      "name": "تريليون",
+      "description": "اجمع تريليون مورد"
+    },
+    "unid-10": {
+      "name": "عشر وحدات",
+      "description": "امتلك 10 وحدات مولّد إجمالاً"
+    },
+    "unid-50": {
+      "name": "خمسون وحدة",
+      "description": "امتلك 50 وحدة مولّد إجمالاً"
+    },
+    "unid-100": {
+      "name": "مئة وحدة",
+      "description": "امتلك 100 وحدة مولّد إجمالاً"
+    },
+    "g10": {
+      "name": "المولّد 10",
+      "description": "افتح قفل المولّد 10"
+    },
+    "g20": {
+      "name": "المولّد 20",
+      "description": "افتح قفل المولّد 20"
+    },
+    "g100": {
+      "name": "المولّد الأخير",
+      "description": "افتح قفل المولّد 100"
+    },
+    "prod-1e6": {
+      "name": "الإنتاج: 1م",
+      "description": "أنتج مليون إجمالاً (مدى الحياة)"
+    },
+    "prod-1e9": {
+      "name": "الإنتاج: 1ب",
+      "description": "أنتج مليار إجمالاً (مدى الحياة)"
+    },
+    "tempo-1h": {
+      "name": "ساعة واحدة",
+      "description": "العب ساعة واحدة إجمالاً"
+    },
+    "tempo-24h": {
+      "name": "يوم واحد",
+      "description": "العب 24 ساعة إجمالاً"
+    },
+    "comp-10": {
+      "name": "مشتري مخلص",
+      "description": "اشترِ 10 مولّدات يدوياً (نقرة)"
+    },
+    "comp-1k": {
+      "name": "سيد النقر",
+      "description": "اشترِ 1,000 مولّد يدوياً (نقرة)"
+    },
+    "melh-10": {
+      "name": "عشرة تحسينات",
+      "description": "اشترِ 10 تحسينات إنتاج إجمالاً"
+    },
+    "vel-10": {
+      "name": "عشرة سرعات",
+      "description": "اشترِ 10 تحسينات سرعة إجمالاً"
+    }
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "empty": "لا توجد إشعارات",
+    "markAllRead": "تعليم الكل كمقروء",
+    "clearHistory": "مسح السجل"
+  },
+  "stats": {
+    "summary": "ملخص لعبتك",
+    "summaryDesc": "أرقام التقدّم الإجمالية (تُعاد عند إعادة التعيين).",
+    "currentResource": "الموارد الحالية",
+    "totalProduced": "إجمالي المنتَج",
+    "playTime": "وقت اللعب",
+    "firstSession": "الجلسة الأولى",
+    "manualPurchases": "المولّدات المشتراة (يدوياً)",
+    "autoProduced": "المولّدات المنتجة (تلقائياً)",
+    "productionUpgrades": "تحسينات الإنتاج",
+    "speedUpgrades": "تحسينات السرعة",
+    "timesPerGenerator": "الوقت لكل مولّد",
+    "timesPerGeneratorDesc": "الوقت من البداية حتى فتح كل مولّد والوقت في كل مرحلة. فتحات من الآن فصاعداً ستُسجّل.",
+    "timeToUnlock": "وقت الفتح",
+    "timeInPreviousTier": "الوقت في المرحلة السابقة فقط (المولّد {{n}})",
+    "bonusHits": "ضربات موارد إضافية (حظ)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "حسابك سُجّل دخوله على جهاز آخر.",
+    "upgradePointsTitle": "حصلت على نقاط ترقية!",
+    "upgradePointsDesc": "وصلت لمعالم جديدة وحصلت على {{count}} نقطة ترقية!"
+  }
+}

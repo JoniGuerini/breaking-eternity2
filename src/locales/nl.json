@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "Welkom bij Breaking Eternity",
+    "welcomeP1": "Dit is een <strong>incrementeel</strong> (idle) spel: je verzamelt grondstof, koopt generators die meer grondstof produceren en ontgrendelt verbeteringen. Getallen kunnen enorm worden — miljoenen, miljarden en verder.",
+    "welcomeP2": "Om zulke grote getallen te verwerken gebruikt het spel de <strong>break_eternity.js</strong>-bibliotheek, waarmee je kunt rekenen met waarden ver buiten wat JavaScript ondersteunt (wetenschappelijke notatie, suffixen zoals M, B, T, Q en letters).",
+    "welcomeP3": "Het <strong>doel</strong> is de limiet van deze bibliotheek te bereiken — het grootste getal dat deze kan weergeven. Claim je eerste grondstof hieronder en begin met het kopen van generators. Veel plezier!",
+    "firstResource": "Claim eerste grondstof",
+    "offlineTitle": "Offline-opbrengst",
+    "offlineGain": "Je hebt {{amount}} verdiend terwijl je offline was.",
+    "offlineTime": "Tijd afwezig"
+  },
+  "nav": {
+    "geradores": "Generators",
+    "melhorias": "Verbeteringen",
+    "conquistas": "Prestaties",
+    "estatisticas": "Statistieken",
+    "configuracoes": "Instellingen"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "Algemeen",
+      "temas": "Thema's",
+      "atalhos": "Sneltoetsen",
+      "conta": "Account",
+      "avancado": "Geavanceerde opties"
+    },
+    "language": "Taal",
+    "languageDesc": "Verandert de spelinterface-taal.",
+    "clickSound": "Klikgeluid",
+    "clickSoundDesc": "Speelt een klik af bij het kopen van generators/verbeteringen en wisselen van menu's.",
+    "clickVolume": "Klikvolume",
+    "clickVolumeLabel": "Volume klikgeluid",
+    "fpsCounter": "FPS-teller tonen",
+    "fpsCounterDesc": "Toont frames per seconde in de rechterbovenhoek van het spel.",
+    "fullscreen": "Volledig scherm",
+    "fullscreenDesc": "Zet het spel in volledig scherm in de browser. Gebruik Esc of de knop om te sluiten.",
+    "saveProgress": "Voortgang opslaan",
+    "saveProgressDescBefore": "Het spel slaat automatisch op elke",
+    "saveProgressDescAfter": "seconden. Je kunt hier geforceerd opslaan.",
+    "cloudSaveInterval": "Cloud-opslaginterval",
+    "cloudSaveHint": "Lager = Vaker opslaan. Hoger = Minder netwerkgebruik.",
+    "lastSave": "Laatst opgeslagen",
+    "saveNow": "Nu opslaan",
+    "never": "Nooit",
+    "downloadDesktop": "Download voor desktop",
+    "downloadDesktopDesc": "Installeer het spel op je pc of Mac en speel zonder de browser te openen.",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "Standaardinstellingen herstellen",
+    "restoreDefaultsDesc": "Zet Algemeen-, Thema- en Sneltoetsopties terug naar spelstandaarden.",
+    "exitGame": "Spel verlaten",
+    "exitGameDesc": "Slaat voortgang op en sluit het spel.",
+    "exit": "Afsluiten",
+    "themeTitle": "Visueel thema",
+    "themeDesc": "Kies het uiterlijk van de interface. Alle opties zijn beschikbaar.",
+    "themes": {
+      "light": "Licht",
+      "dark": "Donker",
+      "high-contrast": "Hoog contrast (donker)",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "Vintage",
+      "terminal": "Terminal",
+      "nord": "Nord",
+      "dracula": "Dracula",
+      "sepia": "Sepia",
+      "ocean": "Ocean",
+      "forest": "Bos",
+      "sunset": "Zonsondergang",
+      "rose": "Roos",
+      "coffee": "Koffie",
+      "midnight": "Middernacht",
+      "synthwave": "Synthwave",
+      "lavender": "Lavendel",
+      "mint": "Munt",
+      "candy": "Snoep",
+      "crimson": "Karmozijn",
+      "peacock": "Pauw",
+      "desert": "Woestijn",
+      "berry": "Bes",
+      "sage": "Salie",
+      "ink": "Inkt",
+      "honey": "Honing"
+    },
+    "shortcutsTitle": "Sneltoetsen",
+    "shortcutsDesc": "Klik op de knop en druk op de toets (of muisknop) die je wilt gebruiken. Sneltoetsen werken op elk scherm.",
+    "pressKey": "Druk op een toets...",
+    "accountTitle": "Je account",
+    "accountDesc": "Log in of maak een account om je opslagen op elk apparaat te openen en mee te doen aan het klassement.",
+    "connectedAs": "Verbonden als",
+    "goToLogin": "Ga naar inlogpagina",
+    "useLoginPage": "Gebruik de inlogpagina om in te loggen of een account aan te maken.",
+    "advancedUnlock": "Volgende generator automatisch ontgrendelen",
+    "advancedUnlockDesc": "Indien ingeschakeld wordt de volgende generator (nog 0 eenheden) ontgrendeld zodra je genoeg grondstof hebt. Koopt geen extra eenheden.",
+    "resetProgress": "Voortgang resetten",
+    "resetProgressDesc": "Zet het spel terug naar de beginstatus: teller op 0, geen generators en verbeteringen. Opslag wordt gewist.",
+    "resetDialogTitle": "Voortgang resetten?",
+    "resetDialogDesc": "Weet je zeker dat je alle voortgang wilt resetten? Teller, generators en verbeteringen gaan terug naar nul."
+  },
+  "auth": {
+    "loading": "Laden…",
+    "connectedAs": "Verbonden als",
+    "signOut": "Uitloggen",
+    "goToGame": "Naar spel",
+    "forceLoginTitle": "Account al ingelogd op ander apparaat",
+    "forceLoginDesc": "Dit account wordt op een ander apparaat gebruikt. Als je hier inlogt, wordt het andere apparaat uitgelogd en ziet een bericht dat het account elders is ingelogd.",
+    "cancel": "Annuleren",
+    "forceLogin": "Geforceerd inloggen",
+    "email": "E-mail",
+    "emailPlaceholder": "name@example.com",
+    "password": "Wachtwoord",
+    "login": "Inloggen",
+    "signUp": "Account aanmaken",
+    "wait": "Even geduld…",
+    "noAccount": "Geen account? Account aanmaken",
+    "hasAccount": "Al een account? Inloggen"
+  },
+  "common": {
+    "cancel": "Annuleren",
+    "confirm": "Bevestigen",
+    "ok": "OK"
+  },
+  "shortcuts": {
+    "nextMenu": "Volgende menu",
+    "prevMenu": "Vorige menu",
+    "menuGeradores": "Naar Generators",
+    "menuMelhorias": "Naar Verbeteringen",
+    "menuConquistas": "Naar Prestaties",
+    "menuEstatisticas": "Naar Statistieken",
+    "menuConfiguracoes": "Naar Instellingen",
+    "scrollTop": "Naar boven scrollen",
+    "scrollBottom": "Naar beneden scrollen"
+  },
+  "generators": {
+    "generatorN": "Generator {{n}}",
+    "unlockToProduce": "Ontgrendel om te produceren",
+    "costToUnlock": "Kosten om te ontgrendelen",
+    "fragments": "Fragmenten",
+    "quantity": "Aantal",
+    "milestone": "Mijlpaal",
+    "milestoneProgress": "Mijlpaalvoortgang",
+    "totalGenerators": "Totaal generators",
+    "time": "Tijd",
+    "cycle": "Cyclus",
+    "continuous": "Doorlopend",
+    "resource": "Grondstof",
+    "price": "Prijs",
+    "generatedAutomatically": "Automatisch gegenereerd",
+    "automatic": "Automatisch",
+    "buy": "Kopen"
+  },
+  "improvements": {
+    "upgradePoints": "Upgradepunten",
+    "perGenerator": "Per generator",
+    "global": "Globaal",
+    "production": "Productie",
+    "level": "Niveau",
+    "multiplier": "Vermenigvuldiger",
+    "next": "Volgende",
+    "buy": "Kopen",
+    "frag": "frag",
+    "speed": "Snelheid",
+    "currentCycle": "Huidige cyclus",
+    "luck": "Geluk",
+    "currentChance": "Huidige kans",
+    "nextChance": "Volgende kans",
+    "luckEffect": "Gelukseffect",
+    "multOnCrit": "Verm. bij crit",
+    "globalProduction": "Globale productie",
+    "globalProductionDesc": "x2 per niveau",
+    "globalSpeed": "Globale snelheid",
+    "globalSpeedDesc": "−10% per niveau",
+    "cycleFactor": "Huidige cyclusfactor",
+    "generatorPrice": "Generatorprijs",
+    "generatorPriceDesc": "−5% per niveau",
+    "currentReduction": "Huidige reductie",
+    "nextReduction": "Volgende",
+    "unlockGeneratorsHint": "Ontgrendel generators op de Generators-pagina om hier verbeteringen te zien."
+  },
+  "achievements": {
+    "totalPoints": "Totaal punten",
+    "ofAchievements": "van {{total}} prestaties",
+    "emptyCategory": "Geen prestaties in deze categorie.",
+    "unlocked": "Ontgrendeld",
+    "locked": "Vergrendeld",
+    "categories": {
+      "primeiros-passos": "Eerste stappen",
+      "recurso": "Grondstof",
+      "unidades-geradores": "Generatoreenheden",
+      "gerador-especifico": "Specifieke generators",
+      "producao-total": "Totale productie",
+      "tempo-jogo": "Speeltijd",
+      "compras-manuais": "Handmatige aankopen",
+      "melhorias-producao": "Productieverbeteringen",
+      "melhorias-velocidade": "Snelheidsverbeteringen"
+    },
+    "primeiro-gerador": {
+      "name": "Eerste generator",
+      "description": "Ontgrendel generator 1"
+    },
+    "primeira-melhoria": {
+      "name": "Eerste verbetering",
+      "description": "Koop een productieverbetering"
+    },
+    "primeira-velocidade": {
+      "name": "Sneller",
+      "description": "Koop een snelheidsverbetering"
+    },
+    "rec-100": {
+      "name": "Honderd grondstof",
+      "description": "Verzamel 100 grondstof"
+    },
+    "rec-1e3": {
+      "name": "Duizend grondstof",
+      "description": "Verzamel 1.000 grondstof"
+    },
+    "rec-1e4": {
+      "name": "Tienduizend",
+      "description": "Verzamel 10.000 grondstof"
+    },
+    "rec-1e5": {
+      "name": "Honderdduizend",
+      "description": "Verzamel 100.000 grondstof"
+    },
+    "rec-1e6": {
+      "name": "Miljoen",
+      "description": "Verzamel 1 miljoen grondstof"
+    },
+    "rec-1e7": {
+      "name": "Tien miljoen",
+      "description": "Verzamel 10 miljoen grondstof"
+    },
+    "rec-1e8": {
+      "name": "Honderd miljoen",
+      "description": "Verzamel 100 miljoen grondstof"
+    },
+    "rec-1e9": {
+      "name": "Miljard",
+      "description": "Verzamel 1 miljard grondstof"
+    },
+    "rec-1e10": {
+      "name": "Tien miljard",
+      "description": "Verzamel 10 miljard grondstof"
+    },
+    "rec-1e11": {
+      "name": "Honderd miljard",
+      "description": "Verzamel 100 miljard grondstof"
+    },
+    "rec-1e12": {
+      "name": "Biljoen",
+      "description": "Verzamel 1 biljoen grondstof"
+    },
+    "unid-10": {
+      "name": "Tien eenheden",
+      "description": "Heb in totaal 10 generatoreenheden"
+    },
+    "unid-50": {
+      "name": "Vijftig eenheden",
+      "description": "Heb in totaal 50 generatoreenheden"
+    },
+    "unid-100": {
+      "name": "Honderd eenheden",
+      "description": "Heb in totaal 100 generatoreenheden"
+    },
+    "g10": {
+      "name": "Generator 10",
+      "description": "Ontgrendel generator 10"
+    },
+    "g20": {
+      "name": "Generator 20",
+      "description": "Ontgrendel generator 20"
+    },
+    "g100": {
+      "name": "Laatste generator",
+      "description": "Ontgrendel generator 100"
+    },
+    "prod-1e6": {
+      "name": "Productie: 1M",
+      "description": "Produceer in totaal 1 miljoen (levenslang)"
+    },
+    "prod-1e9": {
+      "name": "Productie: 1B",
+      "description": "Produceer in totaal 1 miljard (levenslang)"
+    },
+    "tempo-1h": {
+      "name": "Een uur",
+      "description": "Speel in totaal 1 uur"
+    },
+    "tempo-24h": {
+      "name": "Een dag",
+      "description": "Speel in totaal 24 uur"
+    },
+    "comp-10": {
+      "name": "Toegewijde koper",
+      "description": "Koop handmatig 10 generators (klik)"
+    },
+    "comp-1k": {
+      "name": "Klikmeester",
+      "description": "Koop handmatig 1.000 generators (klik)"
+    },
+    "melh-10": {
+      "name": "Tien verbeteringen",
+      "description": "Koop in totaal 10 productieverbeteringen"
+    },
+    "vel-10": {
+      "name": "Tien snelheden",
+      "description": "Koop in totaal 10 snelheidsverbeteringen"
+    }
+  },
+  "notifications": {
+    "title": "Meldingen",
+    "empty": "Geen meldingen",
+    "markAllRead": "Alles als gelezen markeren",
+    "clearHistory": "Geschiedenis wissen"
+  },
+  "stats": {
+    "summary": "Je speloverzicht",
+    "summaryDesc": "Algemene voortgangscijfers (gereset bij reset).",
+    "currentResource": "Huidige grondstof",
+    "totalProduced": "Totaal geproduceerd",
+    "playTime": "Speeltijd",
+    "firstSession": "Eerste sessie",
+    "manualPurchases": "Handmatig gekochte generators",
+    "autoProduced": "Automatisch geproduceerde generators",
+    "productionUpgrades": "Productieverbeteringen",
+    "speedUpgrades": "Snelheidsverbeteringen",
+    "timesPerGenerator": "Tijden per generator",
+    "timesPerGeneratorDesc": "Tijd van start tot ontgrendeling van elke generator en tijd in elke tier. Toekomstige ontgrendelingen worden geregistreerd.",
+    "timeToUnlock": "tijd tot ontgrendelen",
+    "timeInPreviousTier": "Alleen in vorige tier (Generator {{n}})",
+    "bonusHits": "Bonusgrondstof-treffers (geluk)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "Je account is op een ander apparaat ingelogd.",
+    "upgradePointsTitle": "Upgradepunten verdiend!",
+    "upgradePointsDesc": "Je hebt nieuwe mijlpalen bereikt en {{count}} upgradepunten verdiend!"
+  }
+}

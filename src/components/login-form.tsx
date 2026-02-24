@@ -6,11 +6,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuth } from "@/context/AuthContext"
 import { playClickSound } from "@/lib/clickSound"
+import { useTranslation } from "react-i18next"
 import { getDeviceId } from "@/lib/deviceId"
 import { claimSession, getCurrentSessionDevice } from "@/lib/sessionDevice"
 import { supabase } from "@/lib/supabase"
 
 export function LoginForm() {
+  const { t } = useTranslation()
   const auth = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -22,7 +24,7 @@ export function LoginForm() {
   if (auth?.loading) {
     return (
       <div className="flex flex-col gap-6">
-        <p className="text-center text-muted-foreground text-sm">Carregando…</p>
+        <p className="text-center text-muted-foreground text-sm">{t("auth.loading")}</p>
       </div>
     )
   }
@@ -31,7 +33,7 @@ export function LoginForm() {
     return (
       <div className="flex flex-col gap-6">
         <p className="text-center text-sm text-muted-foreground">
-          Conectado como <span className="font-medium text-foreground">{auth.user.email}</span>
+          {t("auth.connectedAs")} <span className="font-medium text-foreground">{auth.user.email}</span>
         </p>
         <div className="flex flex-col gap-2">
           <Button
@@ -41,11 +43,11 @@ export function LoginForm() {
               auth.signOut()
             }}
           >
-            Sair
+            {t("auth.signOut")}
           </Button>
           <Button variant="ghost" asChild>
             <Link to="/" onClick={() => playClickSound()}>
-              Ir para o jogo
+              {t("auth.goToGame")}
             </Link>
           </Button>
         </div>
@@ -58,10 +60,10 @@ export function LoginForm() {
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" aria-modal="true" role="dialog" aria-labelledby="force-login-title">
         <Card className="max-w-md w-full p-6 space-y-4 shadow-lg">
           <h2 id="force-login-title" className="font-semibold text-lg">
-            Conta já logada em outro dispositivo
+            {t("auth.forceLoginTitle")}
           </h2>
           <p className="text-muted-foreground text-sm">
-            Esta conta está em uso em outro dispositivo. Se fizer login aqui, o outro será deslogado e verá uma mensagem informando que a conta foi logada em outro lugar.
+            {t("auth.forceLoginDesc")}
           </p>
           <div className="flex gap-2 justify-end">
             <Button
@@ -72,7 +74,7 @@ export function LoginForm() {
                 setShowForceLoginModal(false)
               }}
             >
-              Cancelar
+              {t("auth.cancel")}
             </Button>
             <Button
               onClick={async () => {
@@ -82,7 +84,7 @@ export function LoginForm() {
                 setShowForceLoginModal(false)
               }}
             >
-              Forçar login
+              {t("auth.forceLogin")}
             </Button>
           </div>
         </Card>
@@ -130,11 +132,11 @@ export function LoginForm() {
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <Label htmlFor="login-email">E-mail</Label>
+          <Label htmlFor="login-email">{t("auth.email")}</Label>
           <Input
             id="login-email"
             type="email"
-            placeholder="nome@exemplo.com"
+            placeholder={t("auth.emailPlaceholder")}
             value={email}
             onChange={(e) => {
               setEmail(e.target.value)
@@ -146,7 +148,7 @@ export function LoginForm() {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <Label htmlFor="login-password">Senha</Label>
+          <Label htmlFor="login-password">{t("auth.password")}</Label>
           <Input
             id="login-password"
             type="password"
@@ -169,7 +171,7 @@ export function LoginForm() {
       </div>
       <div className="flex flex-col gap-4">
         <Button type="submit" disabled={loading} className="w-full">
-          {loading ? "Aguarde…" : mode === "login" ? "Entrar" : "Criar conta"}
+          {loading ? t("auth.wait") : mode === "login" ? t("auth.login") : t("auth.signUp")}
         </Button>
         <button
           type="button"
@@ -180,7 +182,7 @@ export function LoginForm() {
             setError(null)
           }}
         >
-          {mode === "login" ? "Não tem conta? Criar conta" : "Já tem conta? Entrar"}
+          {mode === "login" ? t("auth.noAccount") : t("auth.hasAccount")}
         </button>
       </div>
     </form>

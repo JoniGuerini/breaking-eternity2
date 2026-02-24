@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "ยินดีต้อนรับสู่ Breaking Eternity",
+    "welcomeP1": "นี่คือเกม<strong>เพิ่มพูน</strong> (เกมรอ): คุณเก็บทรัพยากร ซื้อเครื่องกำเนิดที่ผลิตทรัพยากรเพิ่ม และปลดล็อกการอัปเกรด ตัวเลขอาจสูงมาก — ล้าน พันล้าน และมากกว่านั้น",
+    "welcomeP2": "เพื่อจัดการตัวเลขขนาดใหญ่ เกมใช้ไลบรารี <strong>break_eternity.js</strong> ซึ่งช่วยคำนวณค่าที่เกินขีดจำกัดของ JavaScript ดั้งเดิม (สัญกรณ์วิทยาศาสตร์ คำต่อท้ายเช่น M, B, T, Q และตัวอักษร)",
+    "welcomeP3": "<strong>เป้าหมาย</strong>คือไปถึงขีดจำกัดของไลบรารีนี้ — ตัวเลขที่ใหญ่ที่สุดที่มันแสดงได้ รับทรัพยากรแรกด้านล่างและเริ่มซื้อเครื่องกำเนิด ขอให้สนุก!",
+    "firstResource": "รับทรัพยากรแรก",
+    "offlineTitle": "รายได้ออฟไลน์",
+    "offlineGain": "คุณได้รับ {{amount}} ขณะออฟไลน์",
+    "offlineTime": "เวลาที่ไม่อยู่"
+  },
+  "nav": {
+    "geradores": "เครื่องกำเนิด",
+    "melhorias": "การอัปเกรด",
+    "conquistas": "ความสำเร็จ",
+    "estatisticas": "สถิติ",
+    "configuracoes": "การตั้งค่า"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "ทั่วไป",
+      "temas": "ธีม",
+      "atalhos": "ทางลัด",
+      "conta": "บัญชี",
+      "avancado": "ตัวเลือกขั้นสูง"
+    },
+    "language": "ภาษา",
+    "languageDesc": "เปลี่ยนภาษาอินเทอร์เฟซเกม",
+    "clickSound": "เสียงคลิก",
+    "clickSoundDesc": "เล่นเสียงคลิกเมื่อซื้อเครื่องกำเนิด/การอัปเกรดและสลับเมนู",
+    "clickVolume": "ระดับเสียงคลิก",
+    "clickVolumeLabel": "ระดับเสียงคลิก",
+    "fpsCounter": "แสดงตัวนับ FPS",
+    "fpsCounterDesc": "แสดงเฟรมต่อวินาทีที่มุมขวาบนของเกม",
+    "fullscreen": "เต็มจอ",
+    "fullscreenDesc": "เปิดเกมเต็มจอในเบราว์เซอร์ กด Esc หรือปุ่มเพื่อออก",
+    "saveProgress": "บันทึกความคืบหน้า",
+    "saveProgressDescBefore": "เกมบันทึกอัตโนมัติทุก",
+    "saveProgressDescAfter": "วินาที คุณสามารถบังคับบันทึกที่นี่",
+    "cloudSaveInterval": "ช่วงบันทึกคลาวด์",
+    "cloudSaveHint": "ต่ำ = บันทึกบ่อยขึ้น สูง = ใช้เครือข่ายน้อยลง",
+    "lastSave": "บันทึกล่าสุด",
+    "saveNow": "บันทึกตอนนี้",
+    "never": "ไม่เคย",
+    "downloadDesktop": "ดาวน์โหลดสำหรับเดสก์ท็อป",
+    "downloadDesktopDesc": "ติดตั้งเกมบน PC หรือ Mac และเล่นโดยไม่ต้องเปิดเบราว์เซอร์",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "คืนค่าการตั้งค่าเริ่มต้น",
+    "restoreDefaultsDesc": "คืนตัวเลือกทั่วไป ธีม และทางลัดเป็นค่าเริ่มต้นของเกม",
+    "exitGame": "ออกจากเกม",
+    "exitGameDesc": "บันทึกความคืบหน้าและปิดเกม",
+    "exit": "ออก",
+    "themeTitle": "ธีมภาพ",
+    "themeDesc": "เลือกลักษณะอินเทอร์เฟซ ตัวเลือกทั้งหมดมีให้",
+    "themes": {
+      "light": "สว่าง",
+      "dark": "มืด",
+      "high-contrast": "คอนทราสต์สูง (มืด)",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "วินเทจ",
+      "terminal": "เทอร์มินัล",
+      "nord": "Nord",
+      "dracula": "แดรกคิวลา",
+      "sepia": "ซีเปีย",
+      "ocean": "มหาสมุทร",
+      "forest": "ป่า",
+      "sunset": "พระอาทิตย์ตก",
+      "rose": "กุหลาบ",
+      "coffee": "กาแฟ",
+      "midnight": "เที่ยงคืน",
+      "synthwave": "Synthwave",
+      "lavender": "ลาเวนเดอร์",
+      "mint": "มิ้นต์",
+      "candy": "ลูกอม",
+      "crimson": "แดงเข้ม",
+      "peacock": "นกยูง",
+      "desert": "ทะเลทราย",
+      "berry": "เบอร์รี่",
+      "sage": "เสจ",
+      "ink": "หมึก",
+      "honey": "น้ำผึ้ง"
+    },
+    "shortcutsTitle": "ปุ่มลัด",
+    "shortcutsDesc": "คลิกปุ่มแล้วกดปุ่ม (หรือปุ่มเมาส์) ที่ต้องการใช้ ทางลัดใช้ได้ทุกหน้าจอ",
+    "pressKey": "กดปุ่ม…",
+    "accountTitle": "บัญชีของคุณ",
+    "accountDesc": "เข้าสู่ระบบหรือสร้างบัญชีเพื่อเข้าถึงบันทึกบนอุปกรณ์ใดก็ได้และเข้าร่วมกระดานผู้นำ",
+    "connectedAs": "เชื่อมต่อเป็น",
+    "goToLogin": "ไปหน้าล็อกอิน",
+    "useLoginPage": "ใช้หน้าล็อกอินเพื่อเข้าสู่ระบบหรือสร้างบัญชี",
+    "advancedUnlock": "ปลดล็อกเครื่องกำเนิดถัดไปอัตโนมัติ",
+    "advancedUnlockDesc": "เมื่อเปิด เครื่องกำเนิดถัดไป (ยัง 0 หน่วย) จะปลดล็อกเมื่อมีทรัพยากรพอ ไม่ซื้อหน่วยเพิ่ม",
+    "resetProgress": "รีเซ็ตความคืบหน้า",
+    "resetProgressDesc": "คืนเกมเป็นสถานะเริ่มต้น: ตัวนับ 0 ไม่มีเครื่องกำเนิดและการอัปเกรด บันทึกจะถูกลบ",
+    "resetDialogTitle": "รีเซ็ตความคืบหน้า?",
+    "resetDialogDesc": "แน่ใจหรือว่าต้องการรีเซ็ตความคืบหน้าทั้งหมด? ตัวนับ เครื่องกำเนิดและการอัปเกรดจะกลับเป็นศูนย์"
+  },
+  "auth": {
+    "loading": "กำลังโหลด…",
+    "connectedAs": "เชื่อมต่อเป็น",
+    "signOut": "ออกจากระบบ",
+    "goToGame": "ไปเกม",
+    "forceLoginTitle": "บัญชีเข้าสู่ระบบบนอุปกรณ์อื่นแล้ว",
+    "forceLoginDesc": "บัญชีนี้กำลังใช้บนอุปกรณ์อื่น หากเข้าสู่ระบบที่นี่ อุปกรณ์อื่นจะถูกออกจากระบบและจะเห็นข้อความว่าบัญชีเข้าสู่ระบบที่อื่น",
+    "cancel": "ยกเลิก",
+    "forceLogin": "บังคับเข้าสู่ระบบ",
+    "email": "อีเมล",
+    "emailPlaceholder": "name@example.com",
+    "password": "รหัสผ่าน",
+    "login": "เข้าสู่ระบบ",
+    "signUp": "สร้างบัญชี",
+    "wait": "กรุณารอ…",
+    "noAccount": "ยังไม่มีบัญชี? สร้างบัญชี",
+    "hasAccount": "มีบัญชีแล้ว? เข้าสู่ระบบ"
+  },
+  "common": {
+    "cancel": "ยกเลิก",
+    "confirm": "ยืนยัน",
+    "ok": "ตกลง"
+  },
+  "shortcuts": {
+    "nextMenu": "เมนูถัดไป",
+    "prevMenu": "เมนูก่อนหน้า",
+    "menuGeradores": "ไปเครื่องกำเนิด",
+    "menuMelhorias": "ไปการอัปเกรด",
+    "menuConquistas": "ไปความสำเร็จ",
+    "menuEstatisticas": "ไปสถิติ",
+    "menuConfiguracoes": "ไปการตั้งค่า",
+    "scrollTop": "เลื่อนขึ้นบน",
+    "scrollBottom": "เลื่อนลงล่าง"
+  },
+  "generators": {
+    "generatorN": "เครื่องกำเนิด {{n}}",
+    "unlockToProduce": "ปลดล็อกเพื่อเริ่มผลิต",
+    "costToUnlock": "ต้นทุนปลดล็อก",
+    "fragments": "เศษ",
+    "quantity": "จำนวน",
+    "milestone": "จุดหมาย",
+    "milestoneProgress": "ความคืบหน้าจุดหมาย",
+    "totalGenerators": "เครื่องกำเนิดรวม",
+    "time": "เวลา",
+    "cycle": "รอบ",
+    "continuous": "ต่อเนื่อง",
+    "resource": "ทรัพยากร",
+    "price": "ราคา",
+    "generatedAutomatically": "สร้างอัตโนมัติ",
+    "automatic": "อัตโนมัติ",
+    "buy": "ซื้อ"
+  },
+  "improvements": {
+    "upgradePoints": "คะแนนอัปเกรด",
+    "perGenerator": "ต่อเครื่องกำเนิด",
+    "global": "ทั่วทั้งเกม",
+    "production": "การผลิต",
+    "level": "ระดับ",
+    "multiplier": "ตัวคูณ",
+    "next": "ถัดไป",
+    "buy": "ซื้อ",
+    "frag": "เศษ",
+    "speed": "ความเร็ว",
+    "currentCycle": "รอบปัจจุบัน",
+    "luck": "โชค",
+    "currentChance": "โอกาสปัจจุบัน",
+    "nextChance": "โอกาสถัดไป",
+    "luckEffect": "ผลโชค",
+    "multOnCrit": "ตัวคูณเมื่อคริติคอล",
+    "globalProduction": "การผลิตทั่วทั้งเกม",
+    "globalProductionDesc": "x2 ทุกระดับ",
+    "globalSpeed": "ความเร็วทั่วทั้งเกม",
+    "globalSpeedDesc": "−10% ทุกระดับ",
+    "cycleFactor": "ตัวประกอบรอบปัจจุบัน",
+    "generatorPrice": "ราคาเครื่องกำเนิด",
+    "generatorPriceDesc": "−5% ทุกระดับ",
+    "currentReduction": "การลดปัจจุบัน",
+    "nextReduction": "ถัดไป",
+    "unlockGeneratorsHint": "ปลดล็อกเครื่องกำเนิดในหน้าเครื่องกำเนิดเพื่อเห็นการอัปเกรดที่นี่"
+  },
+  "achievements": {
+    "totalPoints": "คะแนนรวม",
+    "ofAchievements": "จาก {{total}} ความสำเร็จ",
+    "emptyCategory": "ยังไม่มีความสำเร็จในหมวดนี้",
+    "unlocked": "ปลดล็อกแล้ว",
+    "locked": "ยังไม่ปลดล็อก",
+    "categories": {
+      "primeiros-passos": "ก้าวแรก",
+      "recurso": "ทรัพยากร",
+      "unidades-geradores": "หน่วยเครื่องกำเนิด",
+      "gerador-especifico": "เครื่องกำเนิดเฉพาะ",
+      "producao-total": "การผลิตรวม",
+      "tempo-jogo": "เวลาเล่น",
+      "compras-manuais": "ซื้อด้วยมือ",
+      "melhorias-producao": "การอัปเกรดการผลิต",
+      "melhorias-velocidade": "การอัปเกรดความเร็ว"
+    },
+    "primeiro-gerador": {
+      "name": "เครื่องกำเนิดแรก",
+      "description": "ปลดล็อกเครื่องกำเนิด 1"
+    },
+    "primeira-melhoria": {
+      "name": "การอัปเกรดแรก",
+      "description": "ซื้อการอัปเกรดการผลิตหนึ่งรายการ"
+    },
+    "primeira-velocidade": {
+      "name": "เร็วขึ้น",
+      "description": "ซื้อการอัปเกรดความเร็วหนึ่งรายการ"
+    },
+    "rec-100": {
+      "name": "ทรัพยากรหนึ่งร้อย",
+      "description": "สะสมทรัพยากร 100"
+    },
+    "rec-1e3": {
+      "name": "ทรัพยากรหนึ่งพัน",
+      "description": "สะสมทรัพยากร 1,000"
+    },
+    "rec-1e4": {
+      "name": "หนึ่งหมื่น",
+      "description": "สะสมทรัพยากร 10,000"
+    },
+    "rec-1e5": {
+      "name": "หนึ่งแสน",
+      "description": "สะสมทรัพยากร 100,000"
+    },
+    "rec-1e6": {
+      "name": "หนึ่งล้าน",
+      "description": "สะสมทรัพยากร 1 ล้าน"
+    },
+    "rec-1e7": {
+      "name": "สิบล้าน",
+      "description": "สะสมทรัพยากร 10 ล้าน"
+    },
+    "rec-1e8": {
+      "name": "หนึ่งร้อยล้าน",
+      "description": "สะสมทรัพยากร 100 ล้าน"
+    },
+    "rec-1e9": {
+      "name": "พันล้าน",
+      "description": "สะสมทรัพยากร 1 พันล้าน"
+    },
+    "rec-1e10": {
+      "name": "หมื่นล้าน",
+      "description": "สะสมทรัพยากร 10 พันล้าน"
+    },
+    "rec-1e11": {
+      "name": "แสนล้าน",
+      "description": "สะสมทรัพยากร 100 พันล้าน"
+    },
+    "rec-1e12": {
+      "name": "ล้านล้าน",
+      "description": "สะสมทรัพยากร 1 ล้านล้าน"
+    },
+    "unid-10": {
+      "name": "สิบหน่วย",
+      "description": "มีหน่วยเครื่องกำเนิดรวม 10"
+    },
+    "unid-50": {
+      "name": "ห้าสิบหน่วย",
+      "description": "มีหน่วยเครื่องกำเนิดรวม 50"
+    },
+    "unid-100": {
+      "name": "หนึ่งร้อยหน่วย",
+      "description": "มีหน่วยเครื่องกำเนิดรวม 100"
+    },
+    "g10": {
+      "name": "เครื่องกำเนิด 10",
+      "description": "ปลดล็อกเครื่องกำเนิด 10"
+    },
+    "g20": {
+      "name": "เครื่องกำเนิด 20",
+      "description": "ปลดล็อกเครื่องกำเนิด 20"
+    },
+    "g100": {
+      "name": "เครื่องกำเนิดสุดท้าย",
+      "description": "ปลดล็อกเครื่องกำเนิด 100"
+    },
+    "prod-1e6": {
+      "name": "การผลิต: 1M",
+      "description": "ผลิตรวม 1 ล้าน (ตลอด)"
+    },
+    "prod-1e9": {
+      "name": "การผลิต: 1B",
+      "description": "ผลิตรวม 1 พันล้าน (ตลอด)"
+    },
+    "tempo-1h": {
+      "name": "หนึ่งชั่วโมง",
+      "description": "เล่นรวม 1 ชั่วโมง"
+    },
+    "tempo-24h": {
+      "name": "หนึ่งวัน",
+      "description": "เล่นรวม 24 ชั่วโมง"
+    },
+    "comp-10": {
+      "name": "ผู้ซื้อขยัน",
+      "description": "ซื้อเครื่องกำเนิด 10 ตัวด้วยมือ (คลิก)"
+    },
+    "comp-1k": {
+      "name": "ปรมาจารย์คลิก",
+      "description": "ซื้อเครื่องกำเนิด 1,000 ตัวด้วยมือ (คลิก)"
+    },
+    "melh-10": {
+      "name": "สิบการอัปเกรด",
+      "description": "ซื้อการอัปเกรดการผลิตรวม 10 รายการ"
+    },
+    "vel-10": {
+      "name": "สิบความเร็ว",
+      "description": "ซื้อการอัปเกรดความเร็วรวม 10 รายการ"
+    }
+  },
+  "notifications": {
+    "title": "การแจ้งเตือน",
+    "empty": "ไม่มีการแจ้งเตือน",
+    "markAllRead": "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด",
+    "clearHistory": "ล้างประวัติ"
+  },
+  "stats": {
+    "summary": "สรุปเกมของคุณ",
+    "summaryDesc": "ตัวเลขความคืบหน้าโดยรวม (รีเซ็ตเมื่อคุณรีเซ็ต)",
+    "currentResource": "ทรัพยากรปัจจุบัน",
+    "totalProduced": "ผลิตรวม",
+    "playTime": "เวลาเล่น",
+    "firstSession": "เซสชันแรก",
+    "manualPurchases": "เครื่องกำเนิดที่ซื้อ (ด้วยมือ)",
+    "autoProduced": "เครื่องกำเนิดที่ผลิต (อัตโนมัติ)",
+    "productionUpgrades": "การอัปเกรดการผลิต",
+    "speedUpgrades": "การอัปเกรดความเร็ว",
+    "timesPerGenerator": "เวลาต่อเครื่องกำเนิด",
+    "timesPerGeneratorDesc": "เวลาตั้งแต่เริ่มจนแต่ละเครื่องกำเนิดปลดล็อกและเวลาที่อยู่แต่ละระดับ การปลดล็อกจากนี้จะถูกบันทึก",
+    "timeToUnlock": "เวลาปลดล็อก",
+    "timeInPreviousTier": "เฉพาะเวลาในระดับก่อน (เครื่องกำเนิด {{n}})",
+    "bonusHits": "การชนทรัพยากรโบนัส (โชค)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "บัญชีของคุณเข้าสู่ระบบบนอุปกรณ์อื่นแล้ว",
+    "upgradePointsTitle": "ได้คะแนนอัปเกรด!",
+    "upgradePointsDesc": "คุณถึงจุดหมายใหม่และได้ {{count}} คะแนนอัปเกรด!"
+  }
+}

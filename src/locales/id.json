@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "Selamat datang di Breaking Eternity",
+    "welcomeP1": "Ini adalah game <strong>incremental</strong> (idle): Anda mengumpulkan sumber daya, membeli generator yang menghasilkan lebih banyak sumber daya, dan membuka peningkatan. Angka bisa sangat besar — jutaan, miliaran, dan seterusnya.",
+    "welcomeP2": "Untuk menangani angka sebesar itu, game menggunakan pustaka <strong>break_eternity.js</strong>, yang memungkinkan operasi dengan nilai jauh melampaui yang didukung JavaScript asli (notasi ilmiah, sufiks seperti M, B, T, Q dan huruf).",
+    "welcomeP3": "<strong>Tujuan</strong>nya adalah mencapai batas pustaka ini — angka terbesar yang dapat diwakilinya. Klaim sumber daya pertama Anda di bawah dan mulailah membeli generator. Selamat bermain!",
+    "firstResource": "Klaim sumber daya pertama",
+    "offlineTitle": "Penghasilan offline",
+    "offlineGain": "Anda mendapat {{amount}} saat offline.",
+    "offlineTime": "Waktu tidak aktif"
+  },
+  "nav": {
+    "geradores": "Generator",
+    "melhorias": "Peningkatan",
+    "conquistas": "Pencapaian",
+    "estatisticas": "Statistik",
+    "configuracoes": "Pengaturan"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "Umum",
+      "temas": "Tema",
+      "atalhos": "Pintasan",
+      "conta": "Akun",
+      "avancado": "Opsi lanjutan"
+    },
+    "language": "Bahasa",
+    "languageDesc": "Mengubah bahasa antarmuka game.",
+    "clickSound": "Suara klik",
+    "clickSoundDesc": "Memutar suara klik saat membeli generator/peningkatan dan berpindah menu.",
+    "clickVolume": "Volume klik",
+    "clickVolumeLabel": "Volume suara klik",
+    "fpsCounter": "Tampilkan penghitung FPS",
+    "fpsCounterDesc": "Menampilkan frame per detik di pojok kanan atas game.",
+    "fullscreen": "Layar penuh",
+    "fullscreenDesc": "Menampilkan game layar penuh di browser. Gunakan Esc atau tombol untuk keluar.",
+    "saveProgress": "Simpan progres",
+    "saveProgressDescBefore": "Game menyimpan otomatis setiap",
+    "saveProgressDescAfter": "detik. Anda bisa paksa simpan di sini.",
+    "cloudSaveInterval": "Interval simpan cloud",
+    "cloudSaveHint": "Lebih rendah = Simpan lebih sering. Lebih tinggi = Penggunaan jaringan lebih sedikit.",
+    "lastSave": "Simpan terakhir",
+    "saveNow": "Simpan sekarang",
+    "never": "Tidak pernah",
+    "downloadDesktop": "Unduh untuk desktop",
+    "downloadDesktopDesc": "Pasang game di PC atau Mac dan main tanpa membuka browser.",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "Kembalikan pengaturan default",
+    "restoreDefaultsDesc": "Mengembalikan opsi Umum, Tema dan Pintasan ke default game.",
+    "exitGame": "Keluar dari game",
+    "exitGameDesc": "Menyimpan progres dan menutup game.",
+    "exit": "Keluar",
+    "themeTitle": "Tema visual",
+    "themeDesc": "Pilih tampilan antarmuka. Semua opsi tersedia.",
+    "themes": {
+      "light": "Terang",
+      "dark": "Gelap",
+      "high-contrast": "Kontras Tinggi (Gelap)",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "Vintage",
+      "terminal": "Terminal",
+      "nord": "Nord",
+      "dracula": "Dracula",
+      "sepia": "Sepia",
+      "ocean": "Samudra",
+      "forest": "Hutan",
+      "sunset": "Matahari terbenam",
+      "rose": "Mawar",
+      "coffee": "Kopi",
+      "midnight": "Tengah malam",
+      "synthwave": "Synthwave",
+      "lavender": "Lavender",
+      "mint": "Mint",
+      "candy": "Permen",
+      "crimson": "Merah tua",
+      "peacock": "Merak",
+      "desert": "Gurun",
+      "berry": "Berry",
+      "sage": "Sage",
+      "ink": "Tinta",
+      "honey": "Madu"
+    },
+    "shortcutsTitle": "Tombol pintasan",
+    "shortcutsDesc": "Klik tombol lalu tekan tombol (atau tombol mouse) yang ingin digunakan. Pintasan berfungsi di layar mana pun.",
+    "pressKey": "Tekan tombol…",
+    "accountTitle": "Akun Anda",
+    "accountDesc": "Masuk atau buat akun untuk mengakses simpanan di perangkat mana pun dan bergabung papan peringkat.",
+    "connectedAs": "Terhubung sebagai",
+    "goToLogin": "Ke halaman masuk",
+    "useLoginPage": "Gunakan halaman masuk untuk masuk atau buat akun.",
+    "advancedUnlock": "Buka kunci generator berikut otomatis",
+    "advancedUnlockDesc": "Saat diaktifkan, generator berikut (masih 0 unit) akan terbuka saat Anda punya sumber daya cukup. Tidak membeli unit tambahan.",
+    "resetProgress": "Atur ulang progres",
+    "resetProgressDesc": "Mengembalikan game ke keadaan awal: penghitung 0, tanpa generator dan peningkatan. Simpanan akan dihapus.",
+    "resetDialogTitle": "Atur ulang progres?",
+    "resetDialogDesc": "Yakin ingin mengatur ulang semua progres? Penghitung, generator dan peningkatan akan kembali ke nol."
+  },
+  "auth": {
+    "loading": "Memuat…",
+    "connectedAs": "Terhubung sebagai",
+    "signOut": "Keluar",
+    "goToGame": "Ke game",
+    "forceLoginTitle": "Akun sudah masuk di perangkat lain",
+    "forceLoginDesc": "Akun ini sedang dipakai di perangkat lain. Jika masuk di sini, perangkat lain akan keluar dan akan melihat pesan bahwa akun masuk di tempat lain.",
+    "cancel": "Batal",
+    "forceLogin": "Paksa masuk",
+    "email": "Email",
+    "emailPlaceholder": "name@example.com",
+    "password": "Kata sandi",
+    "login": "Masuk",
+    "signUp": "Buat akun",
+    "wait": "Harap tunggu…",
+    "noAccount": "Belum punya akun? Buat akun",
+    "hasAccount": "Sudah punya akun? Masuk"
+  },
+  "common": {
+    "cancel": "Batal",
+    "confirm": "Konfirmasi",
+    "ok": "OK"
+  },
+  "shortcuts": {
+    "nextMenu": "Menu berikutnya",
+    "prevMenu": "Menu sebelumnya",
+    "menuGeradores": "Ke Generator",
+    "menuMelhorias": "Ke Peningkatan",
+    "menuConquistas": "Ke Pencapaian",
+    "menuEstatisticas": "Ke Statistik",
+    "menuConfiguracoes": "Ke Pengaturan",
+    "scrollTop": "Gulir ke atas",
+    "scrollBottom": "Gulir ke bawah"
+  },
+  "generators": {
+    "generatorN": "Generator {{n}}",
+    "unlockToProduce": "Buka kunci untuk mulai memproduksi",
+    "costToUnlock": "Biaya buka kunci",
+    "fragments": "Fragment",
+    "quantity": "Jumlah",
+    "milestone": "Tonggak",
+    "milestoneProgress": "Progres tonggak",
+    "totalGenerators": "Total generator",
+    "time": "Waktu",
+    "cycle": "Siklus",
+    "continuous": "Terus-menerus",
+    "resource": "Sumber daya",
+    "price": "Harga",
+    "generatedAutomatically": "Dihasilkan otomatis",
+    "automatic": "Otomatis",
+    "buy": "Beli"
+  },
+  "improvements": {
+    "upgradePoints": "Poin Peningkatan",
+    "perGenerator": "Per generator",
+    "global": "Global",
+    "production": "Produksi",
+    "level": "Level",
+    "multiplier": "Pengali",
+    "next": "Berikutnya",
+    "buy": "Beli",
+    "frag": "frag",
+    "speed": "Kecepatan",
+    "currentCycle": "Siklus saat ini",
+    "luck": "Keberuntungan",
+    "currentChance": "Peluang saat ini",
+    "nextChance": "Peluang berikutnya",
+    "luckEffect": "Efek keberuntungan",
+    "multOnCrit": "Pengali saat krit",
+    "globalProduction": "Produksi global",
+    "globalProductionDesc": "x2 per level",
+    "globalSpeed": "Kecepatan global",
+    "globalSpeedDesc": "−10% per level",
+    "cycleFactor": "Faktor siklus saat ini",
+    "generatorPrice": "Harga generator",
+    "generatorPriceDesc": "−5% per level",
+    "currentReduction": "Pengurangan saat ini",
+    "nextReduction": "Berikutnya",
+    "unlockGeneratorsHint": "Buka kunci generator di halaman Generator untuk melihat peningkatan di sini."
+  },
+  "achievements": {
+    "totalPoints": "Total poin",
+    "ofAchievements": "dari {{total}} pencapaian",
+    "emptyCategory": "Belum ada pencapaian di kategori ini.",
+    "unlocked": "Terbuka",
+    "locked": "Terkunci",
+    "categories": {
+      "primeiros-passos": "Langkah pertama",
+      "recurso": "Sumber daya",
+      "unidades-geradores": "Unit generator",
+      "gerador-especifico": "Generator spesifik",
+      "producao-total": "Produksi total",
+      "tempo-jogo": "Waktu bermain",
+      "compras-manuais": "Pembelian manual",
+      "melhorias-producao": "Peningkatan produksi",
+      "melhorias-velocidade": "Peningkatan kecepatan"
+    },
+    "primeiro-gerador": {
+      "name": "Generator pertama",
+      "description": "Buka kunci Generator 1"
+    },
+    "primeira-melhoria": {
+      "name": "Peningkatan pertama",
+      "description": "Beli satu peningkatan produksi"
+    },
+    "primeira-velocidade": {
+      "name": "Lebih cepat",
+      "description": "Beli satu peningkatan kecepatan"
+    },
+    "rec-100": {
+      "name": "Seratus sumber daya",
+      "description": "Kumpulkan 100 sumber daya"
+    },
+    "rec-1e3": {
+      "name": "Seribu sumber daya",
+      "description": "Kumpulkan 1.000 sumber daya"
+    },
+    "rec-1e4": {
+      "name": "Sepuluh ribu",
+      "description": "Kumpulkan 10.000 sumber daya"
+    },
+    "rec-1e5": {
+      "name": "Seratus ribu",
+      "description": "Kumpulkan 100.000 sumber daya"
+    },
+    "rec-1e6": {
+      "name": "Satu juta",
+      "description": "Kumpulkan 1 juta sumber daya"
+    },
+    "rec-1e7": {
+      "name": "Sepuluh juta",
+      "description": "Kumpulkan 10 juta sumber daya"
+    },
+    "rec-1e8": {
+      "name": "Seratus juta",
+      "description": "Kumpulkan 100 juta sumber daya"
+    },
+    "rec-1e9": {
+      "name": "Satu miliar",
+      "description": "Kumpulkan 1 miliar sumber daya"
+    },
+    "rec-1e10": {
+      "name": "Sepuluh miliar",
+      "description": "Kumpulkan 10 miliar sumber daya"
+    },
+    "rec-1e11": {
+      "name": "Seratus miliar",
+      "description": "Kumpulkan 100 miliar sumber daya"
+    },
+    "rec-1e12": {
+      "name": "Satu triliun",
+      "description": "Kumpulkan 1 triliun sumber daya"
+    },
+    "unid-10": {
+      "name": "Sepuluh unit",
+      "description": "Memiliki 10 total unit generator"
+    },
+    "unid-50": {
+      "name": "Lima puluh unit",
+      "description": "Memiliki 50 total unit generator"
+    },
+    "unid-100": {
+      "name": "Seratus unit",
+      "description": "Memiliki 100 total unit generator"
+    },
+    "g10": {
+      "name": "Generator 10",
+      "description": "Buka kunci Generator 10"
+    },
+    "g20": {
+      "name": "Generator 20",
+      "description": "Buka kunci Generator 20"
+    },
+    "g100": {
+      "name": "Generator terakhir",
+      "description": "Buka kunci Generator 100"
+    },
+    "prod-1e6": {
+      "name": "Produksi: 1J",
+      "description": "Produksi total 1 juta (seumur hidup)"
+    },
+    "prod-1e9": {
+      "name": "Produksi: 1M",
+      "description": "Produksi total 1 miliar (seumur hidup)"
+    },
+    "tempo-1h": {
+      "name": "Satu jam",
+      "description": "Bermain total 1 jam"
+    },
+    "tempo-24h": {
+      "name": "Satu hari",
+      "description": "Bermain total 24 jam"
+    },
+    "comp-10": {
+      "name": "Pembeli tekun",
+      "description": "Beli 10 generator secara manual (klik)"
+    },
+    "comp-1k": {
+      "name": "Ahli klik",
+      "description": "Beli 1.000 generator secara manual (klik)"
+    },
+    "melh-10": {
+      "name": "Sepuluh peningkatan",
+      "description": "Beli total 10 peningkatan produksi"
+    },
+    "vel-10": {
+      "name": "Sepuluh kecepatan",
+      "description": "Beli total 10 peningkatan kecepatan"
+    }
+  },
+  "notifications": {
+    "title": "Notifikasi",
+    "empty": "Tidak ada notifikasi",
+    "markAllRead": "Tandai semua sudah dibaca",
+    "clearHistory": "Hapus riwayat"
+  },
+  "stats": {
+    "summary": "Ringkasan game Anda",
+    "summaryDesc": "Angka progres keseluruhan (diatur ulang saat Anda atur ulang).",
+    "currentResource": "Sumber daya saat ini",
+    "totalProduced": "Total diproduksi",
+    "playTime": "Waktu bermain",
+    "firstSession": "Sesi pertama",
+    "manualPurchases": "Generator dibeli (manual)",
+    "autoProduced": "Generator diproduksi (otomatis)",
+    "productionUpgrades": "Peningkatan produksi",
+    "speedUpgrades": "Peningkatan kecepatan",
+    "timesPerGenerator": "Waktu per generator",
+    "timesPerGeneratorDesc": "Waktu dari awal sampai setiap generator terbuka dan waktu di setiap tingkatan. Pembukaan dari sekarang akan dicatat.",
+    "timeToUnlock": "waktu buka kunci",
+    "timeInPreviousTier": "Hanya waktu di tingkatan sebelumnya (Generator {{n}})",
+    "bonusHits": "Hit sumber daya bonus (keberuntungan)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "Akun Anda masuk di perangkat lain.",
+    "upgradePointsTitle": "Dapat Poin Peningkatan!",
+    "upgradePointsDesc": "Anda mencapai tonggak baru dan mendapat {{count}} Poin Peningkatan!"
+  }
+}

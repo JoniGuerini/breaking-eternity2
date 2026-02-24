@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "Bem-vindo ao Breaking Eternity",
+    "welcomeP1": "Este é um jogo <strong>incremental</strong> (idle): recolhes recurso, compras geradores que produzem mais recurso e desbloqueias melhorias. Os números podem ficar enormes — milhões, milhares de milhões e além.",
+    "welcomeP2": "Para lidar com números tão grandes, o jogo usa a biblioteca <strong>break_eternity.js</strong>, que permite operar com valores muito além do que o JavaScript nativo suporta (notação científica, sufixos como M, B, T, Q e letras).",
+    "welcomeP3": "O <strong>objetivo</strong> é atingir o limite desta biblioteca — o maior número que consegue representar. Reclama o teu primeiro recurso abaixo e começa a comprar geradores. Diverta-te!",
+    "firstResource": "Reclamar primeiro recurso",
+    "offlineTitle": "Ganho offline",
+    "offlineGain": "Ganhaste {{amount}} enquanto estavas offline.",
+    "offlineTime": "Tempo ausente"
+  },
+  "nav": {
+    "geradores": "Geradores",
+    "melhorias": "Melhorias",
+    "conquistas": "Conquistas",
+    "estatisticas": "Estatísticas",
+    "configuracoes": "Definições"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "Geral",
+      "temas": "Temas",
+      "atalhos": "Atalhos",
+      "conta": "Conta",
+      "avancado": "Opções avançadas"
+    },
+    "language": "Idioma",
+    "languageDesc": "Altera o idioma da interface do jogo.",
+    "clickSound": "Som de clique",
+    "clickSoundDesc": "Reproduz um clique ao comprar geradores/melhorias e ao mudar de menu.",
+    "clickVolume": "Volume do clique",
+    "clickVolumeLabel": "Volume do som de clique",
+    "fpsCounter": "Mostrar contador de FPS",
+    "fpsCounterDesc": "Mostra os fotogramas por segundo no canto superior direito do jogo.",
+    "fullscreen": "Ecrã inteiro",
+    "fullscreenDesc": "Coloca o jogo em ecrã inteiro no browser. Usa Esc ou o botão para sair.",
+    "saveProgress": "Guardar progresso",
+    "saveProgressDescBefore": "O jogo guarda automaticamente de",
+    "saveProgressDescAfter": "em segundos. Podes forçar uma gravação aqui.",
+    "cloudSaveInterval": "Intervalo de gravação na nuvem",
+    "cloudSaveHint": "Mais baixo = gravações mais frequentes. Mais alto = menos uso de rede.",
+    "lastSave": "Última gravação",
+    "saveNow": "Guardar agora",
+    "never": "Nunca",
+    "downloadDesktop": "Transferir para desktop",
+    "downloadDesktopDesc": "Instala o jogo no teu PC ou Mac e joga sem abrir o browser.",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "Restaurar definições predefinidas",
+    "restoreDefaultsDesc": "Reverte as opções Geral, Temas e Atalhos para as predefinições do jogo.",
+    "exitGame": "Sair do jogo",
+    "exitGameDesc": "Guarda o progresso e fecha o jogo.",
+    "exit": "Sair",
+    "themeTitle": "Tema visual",
+    "themeDesc": "Escolhe o aspeto da interface. Todas as opções estão disponíveis.",
+    "themes": {
+      "light": "Claro",
+      "dark": "Escuro",
+      "high-contrast": "Alto contraste (escuro)",
+      "wow": "World of Warcraft",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "Vintage",
+      "terminal": "Terminal",
+      "nord": "Nord",
+      "dracula": "Dracula",
+      "sepia": "Sépia",
+      "ocean": "Oceano",
+      "forest": "Floresta",
+      "sunset": "Pôr do sol",
+      "rose": "Rosa",
+      "coffee": "Café",
+      "midnight": "Meia-noite",
+      "synthwave": "Synthwave",
+      "lavender": "Lavanda",
+      "mint": "Menta",
+      "candy": "Rebuçado",
+      "crimson": "Carmesim",
+      "peacock": "Pavão",
+      "desert": "Deserto",
+      "berry": "Baga",
+      "sage": "Sálvia",
+      "ink": "Tinta",
+      "honey": "Mel"
+    },
+    "shortcutsTitle": "Teclas de atalho",
+    "shortcutsDesc": "Clica no botão e prime a tecla (ou botão do rato) que quiseres usar. Os atalhos funcionam em qualquer ecrã.",
+    "pressKey": "Prime uma tecla...",
+    "accountTitle": "A tua conta",
+    "accountDesc": "Inicia sessão ou cria uma conta para aceder às tuas gravações em qualquer dispositivo e juntar-te ao ranking.",
+    "connectedAs": "Ligado como",
+    "goToLogin": "Ir para a página de início de sessão",
+    "useLoginPage": "Usa a página de início de sessão para entrar ou criar uma conta.",
+    "advancedUnlock": "Desbloquear automaticamente o próximo gerador",
+    "advancedUnlockDesc": "Quando ativado, o próximo gerador (ainda com 0 unidades) é desbloqueado assim que tiveres recurso suficiente. Não compra unidades extra.",
+    "resetProgress": "Repor progresso",
+    "resetProgressDesc": "Reverte o jogo ao estado inicial: contador a 0, sem geradores nem melhorias. A gravação será apagada.",
+    "resetDialogTitle": "Repor progresso?",
+    "resetDialogDesc": "Tens a certeza que queres repor todo o progresso? O contador, geradores e melhorias voltarão a zero."
+  },
+  "auth": {
+    "loading": "A carregar…",
+    "connectedAs": "Ligado como",
+    "signOut": "Terminar sessão",
+    "goToGame": "Ir para o jogo",
+    "forceLoginTitle": "Conta já iniciada noutro dispositivo",
+    "forceLoginDesc": "Esta conta está a ser usada noutro dispositivo. Se iniciares sessão aqui, o outro dispositivo será desligado e verá uma mensagem de que a conta foi iniciada noutro local.",
+    "cancel": "Cancelar",
+    "forceLogin": "Forçar início de sessão",
+    "email": "E-mail",
+    "emailPlaceholder": "nome@exemplo.com",
+    "password": "Palavra-passe",
+    "login": "Entrar",
+    "signUp": "Criar conta",
+    "wait": "Aguarda, por favor…",
+    "noAccount": "Não tens conta? Criar conta",
+    "hasAccount": "Já tens conta? Entrar"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "ok": "OK"
+  },
+  "shortcuts": {
+    "nextMenu": "Próximo menu",
+    "prevMenu": "Menu anterior",
+    "menuGeradores": "Ir para Geradores",
+    "menuMelhorias": "Ir para Melhorias",
+    "menuConquistas": "Ir para Conquistas",
+    "menuEstatisticas": "Ir para Estatísticas",
+    "menuConfiguracoes": "Ir para Definições",
+    "scrollTop": "Rolar para cima",
+    "scrollBottom": "Rolar para baixo"
+  },
+  "generators": {
+    "generatorN": "Gerador {{n}}",
+    "unlockToProduce": "Desbloquear para começar a produzir",
+    "costToUnlock": "Custo para desbloquear",
+    "fragments": "Fragmentos",
+    "quantity": "Quantidade",
+    "milestone": "Marco",
+    "milestoneProgress": "Progresso do marco",
+    "totalGenerators": "Total de geradores",
+    "time": "Tempo",
+    "cycle": "Ciclo",
+    "continuous": "Contínuo",
+    "resource": "Recurso",
+    "price": "Preço",
+    "generatedAutomatically": "Gerado automaticamente",
+    "automatic": "Automático",
+    "buy": "Comprar"
+  },
+  "improvements": {
+    "upgradePoints": "Pontos de melhoria",
+    "perGenerator": "Por gerador",
+    "global": "Global",
+    "production": "Produção",
+    "level": "Nível",
+    "multiplier": "Multiplicador",
+    "next": "Seguinte",
+    "buy": "Comprar",
+    "frag": "frag",
+    "speed": "Velocidade",
+    "currentCycle": "Ciclo atual",
+    "luck": "Sorte",
+    "currentChance": "Chance atual",
+    "nextChance": "Próxima chance",
+    "luckEffect": "Efeito da sorte",
+    "multOnCrit": "Mult. em crítico",
+    "globalProduction": "Produção global",
+    "globalProductionDesc": "x2 por nível",
+    "globalSpeed": "Velocidade global",
+    "globalSpeedDesc": "−10% por nível",
+    "cycleFactor": "Fator do ciclo atual",
+    "generatorPrice": "Preço do gerador",
+    "generatorPriceDesc": "−5% por nível",
+    "currentReduction": "Redução atual",
+    "nextReduction": "Seguinte",
+    "unlockGeneratorsHint": "Desbloqueia geradores na página Geradores para ver melhorias aqui."
+  },
+  "achievements": {
+    "totalPoints": "Total de pontos",
+    "ofAchievements": "de {{total}} conquistas",
+    "emptyCategory": "Sem conquistas nesta categoria.",
+    "unlocked": "Desbloqueada",
+    "locked": "Bloqueada",
+    "categories": {
+      "primeiros-passos": "Primeiros passos",
+      "recurso": "Recurso",
+      "unidades-geradores": "Unidades de geradores",
+      "gerador-especifico": "Geradores específicos",
+      "producao-total": "Produção total",
+      "tempo-jogo": "Tempo de jogo",
+      "compras-manuais": "Compras manuais",
+      "melhorias-producao": "Melhorias de produção",
+      "melhorias-velocidade": "Melhorias de velocidade"
+    },
+    "primeiro-gerador": {
+      "name": "Primeiro gerador",
+      "description": "Desbloquear Gerador 1"
+    },
+    "primeira-melhoria": {
+      "name": "Primeira melhoria",
+      "description": "Comprar uma melhoria de produção"
+    },
+    "primeira-velocidade": {
+      "name": "Mais rápido",
+      "description": "Comprar uma melhoria de velocidade"
+    },
+    "rec-100": {
+      "name": "Cem recurso",
+      "description": "Acumular 100 recurso"
+    },
+    "rec-1e3": {
+      "name": "Mil recurso",
+      "description": "Acumular 1.000 recurso"
+    },
+    "rec-1e4": {
+      "name": "Dez mil",
+      "description": "Acumular 10.000 recurso"
+    },
+    "rec-1e5": {
+      "name": "Cem mil",
+      "description": "Acumular 100.000 recurso"
+    },
+    "rec-1e6": {
+      "name": "Milhão",
+      "description": "Acumular 1 milhão de recurso"
+    },
+    "rec-1e7": {
+      "name": "Dez milhões",
+      "description": "Acumular 10 milhões de recurso"
+    },
+    "rec-1e8": {
+      "name": "Cem milhões",
+      "description": "Acumular 100 milhões de recurso"
+    },
+    "rec-1e9": {
+      "name": "Mil milhões",
+      "description": "Acumular 1 mil milhões de recurso"
+    },
+    "rec-1e10": {
+      "name": "Dez mil milhões",
+      "description": "Acumular 10 mil milhões de recurso"
+    },
+    "rec-1e11": {
+      "name": "Cem mil milhões",
+      "description": "Acumular 100 mil milhões de recurso"
+    },
+    "rec-1e12": {
+      "name": "Bilião",
+      "description": "Acumular 1 bilião de recurso"
+    },
+    "unid-10": {
+      "name": "Dez unidades",
+      "description": "Ter 10 unidades totais de geradores"
+    },
+    "unid-50": {
+      "name": "Cinquenta unidades",
+      "description": "Ter 50 unidades totais de geradores"
+    },
+    "unid-100": {
+      "name": "Cem unidades",
+      "description": "Ter 100 unidades totais de geradores"
+    },
+    "g10": {
+      "name": "Gerador 10",
+      "description": "Desbloquear Gerador 10"
+    },
+    "g20": {
+      "name": "Gerador 20",
+      "description": "Desbloquear Gerador 20"
+    },
+    "g100": {
+      "name": "Último gerador",
+      "description": "Desbloquear Gerador 100"
+    },
+    "prod-1e6": {
+      "name": "Produção: 1M",
+      "description": "Produzir 1 milhão no total (vida útil)"
+    },
+    "prod-1e9": {
+      "name": "Produção: 1B",
+      "description": "Produzir 1 mil milhões no total (vida útil)"
+    },
+    "tempo-1h": {
+      "name": "Uma hora",
+      "description": "Jogar 1 hora no total"
+    },
+    "tempo-24h": {
+      "name": "Um dia",
+      "description": "Jogar 24 horas no total"
+    },
+    "comp-10": {
+      "name": "Comprador dedicado",
+      "description": "Comprar 10 geradores manualmente (clique)"
+    },
+    "comp-1k": {
+      "name": "Mestre do clique",
+      "description": "Comprar 1.000 geradores manualmente (clique)"
+    },
+    "melh-10": {
+      "name": "Dez melhorias",
+      "description": "Comprar 10 melhorias de produção no total"
+    },
+    "vel-10": {
+      "name": "Dez velocidades",
+      "description": "Comprar 10 melhorias de velocidade no total"
+    }
+  },
+  "notifications": {
+    "title": "Notificações",
+    "empty": "Sem notificações",
+    "markAllRead": "Marcar todas como lidas",
+    "clearHistory": "Limpar histórico"
+  },
+  "stats": {
+    "summary": "Resumo do teu jogo",
+    "summaryDesc": "Números gerais de progresso (repostos quando repões).",
+    "currentResource": "Recurso atual",
+    "totalProduced": "Total produzido",
+    "playTime": "Tempo de jogo",
+    "firstSession": "Primeira sessão",
+    "manualPurchases": "Geradores comprados (manual)",
+    "autoProduced": "Geradores produzidos (auto)",
+    "productionUpgrades": "Melhorias de produção",
+    "speedUpgrades": "Melhorias de velocidade",
+    "timesPerGenerator": "Tempos por gerador",
+    "timesPerGeneratorDesc": "Tempo desde o início até cada gerador ser desbloqueado e tempo em cada nível. Desbloqueios a partir de agora serão registados.",
+    "timeToUnlock": "tempo até desbloquear",
+    "timeInPreviousTier": "Tempo apenas no nível anterior (Gerador {{n}})",
+    "bonusHits": "Golpes de recurso bónus (sorte)"
+  },
+  "toasts": {
+    "sessionOtherDevice": "A tua conta foi iniciada noutro dispositivo.",
+    "upgradePointsTitle": "Pontos de Melhoria Ganhos!",
+    "upgradePointsDesc": "Atingiste novos marcos e ganhaste {{count}} Pontos de Melhoria!"
+  }
+}

@@ -1,0 +1,341 @@
+{
+  "app": {
+    "title": "Breaking Eternity",
+    "welcomeTitle": "歡迎來到 Breaking Eternity",
+    "welcomeP1": "這是一款<strong>放置</strong>（掛機）遊戲：你收集資源、購買產生更多資源的發生器，並解鎖改進。數字可能會變得非常大——百萬、十億甚至更多。",
+    "welcomeP2": "為了處理如此大的數字，遊戲使用 <strong>break_eternity.js</strong> 函式庫，可運算遠超 JavaScript 原生支援的數值（科學記號、M、B、T、Q 等後綴與字母）。",
+    "welcomeP3": "<strong>目標</strong>是達到此函式庫的極限——它能表示的最大數字。在下方領取你的第一份資源並開始購買發生器。祝遊戲愉快！",
+    "firstResource": "領取第一份資源",
+    "offlineTitle": "離線收益",
+    "offlineGain": "離線期間你獲得了 {{amount}}。",
+    "offlineTime": "離開時間"
+  },
+  "nav": {
+    "geradores": "發生器",
+    "melhorias": "改進",
+    "conquistas": "成就",
+    "estatisticas": "統計",
+    "configuracoes": "設定"
+  },
+  "settings": {
+    "tabs": {
+      "geral": "一般",
+      "temas": "主題",
+      "atalhos": "快捷鍵",
+      "conta": "帳戶",
+      "avancado": "進階選項"
+    },
+    "language": "語言",
+    "languageDesc": "變更遊戲介面語言。",
+    "clickSound": "點擊音效",
+    "clickSoundDesc": "購買發生器/改進及切換選單時播放點擊聲。",
+    "clickVolume": "點擊音量",
+    "clickVolumeLabel": "點擊音效音量",
+    "fpsCounter": "顯示 FPS 計數器",
+    "fpsCounterDesc": "在遊戲右上角顯示每秒幀數。",
+    "fullscreen": "全螢幕",
+    "fullscreenDesc": "在瀏覽器中全螢幕顯示遊戲。按 Esc 或按鈕可退出。",
+    "saveProgress": "儲存進度",
+    "saveProgressDescBefore": "遊戲每",
+    "saveProgressDescAfter": "秒自動儲存。你可在此強制儲存。",
+    "cloudSaveInterval": "雲端儲存間隔",
+    "cloudSaveHint": "較低 = 更頻繁儲存。較高 = 較少網路使用。",
+    "lastSave": "上次儲存",
+    "saveNow": "立即儲存",
+    "never": "從未",
+    "downloadDesktop": "下載桌面版",
+    "downloadDesktopDesc": "在 PC 或 Mac 上安裝遊戲，無需開啟瀏覽器即可遊玩。",
+    "windowsExe": "Windows (.exe)",
+    "macDmg": "Mac (.dmg)",
+    "restoreDefaults": "還原預設設定",
+    "restoreDefaultsDesc": "將一般、主題與快捷鍵選項還原為遊戲預設值。",
+    "exitGame": "結束遊戲",
+    "exitGameDesc": "儲存進度並關閉遊戲。",
+    "exit": "結束",
+    "themeTitle": "視覺主題",
+    "themeDesc": "選擇介面外觀。所有選項皆可用。",
+    "themes": {
+      "light": "淺色",
+      "dark": "深色",
+      "high-contrast": "高對比（深色）",
+      "wow": "魔獸世界",
+      "macos": "MacOS",
+      "winxp": "Windows XP",
+      "win95": "Windows 95",
+      "vintage": "復古",
+      "terminal": "終端機",
+      "nord": "Nord",
+      "dracula": "德古拉",
+      "sepia": "懷舊",
+      "ocean": "海洋",
+      "forest": "森林",
+      "sunset": "日落",
+      "rose": "玫瑰",
+      "coffee": "咖啡",
+      "midnight": "午夜",
+      "synthwave": "合成波",
+      "lavender": "薰衣草",
+      "mint": "薄荷",
+      "candy": "糖果",
+      "crimson": "深紅",
+      "peacock": "孔雀",
+      "desert": "沙漠",
+      "berry": "漿果",
+      "sage": "鼠尾草",
+      "ink": "墨色",
+      "honey": "蜂蜜"
+    },
+    "shortcutsTitle": "快捷鍵",
+    "shortcutsDesc": "點擊按鈕並按下你要使用的按鍵（或滑鼠按鈕）。快捷鍵在任何畫面皆有效。",
+    "pressKey": "請按下按鍵…",
+    "accountTitle": "你的帳戶",
+    "accountDesc": "登入或建立帳戶，即可在任何裝置存取你的存檔並加入排行榜。",
+    "connectedAs": "已連線為",
+    "goToLogin": "前往登入頁面",
+    "useLoginPage": "使用登入頁面登入或建立帳戶。",
+    "advancedUnlock": "自動解鎖下一個發生器",
+    "advancedUnlockDesc": "啟用後，當你擁有足夠資源時，下一個發生器（仍為 0 單位）會自動解鎖。不會額外購買單位。",
+    "resetProgress": "重設進度",
+    "resetProgressDesc": "將遊戲還原至初始狀態：計數歸零、無發生器與改進。存檔將被清除。",
+    "resetDialogTitle": "重設進度？",
+    "resetDialogDesc": "確定要重設所有進度嗎？計數、發生器與改進將歸零。"
+  },
+  "auth": {
+    "loading": "載入中…",
+    "connectedAs": "已連線為",
+    "signOut": "登出",
+    "goToGame": "進入遊戲",
+    "forceLoginTitle": "此帳戶已在其他裝置登入",
+    "forceLoginDesc": "此帳戶正在其他裝置使用。若在此登入，另一裝置將被登出並會看到帳戶在其他地方登入的訊息。",
+    "cancel": "取消",
+    "forceLogin": "強制登入",
+    "email": "電子郵件",
+    "emailPlaceholder": "name@example.com",
+    "password": "密碼",
+    "login": "登入",
+    "signUp": "建立帳戶",
+    "wait": "請稍候…",
+    "noAccount": "沒有帳戶？建立帳戶",
+    "hasAccount": "已有帳戶？登入"
+  },
+  "common": {
+    "cancel": "取消",
+    "confirm": "確認",
+    "ok": "確定"
+  },
+  "shortcuts": {
+    "nextMenu": "下一個選單",
+    "prevMenu": "上一個選單",
+    "menuGeradores": "前往發生器",
+    "menuMelhorias": "前往改進",
+    "menuConquistas": "前往成就",
+    "menuEstatisticas": "前往統計",
+    "menuConfiguracoes": "前往設定",
+    "scrollTop": "捲動至頂部",
+    "scrollBottom": "捲動至底部"
+  },
+  "generators": {
+    "generatorN": "發生器 {{n}}",
+    "unlockToProduce": "解鎖後開始生產",
+    "costToUnlock": "解鎖成本",
+    "fragments": "碎片",
+    "quantity": "數量",
+    "milestone": "里程碑",
+    "milestoneProgress": "里程碑進度",
+    "totalGenerators": "發生器總數",
+    "time": "時間",
+    "cycle": "週期",
+    "continuous": "連續",
+    "resource": "資源",
+    "price": "價格",
+    "generatedAutomatically": "自動產生",
+    "automatic": "自動",
+    "buy": "購買"
+  },
+  "improvements": {
+    "upgradePoints": "升級點數",
+    "perGenerator": "每個發生器",
+    "global": "全域",
+    "production": "生產",
+    "level": "等級",
+    "multiplier": "倍率",
+    "next": "下一個",
+    "buy": "購買",
+    "frag": "碎片",
+    "speed": "速度",
+    "currentCycle": "目前週期",
+    "luck": "幸運",
+    "currentChance": "目前機率",
+    "nextChance": "下次機率",
+    "luckEffect": "幸運效果",
+    "multOnCrit": "暴擊倍率",
+    "globalProduction": "全域生產",
+    "globalProductionDesc": "每級 x2",
+    "globalSpeed": "全域速度",
+    "globalSpeedDesc": "每級 −10%",
+    "cycleFactor": "目前週期係數",
+    "generatorPrice": "發生器價格",
+    "generatorPriceDesc": "每級 −5%",
+    "currentReduction": "目前減幅",
+    "nextReduction": "下一個",
+    "unlockGeneratorsHint": "在發生器頁面解鎖發生器後，即可在此看到改進。"
+  },
+  "achievements": {
+    "totalPoints": "總點數",
+    "ofAchievements": "共 {{total}} 項成就",
+    "emptyCategory": "此分類尚無成就。",
+    "unlocked": "已解鎖",
+    "locked": "未解鎖",
+    "categories": {
+      "primeiros-passos": "第一步",
+      "recurso": "資源",
+      "unidades-geradores": "發生器單位",
+      "gerador-especifico": "特定發生器",
+      "producao-total": "總產量",
+      "tempo-jogo": "遊戲時間",
+      "compras-manuais": "手動購買",
+      "melhorias-producao": "生產改進",
+      "melhorias-velocidade": "速度改進"
+    },
+    "primeiro-gerador": {
+      "name": "第一個發生器",
+      "description": "解鎖發生器 1"
+    },
+    "primeira-melhoria": {
+      "name": "第一項改進",
+      "description": "購買一項生產改進"
+    },
+    "primeira-velocidade": {
+      "name": "更快",
+      "description": "購買一項速度改進"
+    },
+    "rec-100": {
+      "name": "一百資源",
+      "description": "累積 100 資源"
+    },
+    "rec-1e3": {
+      "name": "一千資源",
+      "description": "累積 1,000 資源"
+    },
+    "rec-1e4": {
+      "name": "一萬",
+      "description": "累積 10,000 資源"
+    },
+    "rec-1e5": {
+      "name": "十萬",
+      "description": "累積 100,000 資源"
+    },
+    "rec-1e6": {
+      "name": "百萬",
+      "description": "累積 100 萬資源"
+    },
+    "rec-1e7": {
+      "name": "一千萬",
+      "description": "累積 1,000 萬資源"
+    },
+    "rec-1e8": {
+      "name": "一億",
+      "description": "累積 1 億資源"
+    },
+    "rec-1e9": {
+      "name": "十億",
+      "description": "累積 10 億資源"
+    },
+    "rec-1e10": {
+      "name": "一百億",
+      "description": "累積 100 億資源"
+    },
+    "rec-1e11": {
+      "name": "一千億",
+      "description": "累積 1,000 億資源"
+    },
+    "rec-1e12": {
+      "name": "兆",
+      "description": "累積 1 兆資源"
+    },
+    "unid-10": {
+      "name": "十單位",
+      "description": "擁有 10 個發生器單位總數"
+    },
+    "unid-50": {
+      "name": "五十單位",
+      "description": "擁有 50 個發生器單位總數"
+    },
+    "unid-100": {
+      "name": "一百單位",
+      "description": "擁有 100 個發生器單位總數"
+    },
+    "g10": {
+      "name": "發生器 10",
+      "description": "解鎖發生器 10"
+    },
+    "g20": {
+      "name": "發生器 20",
+      "description": "解鎖發生器 20"
+    },
+    "g100": {
+      "name": "最後一個發生器",
+      "description": "解鎖發生器 100"
+    },
+    "prod-1e6": {
+      "name": "產量：100 萬",
+      "description": "總計生產 100 萬（累計）"
+    },
+    "prod-1e9": {
+      "name": "產量：10 億",
+      "description": "總計生產 10 億（累計）"
+    },
+    "tempo-1h": {
+      "name": "一小時",
+      "description": "總計遊玩 1 小時"
+    },
+    "tempo-24h": {
+      "name": "一天",
+      "description": "總計遊玩 24 小時"
+    },
+    "comp-10": {
+      "name": "專心購買者",
+      "description": "手動（點擊）購買 10 個發生器"
+    },
+    "comp-1k": {
+      "name": "點擊大師",
+      "description": "手動（點擊）購買 1,000 個發生器"
+    },
+    "melh-10": {
+      "name": "十項改進",
+      "description": "總計購買 10 項生產改進"
+    },
+    "vel-10": {
+      "name": "十項速度",
+      "description": "總計購買 10 項速度改進"
+    }
+  },
+  "notifications": {
+    "title": "通知",
+    "empty": "尚無通知",
+    "markAllRead": "全部標為已讀",
+    "clearHistory": "清除紀錄"
+  },
+  "stats": {
+    "summary": "你的遊戲摘要",
+    "summaryDesc": "整體進度數字（重設時會歸零）。",
+    "currentResource": "目前資源",
+    "totalProduced": "總產量",
+    "playTime": "遊玩時間",
+    "firstSession": "首次遊玩",
+    "manualPurchases": "手動購買的發生器",
+    "autoProduced": "自動產生的發生器",
+    "productionUpgrades": "生產改進",
+    "speedUpgrades": "速度改進",
+    "timesPerGenerator": "各發生器時間",
+    "timesPerGeneratorDesc": "從開始到解鎖每個發生器的時間及在各階段的停留時間。之後的解鎖將被記錄。",
+    "timeToUnlock": "解鎖所需時間",
+    "timeInPreviousTier": "僅前一階時間（發生器 {{n}}）",
+    "bonusHits": "幸運額外資源命中"
+  },
+  "toasts": {
+    "sessionOtherDevice": "你的帳戶已在其他裝置登入。",
+    "upgradePointsTitle": "獲得升級點數！",
+    "upgradePointsDesc": "你達成新里程碑並獲得 {{count}} 點升級點數！"
+  }
+}

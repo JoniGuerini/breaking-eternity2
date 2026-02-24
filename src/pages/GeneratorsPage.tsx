@@ -1,4 +1,5 @@
 import { useContext, memo, useCallback, useRef, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import Decimal from "break_eternity.js"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -92,6 +93,7 @@ const GeneratorCard = memo(({
   progressoRef
 }: GeneratorCardProps) => {
 
+  const { t } = useTranslation()
   const handleBuy = useCallback(() => {
     if (podeComprar) {
       playClickSound()
@@ -115,15 +117,15 @@ const GeneratorCard = memo(({
       >
         <div className="flex items-center justify-center gap-6 flex-wrap">
           <div className="flex flex-col gap-0.5 text-center">
-            <span className="font-semibold text-lg">Gerador {i + 1}</span>
-            <span className="text-muted-foreground text-sm">Desbloqueie para começar a produzir</span>
+            <span className="font-semibold text-lg">{t("generators.generatorN", { n: i + 1 })}</span>
+            <span className="text-muted-foreground text-sm">{t("generators.unlockToProduce")}</span>
           </div>
           <div className="h-10 w-px bg-border shrink-0" aria-hidden />
           <div className="flex flex-col gap-0.5 text-center">
-            <span className="text-muted-foreground text-xs uppercase tracking-wider">Custo para desbloquear</span>
+            <span className="text-muted-foreground text-xs uppercase tracking-wider">{t("generators.costToUnlock")}</span>
             <div className="flex flex-col items-center">
               <span className={`font-mono text-sm tabular-nums font-semibold ${totalIsGteCusto ? "text-green-600 dark:text-green-500" : "text-destructive"}`}>
-                {formatDecimal(new Decimal(custoRawStr))} Fragmentos
+                {formatDecimal(new Decimal(custoRawStr))} {t("generators.fragments")}
               </span>
             </div>
           </div>
@@ -134,27 +136,27 @@ const GeneratorCard = memo(({
 
   return (
     <Card className="py-3 px-4">
-      <div className="grid grid-cols-[1.0fr_0.9fr_1.1fr_0.7fr_1.0fr_1.2fr_1.2fr_0.9fr] items-center gap-3 min-w-0">
-        <div className="flex flex-col gap-0.5">
-          <span className="font-semibold leading-tight text-sm">Gerador {i + 1}</span>
-          <span className="text-muted-foreground text-[10px] uppercase">Gerador</span>
+      <div className="grid items-center gap-y-3 min-w-0" style={{ gridTemplateColumns: "minmax(0,0.5fr) minmax(0,0.55fr) minmax(0,1.2fr) minmax(0,1.65fr) minmax(0,0.75fr) minmax(0,0.45fr)", columnGap: "1.25rem", rowGap: "0.75rem" }}>
+        <div className="flex flex-col gap-0.5 min-w-0 pr-2">
+          <span className="font-semibold leading-tight text-sm truncate">{t("generators.generatorN", { n: i + 1 })}</span>
+          <span className="text-muted-foreground text-[10px] uppercase truncate">{t("generators.generatorN", { n: i + 1 })}</span>
         </div>
-        <div className="flex flex-col gap-0.5 min-w-0">
+        <div className="flex flex-col gap-0.5 min-w-0 pr-2">
           <span className="font-mono text-sm tabular-nums leading-tight break-all">
             {formatDecimal(new Decimal(countGen))}
           </span>
-          <span className="text-muted-foreground text-[10px] uppercase">Quantidade</span>
+          <span className="text-muted-foreground text-[10px] uppercase">{t("generators.quantity")}</span>
         </div>
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="flex flex-col gap-0.5 min-w-0 cursor-help mt-0.5 pt-0.5">
+            <div className="flex flex-col gap-0.5 min-w-0 max-w-[14rem] cursor-help mt-0.5 pt-0.5 pl-2">
               <div className="flex items-center w-full">
                 <Progress value={progressToNext} className="h-1.5 w-full bg-muted/50" />
               </div>
               <div className="flex justify-between items-center w-full mt-1.5">
-                <span className="text-muted-foreground text-[10px] uppercase truncate">Marco</span>
-                <span className="text-muted-foreground text-[10px] uppercase">+{ptsForNext} pts</span>
+                <span className="text-muted-foreground text-[10px] uppercase truncate">{t("generators.milestone")}</span>
+                <span className="text-muted-foreground text-[10px] uppercase shrink-0">+{ptsForNext} pts</span>
               </div>
             </div>
           </TooltipTrigger>
@@ -162,14 +164,14 @@ const GeneratorCard = memo(({
           <TooltipContent side="top" className="w-[220px] p-0" sideOffset={8}>
             <div className="flex flex-col gap-1.5 px-3 py-2.5 w-full">
               <div className="flex flex-col gap-0.5">
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Progresso do Marco</span>
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{t("generators.milestoneProgress")}</span>
                 <span className="font-mono text-sm tabular-nums leading-none">
                   {formatDecimal(new Decimal(progressInTier))} / {formatDecimal(new Decimal(tierGoal))} <span className="text-green-600 dark:text-green-500 ml-1">(+{ptsForNext} pts)</span>
                 </span>
               </div>
               <div className="h-px bg-border my-0.5" aria-hidden="true" />
               <div className="flex flex-col gap-0.5">
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Total de Geradores</span>
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{t("generators.totalGenerators")}</span>
                 <span className="font-mono text-sm tabular-nums leading-none">
                   {formatDecimal(new Decimal(countGen))} / {formatDecimal(new Decimal(nextThreshold))}
                 </span>
@@ -177,57 +179,52 @@ const GeneratorCard = memo(({
             </div>
           </TooltipContent>
         </Tooltip>
-        <div className="flex flex-col gap-0.5 min-w-0 items-end">
-          <span className="font-mono text-sm tabular-nums leading-tight text-right whitespace-nowrap">
-            {cicloRapido ? "1s" : formatTime(interval)}
-          </span>
-          <span className="text-muted-foreground text-[10px] uppercase text-right">Tempo</span>
+        <div className="flex flex-col gap-0.5 min-w-0 mt-0.5 pt-0.5 pl-2">
+          <div className="h-1.5 w-full max-w-[20rem] overflow-hidden rounded-full">
+            <CycleProgressBar i={i} cicloRapido={cicloRapido} progressoRef={progressoRef} />
+          </div>
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center w-full max-w-[20rem] mt-1.5 gap-2 min-w-0">
+            <span className="font-mono text-[10px] tabular-nums text-left truncate">
+              {cicloRapido ? "1s" : formatTime(interval)}
+            </span>
+            <span className="text-muted-foreground text-[10px] uppercase text-center px-1">
+              {cicloRapido ? t("generators.continuous") : t("generators.cycle")}
+            </span>
+            <span className="font-mono text-[10px] tabular-nums text-right min-w-0 truncate block">
+              +{formatDecimal(new Decimal(countGen * mult).times(cicloRapido ? 1 / interval : 1))}{" "}{produz}{cicloRapido ? "/s" : ""}
+            </span>
+          </div>
         </div>
-        <div className="flex flex-col gap-0.5 min-w-0">
-          <CycleProgressBar i={i} cicloRapido={cicloRapido} progressoRef={progressoRef} />
-          <span className="text-muted-foreground text-[10px] uppercase">
-            {cicloRapido ? "Contínuo" : "Ciclo"}
-          </span>
-        </div>
-        <div className="flex flex-col gap-0.5 min-w-0">
-          <span className="font-mono text-sm tabular-nums leading-tight break-all">
-            +{formatDecimal(new Decimal(countGen * mult).times(cicloRapido ? 1 / interval : 1))}
-            {mult > 1 && <span className="text-green-600 dark:text-green-500 ml-0.5">(x{formatDecimal(new Decimal(mult))})</span>}
-          </span>
-          <span className="text-muted-foreground text-[10px] uppercase">
-            {produz}{cicloRapido ? "/s" : ""}
-          </span>
-        </div>
-        <div className="flex flex-col gap-0.5 min-w-0">
+        <div className="flex flex-col gap-0.5 min-w-0 pl-2">
           {mostraBotaoComprar ? (
             <>
               <div className="flex items-baseline gap-2 whitespace-nowrap">
                 <span className={`font-mono text-sm tabular-nums leading-tight ${totalIsGteCusto ? "text-foreground font-semibold" : "text-destructive font-semibold"}`}>
-                  {formatDecimal(new Decimal(custoRawStr))} Fragmentos
+                  {formatDecimal(new Decimal(custoRawStr))} {t("generators.fragments")}
                 </span>
               </div>
-              <span className="text-muted-foreground text-[10px] uppercase tracking-tight">Preço</span>
+              <span className="text-muted-foreground text-[10px] uppercase tracking-tight">{t("generators.price")}</span>
             </>
           ) : (
             <div className="flex flex-col">
-              <span className="text-muted-foreground text-xs italic">Gerado automaticamente</span>
-              <span className="text-muted-foreground text-[10px] uppercase tracking-tight opacity-0">Preço</span>
+              <span className="text-muted-foreground text-xs italic">{t("generators.generatedAutomatically")}</span>
+              <span className="text-muted-foreground text-[10px] uppercase tracking-tight opacity-0">{t("generators.price")}</span>
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center">
+        <div className="flex flex-col gap-0.5 min-w-0 items-center justify-center pl-2">
           {mostraBotaoComprar ? (
             <Button
               size="sm"
-              className="w-full py-2 bg-primary text-primary-foreground hover:bg-primary/90"
+              className="w-auto min-w-[5.5rem] py-2 px-3 bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={handleBuy}
               disabled={!podeComprar}
             >
-              Comprar
+              {t("generators.buy")}
             </Button>
           ) : (
-            <span className="w-full inline-flex items-center justify-center rounded-md border border-border bg-muted px-2 py-2 min-h-[2.25rem] text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-              Automático
+            <span className="w-auto min-w-[5.5rem] inline-flex items-center justify-center rounded-md border border-border bg-muted px-3 py-2 min-h-[2.25rem] text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+              {t("generators.automatic")}
             </span>
           )}
         </div>
@@ -255,6 +252,7 @@ const GeneratorCard = memo(({
 })
 
 export function GeneratorsPage() {
+  const { t } = useTranslation()
   const ctx = useContext(GameContext)
 
   // Usar ref mutavel para funcoes de callback do contexto para não invalidar memo a toa
@@ -315,7 +313,7 @@ export function GeneratorsPage() {
 
         const interval = intervaloEfetivo(i)
         const cicloRapido = interval <= 1
-        const produz = i === 0 ? "Recurso" : `Gerador ${i}`
+        const produz = i === 0 ? t("generators.resource") : t("generators.generatorN", { n: i })
         const produzidoPeloProximo = i < NUM_GERADORES - 1 && geradores[i + 1] >= 1
         const mostraBotaoComprar = !produzidoPeloProximo
         const mult = Math.pow(2, upgrades[i] ?? 0)
