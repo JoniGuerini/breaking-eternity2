@@ -21,34 +21,30 @@ export function ImprovementsPage() {
     formatDecimal,
     comprarMelhoria,
     podeComprarMelhoria,
-    custoProximoNivel,
     comprarMelhoriaVelocidade,
     podeComprarMelhoriaVelocidade,
-    custoProximoNivelVelocidade,
     comprarMelhoriaSorte,
     podeComprarMelhoriaSorte,
-    custoProximoNivelSorte,
     chanceCritPorNivel,
     comprarMelhoriaEfeitoSorte,
     podeComprarMelhoriaEfeitoSorte,
-    custoProximoNivelEfeitoSorte,
     luckCritMultiplier,
     intervaloEfetivo,
     globalProductionLevel,
     globalSpeedLevel,
     comprarMelhoriaGlobalProducao,
     podeComprarMelhoriaGlobalProducao,
-    custoProximoNivelGlobalProducao,
     comprarMelhoriaGlobalVelocidade,
     podeComprarMelhoriaGlobalVelocidade,
-    custoProximoNivelGlobalVelocidade,
     globalPriceReductionLevel,
     comprarMelhoriaGlobalPreco,
     podeComprarMelhoriaGlobalPreco,
-    custoProximoNivelGlobalPreco,
     globalPriceMultiplier,
     upgradePoints,
-    custoPontosMelhoria,
+    custoMelhoriaProducao,
+    custoMelhoriaVelocidade,
+    custoMelhoriaSorte,
+    custoMelhoriaEfeitoSorte,
     custoPontosMelhoriaGlobal,
   } = ctx
 
@@ -91,22 +87,18 @@ export function ImprovementsPage() {
             {indicesDesbloqueados.map((i) => {
               const nivel = upgrades[i] ?? 0
               const mult = Math.pow(2, nivel)
-              const custo = custoProximoNivel(i)
               const podeComprar = podeComprarMelhoria(i)
               const nivelVel = speedUpgrades[i] ?? 0
               const cicloAtual = intervaloEfetivo(i)
-              const custoVel = custoProximoNivelVelocidade(i)
               const podeComprarVel = podeComprarMelhoriaVelocidade(i)
               const cicloProximo = Math.max(0.1, cicloAtual * 0.9)
               const nivelSorte = luckUpgrades[i] ?? 0
               const chanceAtualPct = Math.min(100, (nivelSorte * chanceCritPorNivel) * 100)
               const chanceProximaPct = Math.min(100, ((nivelSorte + 1) * chanceCritPorNivel) * 100)
-              const custoSorte = custoProximoNivelSorte(i)
               const podeComprarSorte = podeComprarMelhoriaSorte(i)
               const nivelEfeitoSorte = luckMultiplierUpgrades[i] ?? 0
               const multEfeitoAtual = luckCritMultiplier(nivelEfeitoSorte)
               const multEfeitoProximo = luckCritMultiplier(nivelEfeitoSorte + 1)
-              const custoEfeitoSorte = custoProximoNivelEfeitoSorte(i)
               const podeComprarEfeitoSorte = podeComprarMelhoriaEfeitoSorte(i)
               return (
                 <Card key={i} className="p-0 min-w-0 overflow-hidden" data-slot="card">
@@ -131,7 +123,7 @@ export function ImprovementsPage() {
                         disabled={!podeComprar}
                       >
                         <span className="mr-1">{t("improvements.buy")}</span>
-                        <span className="font-mono text-xs">{formatDecimal(custo)} {t("improvements.frag")} · {custoPontosMelhoria(i, nivel)} pts</span>
+                        <span className="font-mono text-xs">{custoMelhoriaProducao(i, nivel)} pts</span>
                       </Button>
                     </div>
                     <div className="flex flex-col gap-3 min-w-0 lg:border-l lg:border-border lg:pl-4">
@@ -151,7 +143,7 @@ export function ImprovementsPage() {
                         disabled={!podeComprarVel}
                       >
                         <span className="mr-1">{t("improvements.buy")}</span>
-                        <span className="font-mono text-xs">{formatDecimal(custoVel)} {t("improvements.frag")} · {custoPontosMelhoria(i, nivelVel)} pts</span>
+                        <span className="font-mono text-xs">{custoMelhoriaVelocidade(i, nivelVel)} pts</span>
                       </Button>
                     </div>
                     <div className="flex flex-col gap-3 min-w-0 lg:border-l lg:border-border lg:pl-4">
@@ -171,7 +163,7 @@ export function ImprovementsPage() {
                         disabled={!podeComprarSorte}
                       >
                         <span className="mr-1">{t("improvements.buy")}</span>
-                        <span className="font-mono text-xs">{formatDecimal(custoSorte)} {t("improvements.frag")} · {custoPontosMelhoria(i, nivelSorte)} pts</span>
+                        <span className="font-mono text-xs">{custoMelhoriaSorte(i, nivelSorte)} pts</span>
                       </Button>
                     </div>
                     <div className="flex flex-col gap-3 min-w-0 lg:border-l lg:border-border lg:pl-4">
@@ -191,7 +183,7 @@ export function ImprovementsPage() {
                         disabled={!podeComprarEfeitoSorte}
                       >
                         <span className="mr-1">{t("improvements.buy")}</span>
-                        <span className="font-mono text-xs">{formatDecimal(custoEfeitoSorte)} {t("improvements.frag")} · {custoPontosMelhoria(i, nivelEfeitoSorte)} pts</span>
+                        <span className="font-mono text-xs">{custoMelhoriaEfeitoSorte(i, nivelEfeitoSorte)} pts</span>
                       </Button>
                     </div>
                   </div>
@@ -241,10 +233,7 @@ export function ImprovementsPage() {
                   >
                     <span>{t("improvements.buy")}</span>
                     <div className="flex flex-col items-center leading-none">
-                      <span className="font-mono text-[10px] tabular-nums">
-                        {formatDecimal(custoProximoNivelGlobalProducao())} {t("improvements.frag")}
-                      </span>
-                      <span className="font-mono text-[10px] tabular-nums text-primary-foreground/90">
+                      <span className="font-mono text-[10px] tabular-nums text-primary-foreground/90 mt-1">
                         {custoPontosMelhoriaGlobal(globalProductionLevel)} pts
                       </span>
                     </div>
@@ -282,10 +271,7 @@ export function ImprovementsPage() {
                   >
                     <span>{t("improvements.buy")}</span>
                     <div className="flex flex-col items-center leading-none">
-                      <span className="font-mono text-[10px] tabular-nums">
-                        {formatDecimal(custoProximoNivelGlobalVelocidade())} {t("improvements.frag")}
-                      </span>
-                      <span className="font-mono text-[10px] tabular-nums text-primary-foreground/90">
+                      <span className="font-mono text-[10px] tabular-nums text-primary-foreground/90 mt-1">
                         {custoPontosMelhoriaGlobal(globalSpeedLevel)} pts
                       </span>
                     </div>
@@ -323,10 +309,7 @@ export function ImprovementsPage() {
                   >
                     <span>{t("improvements.buy")}</span>
                     <div className="flex flex-col items-center leading-none">
-                      <span className="font-mono text-[10px] tabular-nums">
-                        {formatDecimal(custoProximoNivelGlobalPreco())} {t("improvements.frag")}
-                      </span>
-                      <span className="font-mono text-[10px] tabular-nums text-primary-foreground/90">
+                      <span className="font-mono text-[10px] tabular-nums text-primary-foreground/90 mt-1">
                         {custoPontosMelhoriaGlobal(globalPriceReductionLevel)} pts
                       </span>
                     </div>

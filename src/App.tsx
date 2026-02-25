@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from "react"
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom"
-import { BarChart3, Cpu, Settings, Trophy, Zap } from "lucide-react"
+import { BarChart3, Cpu, Settings, Trophy, Zap, ListTodo } from "lucide-react"
 import Decimal from "break_eternity.js"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -19,10 +19,12 @@ import { ShortcutHandler } from "@/components/ShortcutHandler"
 import { ScrollToTop } from "@/components/ScrollToTop"
 import { CustomContextMenu } from "@/components/CustomContextMenu"
 import { ACHIEVEMENTS, filterValidAchievementIds, getNewlyUnlockedAchievementIds } from "@/lib/achievements"
+import { MISSIONS } from "@/constants/missions"
 import { AchievementsPage } from "@/pages/AchievementsPage"
 import { GeneratorsPage } from "@/pages/GeneratorsPage"
 import { ImprovementsPage } from "@/pages/ImprovementsPage"
 import { EstatisticasPage } from "@/pages/EstatisticasPage"
+import { MissionsPage } from "@/pages/MissionsPage"
 import { LoginPage } from "@/pages/LoginPage"
 import { SettingsPage } from "@/pages/SettingsPage"
 import { Toaster } from "@/components/ui/sonner"
@@ -95,6 +97,7 @@ interface SavedState {
   cloudSaveInterval?: number
   upgradePoints?: number
   milestonesReached?: number[]
+  claimedMissions?: string[]
 }
 
 /** Chance de crítico (dobro) para gerador i com nível da melhoria Sorte */
@@ -164,22 +167,7 @@ function simulateOffline(
   return { total: curTotal, geradores: curGen, totalGain, bonusCountDelta, offlineUpgradePointsGain, curMilestones }
 }
 
-/** Retorna em qual "marco" de quantidade o gerador está. */
-export function getMilestoneIndex(count: number): number {
-  if (count < 10) return 0
-  return Math.floor(Math.log10(count))
-}
-
-/** Retorna qual a quantidade necessária para o próximo marco. */
-export function getNextMilestoneThreshold(currentIndex: number): number {
-  return Math.pow(10, currentIndex + 1)
-}
-
-/** Retorna a quantidade do marco atual (ou 0 se não atingiu o primeiro). */
-export function getCurrentMilestoneThreshold(currentIndex: number): number {
-  if (currentIndex === 0) return 0
-  return Math.pow(10, currentIndex)
-}
+import { getMilestoneIndex } from "@/lib/milestones"
 
 // Custo base: Fórmula ajustada para escalar mais rápido que 100x
 // Antes: 10^(2*i)
@@ -387,9 +375,29 @@ const MemoizedHeader = React.memo(({ fps, showFpsCounter }: { fps: number, showF
                 size="icon"
                 onClick={() => {
                   playClickSound()
+                  navigate("/missoes")
+                }}
+                className={cn("transition-colors", location.pathname === "/missoes" ? "text-foreground bg-muted hover:text-foreground hover:bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}
+              >
+                <ListTodo className="h-5 w-5" />
+                <span className="sr-only">{t("nav.missoes", { defaultValue: "Missions" })}</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="flex items-center gap-2">
+              <span>{t("nav.missoes", { defaultValue: "Missions" })}</span>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  playClickSound()
                   navigate("/conquistas")
                 }}
-                className="relative"
+                className={cn("relative transition-colors", location.pathname === "/conquistas" ? "text-foreground bg-muted hover:text-foreground hover:bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}
               >
                 <Trophy className="h-5 w-5" />
                 <span className="sr-only">{t("nav.conquistas")}</span>
@@ -412,7 +420,7 @@ const MemoizedHeader = React.memo(({ fps, showFpsCounter }: { fps: number, showF
                   playClickSound()
                   navigate("/estatisticas")
                 }}
-                className="relative"
+                className={cn("relative transition-colors", location.pathname === "/estatisticas" ? "text-foreground bg-muted hover:text-foreground hover:bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}
               >
                 <BarChart3 className="h-5 w-5" />
                 <span className="sr-only">{t("nav.estatisticas")}</span>
@@ -438,7 +446,7 @@ const MemoizedHeader = React.memo(({ fps, showFpsCounter }: { fps: number, showF
                   playClickSound()
                   navigate("/configuracoes")
                 }}
-                className="relative"
+                className={cn("relative transition-colors", location.pathname === "/configuracoes" ? "text-foreground bg-muted hover:text-foreground hover:bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}
               >
                 <Settings className="h-5 w-5" />
                 <span className="sr-only">{t("nav.configuracoes")}</span>
@@ -461,11 +469,13 @@ const MemoizedHeader = React.memo(({ fps, showFpsCounter }: { fps: number, showF
 function RootLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation()
   const isConquistas = location.pathname === "/conquistas"
+  const isGenerators = location.pathname === "/"
+  const isMissoes = location.pathname === "/missoes"
   return (
     <div
       className={
         "scroll-overlay bg-background text-foreground flex flex-col select-none " +
-        (isConquistas ? "h-screen overflow-hidden" : "min-h-screen")
+        (isConquistas || isGenerators || isMissoes ? "h-screen overflow-hidden" : "min-h-screen")
       }
     >
       {children}
@@ -477,12 +487,14 @@ function RootLayout({ children }: { children: React.ReactNode }) {
 function MainWithScrollBehavior({ children }: { children: React.ReactNode }) {
   const location = useLocation()
   const isConquistas = location.pathname === "/conquistas"
+  const isGenerators = location.pathname === "/"
+  const isMissoes = location.pathname === "/missoes"
   return (
     <main className="scroll-overlay flex-1 min-h-0 flex flex-col overflow-hidden px-4 py-4 md:px-6">
       <div
         className={
           "flex-1 flex flex-col min-h-0 " +
-          (isConquistas ? "overflow-hidden" : "overflow-auto")
+          (isConquistas || isGenerators || isMissoes ? "overflow-hidden" : "overflow-auto")
         }
       >
         {children}
@@ -524,6 +536,10 @@ function AppContent() {
       return saved.milestonesReached
     }
     return Array(NUM_GERADORES).fill(0)
+  })
+  const [claimedMissions, setClaimedMissions] = useState<string[]>(() => {
+    const saved = loadSavedState()
+    return saved?.claimedMissions ?? []
   })
   const [upgrades, setUpgrades] = useState<number[]>(() => {
     const saved = loadSavedState()
@@ -614,11 +630,13 @@ function AppContent() {
     seconds: number
   } | null>(null)
   const ultimoTick = useRef(0)
+  // eslint-disable-next-line react-hooks/purity
   const lastTickWallTimeRef = useRef(Date.now())
   const acumuladoRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const geradoresRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const totalRef = useRef<Decimal>(new Decimal(0))
   const totalProducedLifetimeRef = useRef<Decimal>(new Decimal(0))
+  // eslint-disable-next-line react-hooks/purity
   const lastSessionStartRef = useRef(Date.now())
   const totalPlayTimeSecondsRef = useRef(0)
   const geradoresCompradosManualRef = useRef(0)
@@ -629,6 +647,7 @@ function AppContent() {
   const speedUpgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const luckUpgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const luckMultiplierUpgradesRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
+  const claimedMissionsRef = useRef<string[]>([])
   const globalProductionLevelRef = useRef(0)
   const globalSpeedLevelRef = useRef(0)
   const globalPriceReductionLevelRef = useRef(0)
@@ -637,6 +656,8 @@ function AppContent() {
   const firstPlayTimeRef = useRef<number | null>(null)
   const progressoRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
   const autoUnlockNextGeradorRef = useRef(false)
+  const showFpsCounterRef = useRef(showFpsCounter)
+  const lastStateUpdateTimeRef = useRef(0)
   const [lastSaveTime, setLastSaveTime] = useState(() => loadSavedState()?.lastSaveTime ?? Date.now())
   const [cloudSaveInterval, setCloudSaveInterval] = useState(() => {
     const saved = loadSavedState()
@@ -649,6 +670,7 @@ function AppContent() {
   const fpsIntervalRef = useRef(0)
   const authUserIdRef = useRef<string | null>(null)
   const cloudSaveAppliedForRef = useRef<string | null>(null)
+  // eslint-disable-next-line react-hooks/purity
   const sessionLoadTimeRef = useRef(Date.now())
 
   useEffect(() => {
@@ -682,6 +704,7 @@ function AppContent() {
       setAutoUnlockNextGerador(payload.autoUnlockNextGerador ?? false)
       setShowFpsCounter(payload.showFpsCounter ?? false)
       setUpgradePoints(payload.upgradePoints ?? 0)
+      setClaimedMissions(payload.claimedMissions ?? [])
 
       const milestonesArr = payload.milestonesReached?.length === NUM_GERADORES ? payload.milestonesReached : Array(NUM_GERADORES).fill(0)
       setMilestonesReached(milestonesArr)
@@ -712,7 +735,9 @@ function AppContent() {
       globalSpeedLevelRef.current = payload.globalSpeedLevel ?? 0
       globalPriceReductionLevelRef.current = payload.globalPriceReductionLevel ?? 0
       autoUnlockNextGeradorRef.current = payload.autoUnlockNextGerador ?? false
+      showFpsCounterRef.current = payload.showFpsCounter ?? false
       upgradePointsRef.current = payload.upgradePoints ?? 0
+      claimedMissionsRef.current = payload.claimedMissions ?? []
 
       const milestonesArr2 = payload.milestonesReached?.length === NUM_GERADORES ? payload.milestonesReached : Array(NUM_GERADORES).fill(0)
       milestonesReachedRef.current = milestonesArr2
@@ -836,6 +861,7 @@ function AppContent() {
       cancelled = true
       unsub?.()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth?.user?.id])
 
   useEffect(() => {
@@ -853,6 +879,9 @@ function AppContent() {
   useEffect(() => {
     milestonesReachedRef.current = milestonesReached
   }, [milestonesReached])
+  useEffect(() => {
+    claimedMissionsRef.current = claimedMissions
+  }, [claimedMissions])
   useEffect(() => {
     upgradesRef.current = upgrades
   }, [upgrades])
@@ -901,7 +930,12 @@ function AppContent() {
   useEffect(() => {
     totalProducedLifetimeRef.current = totalProducedLifetime
     geradoresCompradosManualRef.current = geradoresCompradosManual
-  }, [])
+  }, [totalProducedLifetime, geradoresCompradosManual])
+
+  // Manter ref sincronizado com state de forma reativa (se mudar localmente ou em outra tela)
+  useEffect(() => {
+    showFpsCounterRef.current = showFpsCounter
+  }, [showFpsCounter])
 
   function persistSave() {
     const now = Date.now()
@@ -958,7 +992,7 @@ function AppContent() {
       globalSpeedLevel: globalSpeedLevelRef.current,
       globalPriceReductionLevel: globalPriceReductionLevelRef.current,
       autoUnlockNextGerador: autoUnlockNextGeradorRef.current,
-      showFpsCounter,
+      showFpsCounter: showFpsCounterRef.current,
       generatorUnlockTimestamps: generatorUnlockTimestampsRef.current,
       generatorBonusCount: generatorBonusCountRef.current,
       totalProducedLifetime: totalProducedLifetimeRef.current.toString(),
@@ -970,6 +1004,7 @@ function AppContent() {
       cloudSaveInterval: cloudSaveInterval,
       upgradePoints: upgradePointsRef.current,
       milestonesReached: milestonesReachedRef.current,
+      claimedMissions: claimedMissionsRef.current,
     }
     setLastSaveTime(now)
     try {
@@ -1080,10 +1115,17 @@ function AppContent() {
       clearInterval(interval)
       window.removeEventListener("beforeunload", onBeforeUnload)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cloudSaveInterval])
 
   useEffect(() => {
     let id: number
+    let dirtyTotal = false
+    let dirtyGeradores = false
+    let dirtyLifetime = false
+    let dirtyBonus = false
+    let dirtyTimestamps = false
+
     const tick = (now: number) => {
       const wallNow = Date.now()
       const wallDt = (wallNow - lastTickWallTimeRef.current) / 1000
@@ -1209,28 +1251,59 @@ function AppContent() {
         }
       }
       progressoRef.current = newProgresso
-      if (hadBonusThisTick) setGeneratorBonusCount(generatorBonusCountRef.current.slice())
+
+      if (hadBonusThisTick) {
+        dirtyBonus = true
+      }
+
       if (deltaTotal.gt(0) || autoUnlockHappened) {
         totalRef.current = finalTotal
-        setTotal(finalTotal)
+        dirtyTotal = true
         if (deltaTotal.gt(0)) {
-          setTotalProducedLifetime((prev) => {
-            const next = prev.add(deltaTotal)
-            totalProducedLifetimeRef.current = next
-            return next
-          })
+          totalProducedLifetimeRef.current = totalProducedLifetimeRef.current.add(deltaTotal)
+          dirtyLifetime = true
         }
       }
+
       if (deltaGen.some((d) => d > 0) || autoUnlockHappened) {
-        if (autoUnlockHappened && autoUnlockIndex !== null) {
-          setGeneratorUnlockTimestamps((prev) => {
-            const next = [...prev]
-            if (next[autoUnlockIndex!] === 0) next[autoUnlockIndex!] = Date.now()
-            return next
-          })
-        }
         geradoresRef.current = finalGeradores
-        setGeradores(finalGeradores)
+        dirtyGeradores = true
+        if (autoUnlockHappened && autoUnlockIndex !== null) {
+          const nextUnlockTs = [...generatorUnlockTimestampsRef.current]
+          if (nextUnlockTs[autoUnlockIndex!] === 0) {
+            nextUnlockTs[autoUnlockIndex!] = Date.now()
+            generatorUnlockTimestampsRef.current = nextUnlockTs
+            dirtyTimestamps = true
+          }
+        }
+      }
+
+      // Throttle React state updates to 10 FPS (every 100ms) to prevent GC pressure / memory leak
+      // Note: Math & logic still run at 60 FPS, just the visual number changes are 10 FPS
+      const shouldUpdateReactState = now - lastStateUpdateTimeRef.current > 100
+
+      if (shouldUpdateReactState) {
+        if (dirtyBonus) {
+          setGeneratorBonusCount(generatorBonusCountRef.current.slice())
+          dirtyBonus = false
+        }
+        if (dirtyTotal) {
+          setTotal(totalRef.current)
+          dirtyTotal = false
+        }
+        if (dirtyLifetime) {
+          setTotalProducedLifetime(totalProducedLifetimeRef.current)
+          dirtyLifetime = false
+        }
+        if (dirtyGeradores) {
+          setGeradores(geradoresRef.current)
+          dirtyGeradores = false
+        }
+        if (dirtyTimestamps) {
+          setGeneratorUnlockTimestamps(generatorUnlockTimestampsRef.current)
+          dirtyTimestamps = false
+        }
+        lastStateUpdateTimeRef.current = now
       }
 
       if (gainedUpgradePoints > 0) {
@@ -1238,11 +1311,6 @@ function AppContent() {
         setUpgradePoints(upgradePointsRef.current)
         milestonesReachedRef.current = nextMilestones
         setMilestonesReached(nextMilestones)
-
-        toast.success(t("toasts.upgradePointsTitle"), {
-          description: t("toasts.upgradePointsDesc", { count: gainedUpgradePoints }),
-          position: "bottom-right",
-        })
       }
 
       // Verificar conquistas no tick para toast imediato (evita delay de até 5s do persistSave)
@@ -1287,6 +1355,7 @@ function AppContent() {
     }
     id = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const custoGerador = (i: number): Decimal => {
@@ -1325,17 +1394,17 @@ function AppContent() {
     })
   }
 
-  const custoProximoNivel = (i: number): Decimal =>
-    Decimal.pow(10, 4 + i).times(Decimal.pow(10, upgrades[i]))
-  const custoPontosMelhoria = (i: number, nivel: number): number => (nivel + 1) * (i + 1)
+  const custoMelhoriaProducao = (i: number, nivel: number): number => Math.floor((nivel + 1) * 2) * (i + 1)
+  const custoMelhoriaVelocidade = (i: number, nivel: number): number => Math.max(1, Math.floor((nivel + 1) * 0.5)) * (i + 1)
+  const custoMelhoriaSorte = (i: number, nivel: number): number => (nivel + 1) * (i + 1)
+  const custoMelhoriaEfeitoSorte = (i: number, nivel: number): number => Math.floor((nivel + 1) * 1.5) * (i + 1)
+
   const custoPontosMelhoriaGlobal = (nivel: number): number => nivel + 1
 
-  const podeComprarMelhoria = (i: number) => total.gte(custoProximoNivel(i)) && upgradePoints >= custoPontosMelhoria(i, upgrades[i])
+  const podeComprarMelhoria = (i: number) => upgradePoints >= custoMelhoriaProducao(i, upgrades[i])
   const comprarMelhoria = (i: number) => {
-    const custo = custoProximoNivel(i)
-    const custoPts = custoPontosMelhoria(i, upgrades[i])
+    const custoPts = custoMelhoriaProducao(i, upgrades[i])
     if (!podeComprarMelhoria(i)) return
-    setTotal((t) => Decimal.sub(t, custo))
     setUpgradePoints((p) => p - custoPts)
     setUpgrades((prev) => {
       const next = [...prev]
@@ -1344,17 +1413,12 @@ function AppContent() {
     })
   }
 
-  const custoProximoNivelVelocidade = (i: number): Decimal =>
-    Decimal.pow(10, 6 + i).times(Decimal.pow(10, speedUpgrades[i]))
   const podeComprarMelhoriaVelocidade = (i: number) =>
-    total.gte(custoProximoNivelVelocidade(i)) &&
     intervaloEfetivo(i, speedUpgrades[i] + 1) >= MIN_INTERVALO &&
-    upgradePoints >= custoPontosMelhoria(i, speedUpgrades[i])
+    upgradePoints >= custoMelhoriaVelocidade(i, speedUpgrades[i])
   const comprarMelhoriaVelocidade = (i: number) => {
-    const custo = custoProximoNivelVelocidade(i)
-    const custoPts = custoPontosMelhoria(i, speedUpgrades[i])
+    const custoPts = custoMelhoriaVelocidade(i, speedUpgrades[i])
     if (!podeComprarMelhoriaVelocidade(i)) return
-    setTotal((t) => Decimal.sub(t, custo))
     setUpgradePoints((p) => p - custoPts)
     setSpeedUpgrades((prev) => {
       const next = [...prev]
@@ -1363,14 +1427,10 @@ function AppContent() {
     })
   }
 
-  const custoProximoNivelSorte = (i: number) =>
-    Decimal.pow(10, 7 + i).times(Decimal.pow(10, luckUpgrades[i]))
-  const podeComprarMelhoriaSorte = (i: number) => total.gte(custoProximoNivelSorte(i)) && upgradePoints >= custoPontosMelhoria(i, luckUpgrades[i])
+  const podeComprarMelhoriaSorte = (i: number) => upgradePoints >= custoMelhoriaSorte(i, luckUpgrades[i])
   const comprarMelhoriaSorte = (i: number) => {
-    const custo = custoProximoNivelSorte(i)
-    const custoPts = custoPontosMelhoria(i, luckUpgrades[i])
+    const custoPts = custoMelhoriaSorte(i, luckUpgrades[i])
     if (!podeComprarMelhoriaSorte(i)) return
-    setTotal((t) => Decimal.sub(t, custo))
     setUpgradePoints((p) => p - custoPts)
     setLuckUpgrades((prev) => {
       const next = [...prev]
@@ -1379,14 +1439,10 @@ function AppContent() {
     })
   }
 
-  const custoProximoNivelEfeitoSorte = (i: number) =>
-    Decimal.pow(10, 8 + i).times(Decimal.pow(10, luckMultiplierUpgrades[i]))
-  const podeComprarMelhoriaEfeitoSorte = (i: number) => total.gte(custoProximoNivelEfeitoSorte(i)) && upgradePoints >= custoPontosMelhoria(i, luckMultiplierUpgrades[i])
+  const podeComprarMelhoriaEfeitoSorte = (i: number) => upgradePoints >= custoMelhoriaEfeitoSorte(i, luckMultiplierUpgrades[i])
   const comprarMelhoriaEfeitoSorte = (i: number) => {
-    const custo = custoProximoNivelEfeitoSorte(i)
-    const custoPts = custoPontosMelhoria(i, luckMultiplierUpgrades[i])
+    const custoPts = custoMelhoriaEfeitoSorte(i, luckMultiplierUpgrades[i])
     if (!podeComprarMelhoriaEfeitoSorte(i)) return
-    setTotal((t) => Decimal.sub(t, custo))
     setUpgradePoints((p) => p - custoPts)
     setLuckMultiplierUpgrades((prev) => {
       const next = [...prev]
@@ -1395,40 +1451,48 @@ function AppContent() {
     })
   }
 
-  const custoProximoNivelGlobalProducao = () =>
-    Decimal.pow(10, 12).times(Decimal.pow(10, globalProductionLevel))
-  const podeComprarMelhoriaGlobalProducao = () => total.gte(custoProximoNivelGlobalProducao()) && upgradePoints >= custoPontosMelhoriaGlobal(globalProductionLevel)
+  const podeComprarMelhoriaGlobalProducao = () => upgradePoints >= custoPontosMelhoriaGlobal(globalProductionLevel)
   const comprarMelhoriaGlobalProducao = () => {
-    const custo = custoProximoNivelGlobalProducao()
     const custoPts = custoPontosMelhoriaGlobal(globalProductionLevel)
     if (!podeComprarMelhoriaGlobalProducao()) return
-    setTotal((t) => Decimal.sub(t, custo))
     setUpgradePoints((p) => p - custoPts)
     setGlobalProductionLevel((n) => n + 1)
   }
 
-  const custoProximoNivelGlobalVelocidade = () =>
-    Decimal.pow(10, 13).times(Decimal.pow(10, globalSpeedLevel))
-  const podeComprarMelhoriaGlobalVelocidade = () => total.gte(custoProximoNivelGlobalVelocidade()) && upgradePoints >= custoPontosMelhoriaGlobal(globalSpeedLevel)
+  const podeComprarMelhoriaGlobalVelocidade = () => upgradePoints >= custoPontosMelhoriaGlobal(globalSpeedLevel)
   const comprarMelhoriaGlobalVelocidade = () => {
-    const custo = custoProximoNivelGlobalVelocidade()
     const custoPts = custoPontosMelhoriaGlobal(globalSpeedLevel)
     if (!podeComprarMelhoriaGlobalVelocidade()) return
-    setTotal((t) => Decimal.sub(t, custo))
     setUpgradePoints((p) => p - custoPts)
     setGlobalSpeedLevel((n) => n + 1)
   }
 
-  const custoProximoNivelGlobalPreco = () =>
-    Decimal.pow(10, 14).times(Decimal.pow(10, globalPriceReductionLevel))
-  const podeComprarMelhoriaGlobalPreco = () => total.gte(custoProximoNivelGlobalPreco()) && upgradePoints >= custoPontosMelhoriaGlobal(globalPriceReductionLevel)
+  const podeComprarMelhoriaGlobalPreco = () => upgradePoints >= custoPontosMelhoriaGlobal(globalPriceReductionLevel)
   const comprarMelhoriaGlobalPreco = () => {
-    const custo = custoProximoNivelGlobalPreco()
     const custoPts = custoPontosMelhoriaGlobal(globalPriceReductionLevel)
     if (!podeComprarMelhoriaGlobalPreco()) return
-    setTotal((t) => Decimal.sub(t, custo))
     setUpgradePoints((p) => p - custoPts)
     setGlobalPriceReductionLevel((n) => n + 1)
+  }
+
+  const claimMission = (id: string) => {
+    if (claimedMissions.includes(id)) return
+    const mission = MISSIONS.find(m => m.id === id)
+    if (!mission) return
+
+    if (mission.rewardType === "UPGRADE_POINTS") {
+      setUpgradePoints(p => p + mission.rewardAmount)
+      upgradePointsRef.current += mission.rewardAmount
+    } else if (mission.rewardType === "FRAGMENTS") {
+      setTotal(t => Decimal.add(t, mission.rewardAmount))
+      totalRef.current = totalRef.current.add(mission.rewardAmount)
+      const nextLifetime = totalProducedLifetimeRef.current.add(mission.rewardAmount)
+      totalProducedLifetimeRef.current = nextLifetime
+      setTotalProducedLifetime(nextLifetime)
+    }
+
+    setClaimedMissions(prev => [...prev, id])
+    claimedMissionsRef.current.push(id)
   }
 
   function resetProgress() {
@@ -1457,8 +1521,10 @@ function AppContent() {
     setGeradoresCompradosManual(0)
     setAchievementsUnlocked([])
     setShowFpsCounter(false)
+    showFpsCounterRef.current = false
     setUpgradePoints(0)
     setMilestonesReached(Array(NUM_GERADORES).fill(0))
+    setClaimedMissions([])
 
     // Atualizar Refs imediatamente para o save forçado
     totalRef.current = new Decimal(0)
@@ -1479,6 +1545,7 @@ function AppContent() {
     achievementsUnlockedRef.current = []
     upgradePointsRef.current = 0
     milestonesReachedRef.current = Array(NUM_GERADORES).fill(0)
+    claimedMissionsRef.current = []
 
     // Forçar save imediato do estado zerado
     setTimeout(() => persistSave(), 0)
@@ -1519,8 +1586,10 @@ function AppContent() {
     custoGerador,
     comprarMelhoria,
     podeComprarMelhoria,
-    custoProximoNivel,
-    custoPontosMelhoria,
+    custoMelhoriaProducao,
+    custoMelhoriaVelocidade,
+    custoMelhoriaSorte,
+    custoMelhoriaEfeitoSorte,
     custoPontosMelhoriaGlobal,
     intervaloGerador,
     intervaloEfetivo: (i: number) => intervaloEfetivo(i, speedUpgrades[i] + globalSpeedLevel),
@@ -1531,29 +1600,23 @@ function AppContent() {
     speedUpgrades,
     comprarMelhoriaVelocidade,
     podeComprarMelhoriaVelocidade,
-    custoProximoNivelVelocidade,
     luckUpgrades,
     comprarMelhoriaSorte,
     podeComprarMelhoriaSorte,
-    custoProximoNivelSorte,
     chanceCritPorNivel: CHANCE_CRIT_POR_NIVEL,
     luckMultiplierUpgrades,
     comprarMelhoriaEfeitoSorte,
     podeComprarMelhoriaEfeitoSorte,
-    custoProximoNivelEfeitoSorte,
     luckCritMultiplier,
     globalProductionLevel,
     globalSpeedLevel,
     comprarMelhoriaGlobalProducao,
     podeComprarMelhoriaGlobalProducao,
-    custoProximoNivelGlobalProducao,
     comprarMelhoriaGlobalVelocidade,
     podeComprarMelhoriaGlobalVelocidade,
-    custoProximoNivelGlobalVelocidade,
     globalPriceReductionLevel,
     comprarMelhoriaGlobalPreco,
     podeComprarMelhoriaGlobalPreco,
-    custoProximoNivelGlobalPreco,
     globalPriceMultiplier,
     totalProducedLifetime,
     totalPlayTimeSeconds,
@@ -1567,6 +1630,8 @@ function AppContent() {
     milestonesReached,
     generatorUnlockTimestamps,
     generatorBonusCount,
+    claimedMissions,
+    claimMission,
     persistSave,
     lastSaveTime,
     cloudSaveInterval,
@@ -1590,12 +1655,14 @@ function AppContent() {
     showFpsCounter,
     upgradePoints,
     milestonesReached,
+    claimedMissions,
     generatorUnlockTimestamps,
     generatorBonusCount,
     lastSaveTime,
     cloudSaveInterval,
     // Add stable functions/refs that don't technically need to be here but are part of the value:
     progressoRef,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   ])
 
   return (
@@ -1662,6 +1729,7 @@ function AppContent() {
                 }
               />
               <Route path="/melhorias" element={<ImprovementsPage />} />
+              <Route path="/missoes" element={<MissionsPage />} />
               <Route path="/estatisticas" element={<EstatisticasPage />} />
               <Route
                 path="/conquistas"

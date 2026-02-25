@@ -338,7 +338,11 @@ export function SettingsPage() {
                   aria-checked={showFpsCounter}
                   onClick={() => {
                     playClickSound()
-                    setShowFpsCounter((v) => !v)
+                    setShowFpsCounter((v) => {
+                      const next = !v
+                      setTimeout(() => persistSave(), 0)
+                      return next
+                    })
                   }}
                   className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${showFpsCounter ? "bg-primary" : "bg-muted"}`}
                 >
@@ -483,6 +487,7 @@ export function SettingsPage() {
                     setCurrentTheme("dark")
                     resetShortcutsToDefaults()
                     setCloudSaveInterval(10000)
+                    setTimeout(() => persistSave(), 0)
                     forceUpdate((n) => n + 1)
                   }}
                 >

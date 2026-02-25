@@ -15,7 +15,8 @@
     "melhorias": "Improvements",
     "conquistas": "Achievements",
     "estatisticas": "Statistics",
-    "configuracoes": "Settings"
+    "configuracoes": "Settings",
+    "missoes": "Missions"
   },
   "settings": {
     "tabs": {
@@ -150,7 +151,8 @@
     "price": "Price",
     "generatedAutomatically": "Generated automatically",
     "automatic": "Automatic",
-    "buy": "Buy"
+    "buy": "Buy",
+    "yield": "Yield"
   },
   "improvements": {
     "upgradePoints": "Upgrade Points",
@@ -337,5 +339,75 @@
     "sessionOtherDevice": "Your account was logged in on another device.",
     "upgradePointsTitle": "Upgrade Points Earned!",
     "upgradePointsDesc": "You reached new milestones and earned {{count}} Upgrade Points!"
+  },
+  "missions": {
+    "fragments": "Fragments",
+    "upgradePoints": "Upgrade Pts",
+    "progress": "PROGRESS",
+    "ready": "READY",
+    "claimed": "CLAIMED",
+    "page_desc": "Complete objectives to earn powerful rewards and accelerate your progression.",
+    "tab_generators": "Generators",
+    "tab_upgrades": "Upgrades",
+    "tab_global": "Global",
+    "tab_fragments": "Fragments",
+    "m_first_gen": {
+      "name": "First Steps",
+      "desc": "Own 10 units of Generator 1."
+    },
+    "m_second_gen": {
+      "name": "Expansion",
+      "desc": "Unlock Generator 2."
+    },
+    "m_fragments_100": {
+      "name": "Accumulator",
+      "desc": "Accumulate 100 produced Fragments in total."
+    },
+    "m_upgrade_1": {
+      "name": "Initial Tech",
+      "desc": "Buy 3 individual upgrade levels for Generator 1."
+    },
+    "m_fragments_1000": {
+      "name": "Path of the Fragment",
+      "desc": "Accumulate 1,000 produced Fragments in total."
+    },
+    "m_third_gen": {
+      "name": "The Third Link",
+      "desc": "Unlock Generator 3."
+    },
+    "m_global_prod_1": {
+      "name": "Scalar Production",
+      "desc": "Buy 1 level of Global Production."
+    },
+    "m_fragments_1m": {
+      "name": "Millionaire",
+      "desc": "Accumulate 1 million Fragments in lifetime production."
+    },
+    "m_tenth_gen": {
+      "name": "Frontier 10",
+      "desc": "Unlock Generator 10."
+    },
+    "m_fragments_1b": {
+      "name": "Billionaire",
+      "desc": "Reach the incredible milestone of 1 billion Fragments produced."
+    },
+    "dynamic": {
+      "OWN_GENERATOR": {
+        "name": "Generator {{gen}} Mastery",
+        "desc": "Own {{amount}} units of Generator {{gen}}."
+      },
+      "UPGRADE_LEVEL": {
+        "name": "Enhancing Gen {{gen}}",
+        "desc": "Reach improvement level {{amount}} for Generator {{gen}}."
+      },
+      "GLOBAL_UPGRADE_LEVEL": {
+        "name": "Global Power",
+        "desc": "Reach level {{amount}} of Global Production Improvement."
+      },
+      "TOTAL_FRAGMENTS_LIFETIME": {
+        "name": "Fragment Hoarder",
+        "desc": "Accumulate a total of {{amount}} Fragments."
+      }
+    }
   }
 }

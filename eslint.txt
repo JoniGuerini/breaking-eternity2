@@ -1,0 +1,51 @@
+﻿
+E:\Breaking Eternity 2\breaking-eternity2\src\App.tsx
+   170:17  error    Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-refresh/only-export-components
+   176:17  error    Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-refresh/only-export-components
+   181:17  error    Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-refresh/only-export-components
+   623:38  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+E:\Breaking Eternity 2\breaking-eternity2\src\App.tsx:623:38
+  621 |   } | null>(null)
+  622 |   const ultimoTick = useRef(0)
+> 623 |   const lastTickWallTimeRef = useRef(Date.now())
+      |                                      ^^^^^^^^^^ Cannot call impure function
+  624 |   const acumuladoRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
+  625 |   const geradoresRef = useRef<number[]>(Array(NUM_GERADORES).fill(0))
+  626 |   const totalRef = useRef<Decimal>(new Decimal(0))               react-hooks/purity
+   628:38  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+E:\Breaking Eternity 2\breaking-eternity2\src\App.tsx:628:38
+  626 |   const totalRef = useRef<Decimal>(new Decimal(0))
+  627 |   const totalProducedLifetimeRef = useRef<Decimal>(new Decimal(0))
+> 628 |   const lastSessionStartRef = useRef(Date.now())
+      |                                      ^^^^^^^^^^ Cannot call impure function
+  629 |   const totalPlayTimeSecondsRef = useRef(0)
+  630 |   const geradoresCompradosManualRef = useRef(0)
+  631 |   const jaColetouManualRef = useRef(false)  react-hooks/purity
+   661:37  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+E:\Breaking Eternity 2\breaking-eternity2\src\App.tsx:661:37
+  659 |   const authUserIdRef = useRef<string | null>(null)
+  660 |   const cloudSaveAppliedForRef = useRef<string | null>(null)
+> 661 |   const sessionLoadTimeRef = useRef(Date.now())
+      |                                     ^^^^^^^^^^ Cannot call impure function
+  662 |
+  663 |   useEffect(() => {
+  664 |     authUserIdRef.current = auth?.user?.id ?? null                                                                         react-hooks/purity
+   851:6   warning  React Hook useEffect has missing dependencies: 'auth', 'location.pathname', and 't'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        react-hooks/exhaustive-deps
+  1031:5   warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/set-state-in-effect')
+  1067:7   warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/set-state-in-effect')
+  1104:6   warning  React Hook useEffect has a missing dependency: 'persistSave'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/exhaustive-deps
+  1348:6   warning  React Hook useEffect has missing dependencies: 'addNotification' and 't'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react-hooks/exhaustive-deps
+  1621:7   warning  React Hook useMemo has missing dependencies: 'claimMission', 'comprarGerador', 'comprarMelhoria', 'comprarMelhoriaEfeitoSorte', 'comprarMelhoriaGlobalPreco', 'comprarMelhoriaGlobalProducao', 'comprarMelhoriaGlobalVelocidade', 'comprarMelhoriaSorte', 'comprarMelhoriaVelocidade', 'custoGerador', 'persistSave', 'podeComprar', 'podeComprarMelhoria', 'podeComprarMelhoriaEfeitoSorte', 'podeComprarMelhoriaGlobalPreco', 'podeComprarMelhoriaGlobalProducao', 'podeComprarMelhoriaGlobalVelocidade', 'podeComprarMelhoriaSorte', 'podeComprarMelhoriaVelocidade', and 'resetProgress'. Either include them or remove the dependency array                                                                                                                                                                                               react-hooks/exhaustive-deps
+
+Ô£û 12 problems (6 errors, 6 warnings)
+  0 errors and 2 warnings potentially fixable with the `--fix` option.
+

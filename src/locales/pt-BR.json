@@ -15,7 +15,8 @@
     "melhorias": "Melhorias",
     "conquistas": "Conquistas",
     "estatisticas": "Estatísticas",
-    "configuracoes": "Configurações"
+    "configuracoes": "Configurações",
+    "missoes": "Missões"
   },
   "settings": {
     "tabs": {
@@ -150,7 +151,8 @@
     "price": "Preço",
     "generatedAutomatically": "Gerado automaticamente",
     "automatic": "Automático",
-    "buy": "Comprar"
+    "buy": "Comprar",
+    "yield": "Gera"
   },
   "improvements": {
     "upgradePoints": "Pontos de Melhoria",
@@ -225,5 +227,75 @@
     "sessionOtherDevice": "Sua conta foi logada em outro dispositivo.",
     "upgradePointsTitle": "Pontos de Melhoria Ganhos!",
     "upgradePointsDesc": "Você atingiu novos marcos e ganhou {{count}} Pontos de Melhoria!"
+  },
+  "missions": {
+    "fragments": "Fragmentos",
+    "upgradePoints": "Pontos de Melhoria",
+    "progress": "PROGRESSO",
+    "ready": "PRONTO",
+    "claimed": "RESGATADO",
+    "page_desc": "Conclua objetivos para ganhar recompensas poderosas e acelerar sua progressão.",
+    "tab_generators": "Geradores",
+    "tab_upgrades": "Melhorias",
+    "tab_global": "Geral",
+    "tab_fragments": "Fragmentos",
+    "m_first_gen": {
+      "name": "Primeiros Passos",
+      "desc": "Garanta 10 unidades do Gerador 1."
+    },
+    "m_second_gen": {
+      "name": "Expansão",
+      "desc": "Desbloqueie o Gerador 2."
+    },
+    "m_fragments_100": {
+      "name": "Acumulador",
+      "desc": "Acumule um total de 100 Fragmentos produzidos."
+    },
+    "m_upgrade_1": {
+      "name": "Tecnologia Inicial",
+      "desc": "Compre 3 níveis de melhoria individual do Gerador 1."
+    },
+    "m_fragments_1000": {
+      "name": "Caminho do Fragmento",
+      "desc": "Acumule um total de 1.000 Fragmentos produzidos."
+    },
+    "m_third_gen": {
+      "name": "O Terceiro Elo",
+      "desc": "Desbloqueie o Gerador 3."
+    },
+    "m_global_prod_1": {
+      "name": "Produção Escalar",
+      "desc": "Compre 1 nível de Produção Global."
+    },
+    "m_fragments_1m": {
+      "name": "Milionário",
+      "desc": "Acumule 1 milhão de Fragmentos em total vitalício."
+    },
+    "m_tenth_gen": {
+      "name": "Fronteira 10",
+      "desc": "Desbloqueie o Gerador 10."
+    },
+    "m_fragments_1b": {
+      "name": "Bilionário",
+      "desc": "Atinja a incrível marca de 1 bilhão de Fragmentos produzidos."
+    },
+    "dynamic": {
+      "OWN_GENERATOR": {
+        "name": "Domínio do Gerador {{gen}}",
+        "desc": "Acumule {{amount}} unidades do Gerador {{gen}}."
+      },
+      "UPGRADE_LEVEL": {
+        "name": "Melhoria Nível {{amount}}",
+        "desc": "Alcance o nível de melhoria {{amount}} para o Gerador {{gen}}."
+      },
+      "GLOBAL_UPGRADE_LEVEL": {
+        "name": "Poder Global",
+        "desc": "Alcance o nível {{amount}} de Melhoria de Produção Global."
+      },
+      "TOTAL_FRAGMENTS_LIFETIME": {
+        "name": "Acumulador de Fragmentos",
+        "desc": "Junte um total vitalício de {{amount}} Fragmentos."
+      }
+    }
   }
 }

@@ -8,7 +8,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { GameContext } from "@/context/GameContext"
 import { playClickSound } from "@/lib/clickSound"
 import { formatTime } from "@/lib/formatTime"
-import { getMilestoneIndex, getNextMilestoneThreshold, getCurrentMilestoneThreshold } from "@/App"
+import { getMilestoneIndex, getNextMilestoneThreshold, getCurrentMilestoneThreshold } from "@/lib/milestones"
+import { MissionsList } from "@/components/MissionsList"
 
 // ----------------------------------------------------------------------
 // CycleProgressBar: usa ref diretamente para não re-renderizar todo o card a cada tick de 60 FPS
@@ -32,15 +33,15 @@ const CycleProgressBar = memo(({ i, cicloRapido, progressoRef }: { i: number, ci
 
   if (cicloRapido) {
     return (
-      <div data-slot="progress" className="bg-primary/20 relative h-2 w-full overflow-hidden rounded-full">
-        <div data-slot="progress-indicator" className="h-full w-full flex-1 bg-green-700 dark:bg-green-600 opacity-90 transition-none" style={{ transform: 'translateX(0%)' }} />
+      <div data-state="indeterminate" data-max="100" data-slot="progress" className="bg-primary/20 relative h-2 w-full overflow-hidden rounded-full">
+        <div data-state="indeterminate" data-max="100" data-slot="progress-indicator" className="h-full w-full flex-1 bg-green-700 dark:bg-green-600 opacity-90 transition-none" style={{ transform: 'translateX(0%)' }} />
       </div>
     )
   }
 
   return (
-    <div data-slot="progress" className="bg-primary/20 relative h-2 w-full overflow-hidden rounded-full">
-      <div data-slot="progress-indicator" ref={indicatorRef} className="bg-primary h-full w-full flex-1 transition-none" />
+    <div data-state="indeterminate" data-max="100" data-slot="progress" className="bg-primary/20 relative h-2 w-full overflow-hidden rounded-full">
+      <div data-state="indeterminate" data-max="100" data-slot="progress-indicator" ref={indicatorRef} className="bg-primary h-full w-full flex-1 transition-none" style={{ transform: 'translateX(-100%)' }} />
     </div>
   )
 })
@@ -136,7 +137,7 @@ const GeneratorCard = memo(({
 
   return (
     <Card className="py-3 px-4">
-      <div className="grid items-center gap-y-3 min-w-0" style={{ gridTemplateColumns: "minmax(0,0.5fr) minmax(0,0.55fr) minmax(0,1.2fr) minmax(0,1.65fr) minmax(0,0.75fr) minmax(0,0.45fr)", columnGap: "1.25rem", rowGap: "0.75rem" }}>
+      <div className="grid items-center gap-y-3 min-w-0" style={{ gridTemplateColumns: "minmax(0,0.5fr) minmax(0,0.5fr) minmax(0,1.2fr) minmax(0,1.1fr) minmax(0,0.65fr) minmax(0,0.7fr) minmax(0,0.45fr)", columnGap: "1.25rem", rowGap: "0.75rem" }}>
         <div className="flex flex-col gap-0.5 min-w-0 pr-2">
           <span className="font-semibold leading-tight text-sm truncate">{t("generators.generatorN", { n: i + 1 })}</span>
           <span className="text-muted-foreground text-[10px] uppercase truncate">{t("generators.generatorN", { n: i + 1 })}</span>
@@ -180,7 +181,7 @@ const GeneratorCard = memo(({
           </TooltipContent>
         </Tooltip>
         <div className="flex flex-col gap-0.5 min-w-0 mt-0.5 pt-0.5 pl-2">
-          <div className="h-1.5 w-full max-w-[20rem] overflow-hidden rounded-full">
+          <div className="flex items-center w-full max-w-[20rem]">
             <CycleProgressBar i={i} cicloRapido={cicloRapido} progressoRef={progressoRef} />
           </div>
           <div className="grid grid-cols-[1fr_auto_1fr] items-center w-full max-w-[20rem] mt-1.5 gap-2 min-w-0">
@@ -190,10 +191,18 @@ const GeneratorCard = memo(({
             <span className="text-muted-foreground text-[10px] uppercase text-center px-1">
               {cicloRapido ? t("generators.continuous") : t("generators.cycle")}
             </span>
-            <span className="font-mono text-[10px] tabular-nums text-right min-w-0 truncate block">
-              +{formatDecimal(new Decimal(countGen * mult).times(cicloRapido ? 1 / interval : 1))}{" "}{produz}{cicloRapido ? "/s" : ""}
+            <span className="text-muted-foreground text-[10px] uppercase text-right min-w-0 truncate block">
+              {produz}{cicloRapido ? "/s" : ""}
             </span>
           </div>
+        </div>
+        <div className="flex flex-col gap-0.5 min-w-0 justify-center items-end pr-4 pb-[3px]">
+          <span className="font-mono text-base tabular-nums text-green-600 dark:text-green-500 font-semibold truncate block">
+            +{formatDecimal(new Decimal(countGen * mult).times(cicloRapido ? 1 / interval : 1))}
+          </span>
+          <span className="text-muted-foreground text-[10px] uppercase opacity-70">
+            {t("generators.yield", { defaultValue: "GERA" })}
+          </span>
         </div>
         <div className="flex flex-col gap-0.5 min-w-0 pl-2">
           {mostraBotaoComprar ? (
@@ -279,80 +288,85 @@ export function GeneratorsPage() {
   } = ctx
 
   return (
-    <section className="w-full space-y-3">
-      {(() => {
-        const ultimoComUnidade = geradores.reduce((max, g, idx) => (g >= 1 ? idx : max), -1)
-        const ateIndice = Math.min(ultimoComUnidade + 1, NUM_GERADORES - 1)
-        return Array.from({ length: ateIndice + 1 }, (_, i) => i)
-      })().map((i) => {
-        const estaBloqueado = geradores[i] === 0
-        const canBuy = podeComprar(i)
-        const custoDecimal = custoGerador(i)
-        const totalIsGteCusto = total.gte(custoDecimal)
-        const custoRawStr = custoDecimal.toString()
+    <div className="flex flex-col h-full min-h-0 gap-2">
+      <div className="shrink-0">
+        <MissionsList />
+      </div>
+      <section className="scroll-overlay flex-1 w-full space-y-3 overflow-y-auto pb-8">
+        {(() => {
+          const ultimoComUnidade = geradores.reduce((max, g, idx) => (g >= 1 ? idx : max), -1)
+          const ateIndice = Math.min(ultimoComUnidade + 1, NUM_GERADORES - 1)
+          return Array.from({ length: ateIndice + 1 }, (_, i) => i)
+        })().map((i) => {
+          const estaBloqueado = geradores[i] === 0
+          const canBuy = podeComprar(i)
+          const custoDecimal = custoGerador(i)
+          const totalIsGteCusto = total.gte(custoDecimal)
+          const custoRawStr = custoDecimal.toString()
 
-        if (estaBloqueado) {
+          if (estaBloqueado) {
+            return (
+              <GeneratorCard
+                key={i}
+                i={i}
+                estaBloqueado={true}
+                podeComprar={canBuy}
+                custoRawStr={custoRawStr}
+                totalIsGteCusto={totalIsGteCusto}
+                onBuy={handleBuy}
+                formatDecimal={formatDecimal}
+                progressoRef={progressoRef}
+                // placeholders passados obrigatorios
+                interval={0} cicloRapido={false} produz={""} mostraBotaoComprar={false}
+                mult={0} countGen={0} progressInTier={0} tierGoal={0} progressToNext={0}
+                ptsForNext={0} nextThreshold={0}
+              />
+            )
+          }
+
+          const interval = intervaloEfetivo(i)
+          const cicloRapido = interval <= 1
+          const produz = i === 0 ? t("generators.resource") : t("generators.generatorN", { n: i })
+          const produzidoPeloProximo = i < NUM_GERADORES - 1 && geradores[i + 1] >= 1
+          const mostraBotaoComprar = !produzidoPeloProximo
+          const mult = Math.pow(2, upgrades[i] ?? 0)
+
+          const countGen = geradores[i]
+          const currentMilestoneIndex = milestonesReached[i] ?? getMilestoneIndex(countGen)
+          const currentThreshold = getCurrentMilestoneThreshold(currentMilestoneIndex)
+          const nextThreshold = getNextMilestoneThreshold(currentMilestoneIndex)
+
+          const progressInTier = Math.max(0, countGen - currentThreshold)
+          const tierGoal = nextThreshold - currentThreshold
+          const progressToNext = Math.max(0, Math.min(100, (progressInTier / tierGoal) * 100))
+          const ptsForNext = i + 1
+
           return (
             <GeneratorCard
               key={i}
               i={i}
-              estaBloqueado={true}
+              estaBloqueado={false}
               podeComprar={canBuy}
               custoRawStr={custoRawStr}
               totalIsGteCusto={totalIsGteCusto}
+              interval={interval}
+              cicloRapido={cicloRapido}
+              produz={produz}
+              mostraBotaoComprar={mostraBotaoComprar}
+              mult={mult}
+              countGen={countGen}
+              progressInTier={progressInTier}
+              tierGoal={tierGoal}
+              progressToNext={progressToNext}
+              ptsForNext={ptsForNext}
+              nextThreshold={nextThreshold}
               onBuy={handleBuy}
               formatDecimal={formatDecimal}
               progressoRef={progressoRef}
-              // placeholders passados obrigatorios
-              interval={0} cicloRapido={false} produz={""} mostraBotaoComprar={false}
-              mult={0} countGen={0} progressInTier={0} tierGoal={0} progressToNext={0}
-              ptsForNext={0} nextThreshold={0}
             />
           )
-        }
-
-        const interval = intervaloEfetivo(i)
-        const cicloRapido = interval <= 1
-        const produz = i === 0 ? t("generators.resource") : t("generators.generatorN", { n: i })
-        const produzidoPeloProximo = i < NUM_GERADORES - 1 && geradores[i + 1] >= 1
-        const mostraBotaoComprar = !produzidoPeloProximo
-        const mult = Math.pow(2, upgrades[i] ?? 0)
-
-        const countGen = geradores[i]
-        const currentMilestoneIndex = milestonesReached[i] ?? getMilestoneIndex(countGen)
-        const currentThreshold = getCurrentMilestoneThreshold(currentMilestoneIndex)
-        const nextThreshold = getNextMilestoneThreshold(currentMilestoneIndex)
-
-        const progressInTier = Math.max(0, countGen - currentThreshold)
-        const tierGoal = nextThreshold - currentThreshold
-        const progressToNext = Math.max(0, Math.min(100, (progressInTier / tierGoal) * 100))
-        const ptsForNext = i + 1
-
-        return (
-          <GeneratorCard
-            key={i}
-            i={i}
-            estaBloqueado={false}
-            podeComprar={canBuy}
-            custoRawStr={custoRawStr}
-            totalIsGteCusto={totalIsGteCusto}
-            interval={interval}
-            cicloRapido={cicloRapido}
-            produz={produz}
-            mostraBotaoComprar={mostraBotaoComprar}
-            mult={mult}
-            countGen={countGen}
-            progressInTier={progressInTier}
-            tierGoal={tierGoal}
-            progressToNext={progressToNext}
-            ptsForNext={ptsForNext}
-            nextThreshold={nextThreshold}
-            onBuy={handleBuy}
-            formatDecimal={formatDecimal}
-            progressoRef={progressoRef}
-          />
-        )
-      })}
-    </section>
+        })}
+      </section>
+    </div>
   )
 }
